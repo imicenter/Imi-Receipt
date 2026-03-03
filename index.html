@@ -508,8 +508,7 @@ let _db = null;
 let _fbConfig = null;
 
 function loadFbConfig() {
-  try { return JSON.parse(localStorage.getItem('imiFbConfig')) || null; } catch(e) { return null; }
-}
+return {apiKey:"AIzaSyCAqhdSvI_JknGoRoPYGxSbXb29CBQnPDY",databaseURL:"https://imi-receipt-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"imi-receipt",authDomain:"imi-receipt.firebaseapp.com",storageBucket:"imi-receipt.firebasestorage.app",messagingSenderId:"31901120608",appId:"1:31901120608:web:edba3de2bbe4499ff2ab05"};}
 function saveFbConfig(cfg) { localStorage.setItem('imiFbConfig', JSON.stringify(cfg)); }
 function clearFbConfig() { localStorage.removeItem('imiFbConfig'); }
 
