@@ -173,8 +173,8 @@
 
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('receipt')">🧾 Receipt</button>
-    <button class="tab-btn" onclick="switchTab('services')">⚙️ Services</button>
-    <button class="tab-btn" onclick="switchTab('settings')">🏪 Settings</button>
+    <button class="tab-btn" onclick="switchTab('services')">🏪 Services</button>
+    <button class="tab-btn" onclick="switchTab('settings')">⚙️ Settings</button>
     <button class="tab-btn" onclick="switchTab('reports')">📊 Reports</button>
   </div>
 
@@ -466,6 +466,15 @@
       <textarea id="s-ty-msg" placeholder="e.g. We are committed to providing fast, reliable & trusted government services..."></textarea>
       <button class="save-btn" onclick="saveSettings()">💾 Save Message</button>
     </div>
+
+    <div class="card">
+      <h2>🔗 WhatsApp Bill Link</h2>
+      <div class="settings-info">WhatsApp text message ke end mein ek link jayega jisse customer bill ka image download kar sake. Yahan apna GitHub Pages / Netlify link daalo.</div>
+      <label>Bill Download Link (URL)</label>
+      <input type="url" id="s-bill-link" placeholder="e.g. https://yourname.github.io/imi-receipt">
+      <div id="bill-link-preview" style="display:none;margin-top:8px;background:#f0fdf4;border-radius:8px;padding:8px 12px;font-size:0.78rem;color:var(--green);word-break:break-all;"></div>
+      <button class="save-btn" onclick="saveSettings()">💾 Save Link</button>
+    </div>
   </div>
 </div>
 
@@ -474,6 +483,79 @@
   <div class="loading-txt" id="loading-txt">Processing...</div>
 </div>
 <div class="toast" id="toast">✅ Done!</div>
+
+<!-- ══ REPRINT MODAL ══ -->
+<div id="reprint-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:white;border-radius:20px;padding:20px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,0.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:#7c3aed;">🖨️ Reprint / Share</h2>
+      <button onclick="closeReprintModal()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
+    </div>
+
+    <div class="share-label">💬 Text</div>
+    <div class="action-grid" style="margin-bottom:14px;">
+      <button class="abtn btn-wa" onclick="sendWAText();closeReprintModal();">📲 WhatsApp Text</button>
+      <button class="abtn btn-copy" onclick="copyText();closeReprintModal();">📋 Copy Text</button>
+    </div>
+
+    <div class="share-label">🖼️ Image</div>
+    <div class="action-grid" style="margin-bottom:14px;">
+      <button class="abtn btn-img-wa" onclick="handleImageWA();closeReprintModal();">📲 Image → WA</button>
+      <button class="abtn btn-img" onclick="downloadImage();closeReprintModal();">⬇️ Download</button>
+    </div>
+
+    <div class="share-label">🖨️ Print</div>
+    <div class="action-grid-3" style="margin-bottom:14px;">
+      <button class="abtn btn-pdf-wa" onclick="handlePdfWA();closeReprintModal();">📲 PDF→WA</button>
+      <button class="abtn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffcc80;" onclick="printBillThermal();closeReprintModal();">🧾 58mm</button>
+      <button class="abtn btn-pdf" onclick="printA4();closeReprintModal();">📄 A4</button>
+    </div>
+
+    <button onclick="closeReprintModal()" style="width:100%;background:#f3f4f6;border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;color:var(--gray);">❌ Close</button>
+  </div>
+</div>
+
+<!-- ══ EDIT RECEIPT MODAL ══ -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:white;border-radius:20px;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,0.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);">✏️ Receipt Edit Karo</h2>
+      <button onclick="closeEditModal()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
+    </div>
+    <div id="edit-receipt-info" style="background:var(--green-light);border-radius:10px;padding:8px 12px;font-size:0.82rem;color:var(--green);font-weight:700;margin-bottom:14px;"></div>
+
+    <div style="font-size:0.82rem;font-weight:700;color:var(--dark);margin-bottom:6px;">📋 Services</div>
+    <div style="display:grid;grid-template-columns:1fr 60px 85px 32px;gap:8px;margin-bottom:4px;">
+      <span style="font-size:0.75rem;font-weight:600;color:var(--gray);">Service</span>
+      <span style="font-size:0.75rem;font-weight:600;color:var(--gray);">Qty</span>
+      <span style="font-size:0.75rem;font-weight:600;color:var(--gray);">Amount (₹)</span>
+      <span></span>
+    </div>
+    <div id="edit-services-list"></div>
+    <button class="add-svc-btn" onclick="addEditServiceRow()" style="margin-bottom:14px;">+ Add Service</button>
+
+    <div style="font-size:0.82rem;font-weight:700;color:var(--dark);margin-bottom:6px;">🏷️ Discount</div>
+    <div class="row2" style="margin-bottom:6px;">
+      <div>
+        <label style="margin-top:0;font-size:0.78rem;">Value</label>
+        <input type="number" id="edit-disc-value" placeholder="0" min="0" oninput="previewEditDiscount()">
+      </div>
+      <div>
+        <label style="margin-top:0;font-size:0.78rem;">Type</label>
+        <select id="edit-disc-type" onchange="previewEditDiscount()">
+          <option value="flat">₹ Flat</option>
+          <option value="pct">% Percent</option>
+        </select>
+      </div>
+    </div>
+    <div id="edit-disc-preview" style="display:none;margin-bottom:12px;background:#fef3c7;border-radius:8px;padding:7px 12px;font-size:0.82rem;font-weight:700;color:#d97706;"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;">
+      <button onclick="closeEditModal()" style="background:#f3f4f6;border:none;border-radius:12px;padding:12px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;color:var(--gray);">❌ Cancel</button>
+      <button onclick="saveEditedReceipt()" style="background:linear-gradient(135deg,var(--green),var(--green-mid));border:none;border-radius:12px;padding:12px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;color:white;box-shadow:0 3px 12px rgba(26,122,74,0.25);">✅ Save Changes</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ══ DEFAULT DATA ══
@@ -500,15 +582,27 @@ const DEFAULT_SETTINGS = {
   phone: "8542843598",
   email: "imicenterpdn@gmail.com",
   tyTitle: "Thank You for Visiting IMI CENTER! 🙏",
-  tyMsg: "We are committed to providing fast, reliable & trusted government services. Your satisfaction is our priority. We look forward to serving you again!"
+  tyMsg: "We are committed to providing fast, reliable & trusted government services. Your satisfaction is our priority. We look forward to serving you again!",
+  billLink: ""
 };
 
 // ══ FIREBASE CONFIG ══
 let _db = null;
 let _fbConfig = null;
 
+const _HARDCODED_FB_CONFIG = {
+  apiKey: "AIzaSyCAqhdSvI_JknGoRoPYGxSbXb29CBQnPDY",
+  authDomain: "imi-receipt.firebaseapp.com",
+  databaseURL: "https://imi-receipt-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "imi-receipt",
+  storageBucket: "imi-receipt.firebasestorage.app",
+  messagingSenderId: "31901120608",
+  appId: "1:31901120608:web:edba3de2bbe4499ff2ab05"
+};
+
 function loadFbConfig() {
-return {apiKey:"AIzaSyCAqhdSvI_JknGoRoPYGxSbXb29CBQnPDY",databaseURL:"https://imi-receipt-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"imi-receipt",authDomain:"imi-receipt.firebaseapp.com",storageBucket:"imi-receipt.firebasestorage.app",messagingSenderId:"31901120608",appId:"1:31901120608:web:edba3de2bbe4499ff2ab05"};}
+  return _HARDCODED_FB_CONFIG;
+}
 function saveFbConfig(cfg) { localStorage.setItem('imiFbConfig', JSON.stringify(cfg)); }
 function clearFbConfig() { localStorage.removeItem('imiFbConfig'); }
 
@@ -729,6 +823,14 @@ function populateSettingsForm() {
   document.getElementById('s-email').value   = settings.email;
   document.getElementById('s-ty-title').value = settings.tyTitle;
   document.getElementById('s-ty-msg').value   = settings.tyMsg;
+  document.getElementById('s-bill-link').value = settings.billLink||'';
+  const prev = document.getElementById('bill-link-preview');
+  if(settings.billLink) {
+    prev.style.display='block';
+    prev.innerHTML = `✅ Link set hai: <b>${settings.billLink}</b>`;
+  } else {
+    prev.style.display='none';
+  }
 }
 
 function saveSettings() {
@@ -739,8 +841,10 @@ function saveSettings() {
   settings.email   = document.getElementById('s-email').value.trim();
   settings.tyTitle = document.getElementById('s-ty-title').value.trim();
   settings.tyMsg   = document.getElementById('s-ty-msg').value.trim();
+  settings.billLink = document.getElementById('s-bill-link').value.trim();
   saveSettingsData(settings);
   applySettingsToPage();
+  populateSettingsForm();
   showToast('✅ Settings saved!');
 }
 
@@ -946,6 +1050,11 @@ function buildWAMsg() {
   m+=`💰 *TOTAL: ₹${d.finalTotal.toLocaleString('en-IN')}*\n`;
   m+=d.status==='paid'?`✅ *Payment Received*\n`:`⏳ *Payment Pending*\n`;
   m+=`━━━━━━━━━━━━━━━━━━━━\n${settings.tyTitle}\n${settings.tyMsg}`;
+  if(settings.billLink) {
+    const base = settings.billLink.replace(/\/$/, '');
+    const billNo = d.rNo.replace('IMI-','');
+    m+=`\n━━━━━━━━━━━━━━━━━━━━\n🧾 *Apna Bill Yahan Dekho & Download Karo:*\n${base}/bill.html?bill=${billNo}`;
+  }
   return m;
 }
 
@@ -1575,6 +1684,7 @@ function renderReportTable(history) {
     const profit = finalAmt - cost;
     const discStr = r.discAmt>0 ? `- ₹${r.discAmt} (${r.discLabel||'Disc'})` : '—';
     const profitColor = profit>=0 ? '#15803d' : '#dc2626';
+    const recKey = encodeURIComponent(r.rNo);
     rows += `<tr>
       <td>${r.rNo}</td>
       <td>${r.date}<br><span style="color:var(--gray);font-size:0.7rem;">${r.time}</span></td>
@@ -1586,12 +1696,16 @@ function renderReportTable(history) {
       <td style="color:#ef4444;">₹${cost.toLocaleString('en-IN')}</td>
       <td style="color:${profitColor};font-weight:800;">₹${profit.toLocaleString('en-IN')}</td>
       <td><span class="${r.status==='paid'?'badge-paid':'badge-pending'}">${r.status==='paid'?'✅':'⏳'}</span></td>
+      <td style="white-space:nowrap;">
+        <button class="edit-btn" onclick="openEditModal('${recKey}')" style="font-size:0.75rem;margin-bottom:4px;display:block;width:100%;">✏️ Edit</button>
+        <button onclick="reprintReceipt('${recKey}')" style="background:#ede9fe;color:#7c3aed;border:none;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:0.75rem;font-weight:600;width:100%;">🖨️ Reprint</button>
+      </td>
     </tr>`;
   });
   wrap.innerHTML = `<table class="report-table">
     <thead><tr>
       <th>Rcpt#</th><th>Date</th><th>Customer</th><th>Services</th>
-      <th style="color:#fde68a;">MRP</th><th style="color:#fca5a5;">Discount</th><th style="color:#a7f3d0;">Sale</th><th style="color:#fca5a5;">Cost</th><th style="color:#86efac;">Profit</th><th>Pay</th>
+      <th style="color:#fde68a;">MRP</th><th style="color:#fca5a5;">Discount</th><th style="color:#a7f3d0;">Sale</th><th style="color:#fca5a5;">Cost</th><th style="color:#86efac;">Profit</th><th>Pay</th><th>Actions</th>
     </tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
@@ -1660,6 +1774,178 @@ function previewDiscount() {
   let final = sub - discAmt;
   preview.style.display='block';
   preview.innerHTML = `Subtotal ₹${sub.toLocaleString('en-IN')} &nbsp;→&nbsp; <b style="color:#dc2626;">- ₹${discAmt.toLocaleString('en-IN')}</b> &nbsp;→&nbsp; <b style="color:#15803d;">Pay ₹${final.toLocaleString('en-IN')}</b>`;
+}
+
+// ══ REPRINT ══
+function reprintReceipt(rNoEncoded) {
+  const rNo = decodeURIComponent(rNoEncoded);
+  const history = loadBillingHistory();
+  const rec = history.find(r => r.rNo === rNo);
+  if(!rec) { showToast('❌ Record nahi mila!'); return; }
+
+  // Load record into window._R so all print/share functions work
+  window._R = {
+    name: rec.name, phone: rec.phone||'', note: rec.note||'',
+    svcs: rec.svcs, total: rec.total,
+    discAmt: rec.discAmt||0, discLabel: rec.discLabel||'',
+    finalTotal: rec.finalTotal||rec.total,
+    totalCost: rec.totalCost||0,
+    profit: (rec.finalTotal||rec.total)-(rec.totalCost||0),
+    status: rec.status, rNo: rec.rNo, date: rec.date, time: rec.time
+  };
+
+  // Update visible receipt card on page too
+  document.getElementById('r-shop-name').textContent    = settings.name;
+  document.getElementById('r-shop-tagline').textContent = settings.tagline;
+  document.getElementById('r-shop-address').textContent = settings.address + ' | 📞 ' + settings.phone;
+  document.getElementById('r-shop-contact').textContent = '✉️ ' + settings.email;
+  document.getElementById('r-ty-title').textContent     = settings.tyTitle;
+  document.getElementById('r-ty-msg').textContent       = settings.tyMsg;
+  document.getElementById('r-no').textContent   = rec.rNo;
+  document.getElementById('r-date').textContent = rec.date;
+  document.getElementById('r-time').textContent = rec.time;
+  document.getElementById('r-name').textContent = rec.name;
+  document.getElementById('r-phone').textContent = rec.phone ? '📞 '+rec.phone : '';
+  document.getElementById('r-note').textContent  = rec.note  ? '📌 '+rec.note  : '';
+
+  const tbody = document.getElementById('r-svcs'); tbody.innerHTML='';
+  rec.svcs.forEach(s => {
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${s.svc}${s.qty>1?`<span class="qty-badge">×${s.qty}</span>`:''}</td><td style="text-align:center;color:#6b7280">${s.qty}</td><td>₹${s.amt.toLocaleString('en-IN')}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  const subRow  = document.getElementById('r-subtotal-row');
+  const discRow = document.getElementById('r-discount-row');
+  if((rec.discAmt||0) > 0) {
+    subRow.style.display='flex'; discRow.style.display='flex';
+    document.getElementById('r-subtotal').textContent       = '₹'+(rec.total||0).toLocaleString('en-IN');
+    document.getElementById('r-discount-label').textContent = rec.discLabel||'Discount';
+    document.getElementById('r-discount-amt').textContent   = '- ₹'+(rec.discAmt||0).toLocaleString('en-IN');
+  } else {
+    subRow.style.display='none'; discRow.style.display='none';
+  }
+  document.getElementById('r-total').textContent = '₹'+(rec.finalTotal||rec.total).toLocaleString('en-IN');
+  const badge=document.getElementById('r-status');
+  badge.textContent = rec.status==='paid'?'✅ Payment Received — Thank You!':'⏳ Payment Pending';
+  badge.className = 'status-badge '+(rec.status==='paid'?'status-paid':'status-pending');
+
+  // Show reprint modal with share options
+  document.getElementById('reprint-modal').style.display='flex';
+}
+
+function closeReprintModal() {
+  document.getElementById('reprint-modal').style.display='none';
+}
+
+// ══ EDIT MODAL ══
+let _editingRNo = null;
+
+function openEditModal(rNoEncoded) {
+  const rNo = decodeURIComponent(rNoEncoded);
+  const history = loadBillingHistory();
+  const rec = history.find(r => r.rNo === rNo);
+  if(!rec) { showToast('❌ Record nahi mila!'); return; }
+
+  _editingRNo = rNo;
+
+  // Show receipt info
+  document.getElementById('edit-receipt-info').textContent = `📄 ${rec.rNo} | ${rec.date} | 👤 ${rec.name}`;
+
+  // Fill services
+  const list = document.getElementById('edit-services-list');
+  list.innerHTML = '';
+  rec.svcs.forEach(s => addEditServiceRow(s.svc, s.qty, s.amt));
+
+  // Fill discount
+  document.getElementById('edit-disc-value').value = rec.discAmt > 0 ? rec.discAmt : '';
+  document.getElementById('edit-disc-type').value = 'flat';
+  document.getElementById('edit-disc-preview').style.display = 'none';
+
+  // Show modal
+  const modal = document.getElementById('edit-modal');
+  modal.style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').style.display = 'none';
+  _editingRNo = null;
+}
+
+function addEditServiceRow(svcName='', qty=1, amt='') {
+  const list = document.getElementById('edit-services-list');
+  const row = document.createElement('div');
+  row.className = 'service-row';
+  const opts = services.map(s => `<option value="${s.name}" data-rate="${s.rate}" data-cost="${s.cost||0}" ${s.name===svcName?'selected':''}>${s.name}</option>`).join('');
+  row.innerHTML = `
+    <select class="edit-svc-sel" onchange="this.closest('.service-row').querySelector('.edit-amt-inp').value=this.options[this.selectedIndex].dataset.rate||''; previewEditDiscount();">
+      <option value="">-- Select --</option>${opts}
+    </select>
+    <input type="number" class="edit-qty-inp" value="${qty}" min="1" style="padding:8px 9px;font-size:0.82rem;" oninput="previewEditDiscount()">
+    <input type="number" class="edit-amt-inp" value="${amt}" min="0" placeholder="₹" style="padding:8px 9px;font-size:0.82rem;" oninput="previewEditDiscount()">
+    <button class="del-btn" onclick="this.closest('.service-row').remove(); previewEditDiscount();">✕</button>`;
+  list.appendChild(row);
+}
+
+function previewEditDiscount() {
+  const val = parseFloat(document.getElementById('edit-disc-value').value)||0;
+  const type = document.getElementById('edit-disc-type').value;
+  const preview = document.getElementById('edit-disc-preview');
+  let sub = 0;
+  document.querySelectorAll('#edit-services-list .service-row').forEach(row => {
+    const qty = parseInt(row.querySelector('.edit-qty-inp').value)||1;
+    const amt = parseFloat(row.querySelector('.edit-amt-inp').value)||0;
+    sub += qty * amt;
+  });
+  if(val <= 0 || sub <= 0) { preview.style.display='none'; return; }
+  let discAmt = type==='pct' ? Math.round(sub*val/100) : Math.min(val,sub);
+  let final = sub - discAmt;
+  preview.style.display = 'block';
+  preview.innerHTML = `Subtotal ₹${sub.toLocaleString('en-IN')} &nbsp;→&nbsp; <b style="color:#dc2626;">- ₹${discAmt.toLocaleString('en-IN')}</b> &nbsp;→&nbsp; <b style="color:#15803d;">Pay ₹${final.toLocaleString('en-IN')}</b>`;
+}
+
+function saveEditedReceipt() {
+  if(!_editingRNo) return;
+
+  // Collect updated services
+  const svcs = [];
+  let totalCost = 0;
+  document.querySelectorAll('#edit-services-list .service-row').forEach(row => {
+    const sel  = row.querySelector('.edit-svc-sel');
+    const qty  = parseInt(row.querySelector('.edit-qty-inp').value)||1;
+    const amt  = parseFloat(row.querySelector('.edit-amt-inp').value)||0;
+    const cost = parseFloat(sel.options[sel.selectedIndex]?.dataset.cost||0);
+    if(sel.value) {
+      svcs.push({svc: sel.value, qty, amt});
+      totalCost += cost * qty;
+    }
+  });
+  if(!svcs.length) { showToast('❌ Kam se kam ek service daalo!'); return; }
+
+  const discVal  = parseFloat(document.getElementById('edit-disc-value').value)||0;
+  const discType = document.getElementById('edit-disc-type').value;
+  const total    = svcs.reduce((s,r)=>s+(r.qty*r.amt),0);
+  const discAmt  = discVal>0 ? (discType==='pct' ? Math.round(total*discVal/100) : Math.min(discVal,total)) : 0;
+  const discLabel = discVal>0 ? (discType==='pct' ? `${discVal}% Discount` : `Flat ₹${discVal} Off`) : '';
+  const finalTotal = total - discAmt;
+
+  // Update in history
+  const history = loadBillingHistory();
+  const idx = history.findIndex(r => r.rNo === _editingRNo);
+  if(idx === -1) { showToast('❌ Record nahi mila!'); return; }
+
+  history[idx] = {...history[idx], svcs, total, discAmt, discLabel, finalTotal, totalCost};
+  localStorage.setItem('imiBilling', JSON.stringify(history));
+
+  // Update Firebase
+  if(_db) {
+    const key = _editingRNo.replace('IMI-','rec_');
+    _db.ref('imiBilling/' + key).update({svcs, total, discAmt, discLabel, finalTotal, totalCost});
+  }
+
+  closeEditModal();
+  renderReports();
+  showToast(`✅ ${_editingRNo} updated!`);
 }
 
 init();
