@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IMI CENTER — Your Bill — IMI CENTER</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>IMI CENTER — Your Bill</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -340,19 +343,40 @@ async function loadBill() {
   const billNo = getBillNo();
   if(!billNo) { showError('No bill number found in the URL. Please use the correct link.'); return; }
 
-  const key = 'rec_' + billNo;
-  try {
-    const [billSnap, settingsSnap] = await Promise.all([
-      db.ref('imiBilling/' + key).once('value'),
-      db.ref('imiSettings').once('value')
-    ]);
+  // Try multiple key formats to support old and new bills
+  const keysToTry = [
+    'rec_' + billNo,           // new format: rec_1001
+    'rec_IMI-' + billNo,       // old format fallback
+    billNo,                    // raw key
+  ];
 
-    if(!billSnap.exists()) {
-      showError(`Bill #${billNo} not found. The link may be incorrect or the bill may have been deleted.`);
-      return;
+  try {
+    const settingsSnap = await db.ref('imiSettings').once('value');
+    
+    for(const key of keysToTry) {
+      const billSnap = await db.ref('imiBilling/' + key).once('value');
+      if(billSnap.exists()) {
+        renderBill(billSnap.val(), settingsSnap.val());
+        return;
+      }
     }
 
-    renderBill(billSnap.val(), settingsSnap.val());
+    // Also try searching through all billing records by rNo field
+    const allSnap = await db.ref('imiBilling').once('value');
+    if(allSnap.exists()) {
+      const allData = allSnap.val();
+      const found = Object.values(allData).find(r => 
+        r.rNo === 'IMI-' + billNo || 
+        r.rNo === billNo ||
+        String(r.rNo).replace('IMI-','') === String(billNo)
+      );
+      if(found) {
+        renderBill(found, settingsSnap.val());
+        return;
+      }
+    }
+
+    showError(`Bill #${billNo} not found. The link may be incorrect or the bill may have been deleted.`);
   } catch(err) {
     showError('Could not connect to Firebase. Please check your internet connection and reload.');
   }

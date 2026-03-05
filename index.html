@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>IMI CENTER — Receipt Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -123,7 +126,7 @@
   .new-btn:hover { background: #d1fae5; }
 
   /* FIREBASE SYNC */
-  .sync-bar { display:flex; align-items:center; justify-content:space-between; background:white; border:1.5px solid var(--border); border-radius:12px; padding:8px 14px; margin-bottom:12px; font-size:0.8rem; box-shadow:0 2px 8px rgba(26,122,74,0.07); }
+  .sync-bar { display:flex; align-items:center; justify-content:space-between; background:white; border:1.5px solid var(--border); border-radius:12px; padding:8px 14px; margin-bottom:12px; font-size:0.8rem; box-shadow:0 2px 8px rgba(26,122,74,0.07); position:sticky; top:8px; z-index:100; }
   .sync-dot { width:9px; height:9px; border-radius:50%; margin-right:7px; display:inline-block; flex-shrink:0; }
   .sync-dot.green { background:#22c55e; box-shadow:0 0 0 3px rgba(34,197,94,0.2); animation: pulse-green 1.5s infinite; }
   .sync-dot.yellow { background:#f59e0b; box-shadow:0 0 0 3px rgba(245,158,11,0.2); }
