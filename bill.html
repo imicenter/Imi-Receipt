@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IMI CENTER — Your Bill</title>
+<title>IMI CENTER — Your Bill — IMI CENTER</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -171,14 +171,14 @@
   <!-- LOADING -->
   <div class="loading-state" id="loading-state">
     <div class="spinner"></div>
-    <div class="loading-txt">Aapka bill load ho raha hai...</div>
+    <div class="loading-txt">Loading your bill...</div>
   </div>
 
   <!-- ERROR -->
   <div class="error-state" id="error-state" style="display:none;">
     <div class="error-icon">😕</div>
-    <div class="error-title">Bill Nahi Mila</div>
-    <div class="error-msg" id="error-msg">Yeh link galat ho sakta hai ya bill delete ho gaya hoga. IMI CENTER se contact karein.</div>
+    <div class="error-title">Bill Not Found</div>
+    <div class="error-msg" id="error-msg">This link may be invalid or the bill may have been deleted. Please contact IMI CENTER.</div>
   </div>
 
   <!-- RECEIPT -->
@@ -234,11 +234,11 @@
 
     <!-- ACTION BUTTONS -->
     <div class="actions-card">
-      <h3>📥 Bill Save Karo</h3>
+      <h3>📥 Save Your Bill — IMI CENTER</h3>
       <div class="action-grid">
-        <button class="abtn btn-dl btn-full" onclick="downloadBillImage()">⬇️ Image Download Karo</button>
+        <button class="abtn btn-dl btn-full" onclick="downloadBillImage()">⬇️ Download Image</button>
         <button class="abtn btn-wa" onclick="shareOnWA()">📲 WhatsApp</button>
-        <button class="abtn" style="background:#ede9fe;color:#7c3aed;" onclick="copyBillLink()">🔗 Link Copy</button>
+        <button class="abtn" style="background:#ede9fe;color:#7c3aed;" onclick="copyBillLink()">🔗 Copy Link</button>
       </div>
     </div>
 
@@ -338,7 +338,7 @@ function renderBill(rec, shopSettings) {
 // ── Load from Firebase ──
 async function loadBill() {
   const billNo = getBillNo();
-  if(!billNo) { showError('URL mein bill number nahi hai. Sahi link use karein.'); return; }
+  if(!billNo) { showError('No bill number found in the URL. Please use the correct link.'); return; }
 
   const key = 'rec_' + billNo;
   try {
@@ -348,19 +348,19 @@ async function loadBill() {
     ]);
 
     if(!billSnap.exists()) {
-      showError(`Bill #${billNo} nahi mila. Link galat ho sakta hai ya bill delete ho gaya ho.`);
+      showError(`Bill #${billNo} not found. The link may be incorrect or the bill may have been deleted.`);
       return;
     }
 
     renderBill(billSnap.val(), settingsSnap.val());
   } catch(err) {
-    showError('Firebase se connect nahi ho paya. Internet check karein aur reload karein.');
+    showError('Could not connect to Firebase. Please check your internet connection and reload.');
   }
 }
 
 // ── Download as Image ──
 function downloadBillImage() {
-  showToast('⏳ Image ban rahi hai...');
+  showToast('⏳ Generating image...');
   html2canvas(document.getElementById('receipt-content'), {
     scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false
   }).then(canvas => {
@@ -369,8 +369,8 @@ function downloadBillImage() {
     link.download = `IMI_Bill_${billNo}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
-    showToast('✅ Image saved!');
-  }).catch(() => showToast('❌ Try again'));
+    showToast('✅ Image downloaded successfully!');
+  }).catch(() => showToast('❌ Something went wrong. Please try again.'));
 }
 
 // ── Share on WhatsApp ──
@@ -385,8 +385,8 @@ function shareOnWA() {
 // ── Copy bill link ──
 function copyBillLink() {
   navigator.clipboard.writeText(window.location.href)
-    .then(() => showToast('🔗 Link copied!'))
-    .catch(() => showToast('❌ Copy nahi hua'));
+    .then(() => showToast('🔗 Link copied to clipboard!'))
+    .catch(() => showToast('❌ Could not copy link. Please try again.'));
 }
 
 // ── Toast ──

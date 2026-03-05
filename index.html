@@ -163,11 +163,11 @@
 <body>
 <div class="container">
   <div class="page-title" id="header-title">🏪 IMI CENTER</div>
-  <p class="subtitle">Receipt Generator — Professional Bills in One Click!</p>
+  <p class="subtitle">Receipt Generator — Professional Billing in One Click!</p>
 
   <!-- SYNC STATUS BAR -->
   <div class="sync-bar" id="sync-bar">
-    <div class="sync-label"><span class="sync-dot yellow" id="sync-dot"></span><span id="sync-label-txt">🔄 Firebase connect ho raha hai...</span></div>
+    <div class="sync-label"><span class="sync-dot yellow" id="sync-dot"></span><span id="sync-label-txt">🔄 Connecting to Firebase...</span></div>
     <span id="sync-device-count" style="font-size:0.75rem;color:var(--gray);font-weight:600;"></span>
   </div>
 
@@ -303,10 +303,10 @@
         <!-- Desktop step-by-step guide -->
         <div id="desktop-guide" style="display:none;background:#f0fdf4;border:1.5px dashed var(--green-mid);border-radius:12px;padding:12px;margin-bottom:12px;font-size:0.78rem;color:var(--gray);line-height:1.8;">
           <strong style="color:var(--green);">💻 Computer pe WhatsApp pe kaise bhejein:</strong><br>
-          1️⃣ Upar <b>Download</b> button dabao — file save hogi<br>
-          2️⃣ <b>WhatsApp Web</b> tab apne aap khulega<br>
-          3️⃣ Customer ka chat open karo<br>
-          4️⃣ 📎 Paperclip icon → file select karo → Send! ✅
+          1️⃣ Click <b>Download</b> button above — file will be saved<br>
+          2️⃣ <b>WhatsApp Web</b> tab will open automatically<br>
+          3️⃣ Open the customer's chat<br>
+          4️⃣ 📎 Click Paperclip icon → select file → Send! ✅
         </div>
 
         <button class="new-btn" onclick="newReceipt()">➕ New Receipt</button>
@@ -318,15 +318,15 @@
   <div class="tab-panel" id="tab-services">
     <div class="card">
       <h2>⚙️ Manage Services</h2>
-      <p style="font-size:0.82rem;color:var(--gray);margin-bottom:14px;">Services add, edit ya remove karo. Changes automatically save honge.</p>
+      <p style="font-size:0.82rem;color:var(--gray);margin-bottom:14px;">Add, edit or remove services. Changes are saved automatically.</p>
       <div id="svc-manager-list"></div>
       <div class="add-new-svc-form">
-        <h3>➕ Nayi Service Add Karo</h3>
-        <label style="margin-top:0">Service Ka Naam</label>
+        <h3>➕ Add New Service</h3>
+        <label style="margin-top:0">Service Name</label>
         <input type="text" id="new-svc-name" placeholder="e.g. RC Update">
         <div class="row2">
-          <div><label style="margin-top:6px;">Sale Price (₹) <span style="color:var(--green);font-size:0.72rem;">Customer se loge</span></label><input type="number" id="new-svc-rate" placeholder="200" min="0"></div>
-          <div><label style="margin-top:6px;">Cost Price (₹) <span style="color:#ef4444;font-size:0.72rem;">Aapka kharcha</span></label><input type="number" id="new-svc-cost" placeholder="0" min="0"></div>
+          <div><label style="margin-top:6px;">Sale Price (₹) <span style="color:var(--green);font-size:0.72rem;">Charged to Customer</span></label><input type="number" id="new-svc-rate" placeholder="200" min="0"></div>
+          <div><label style="margin-top:6px;">Cost Price (₹) <span style="color:#ef4444;font-size:0.72rem;">Your Expense</span></label><input type="number" id="new-svc-cost" placeholder="0" min="0"></div>
         </div>
         <button class="save-btn" onclick="addNewService()">✅ Save Service</button>
       </div>
@@ -350,7 +350,7 @@
         </div>
         <div style="background:#ede9fe;border-radius:12px;padding:10px;text-align:center;">
           <div style="font-size:1.5rem;font-weight:800;color:#7c3aed;font-family:'Baloo 2',cursive;" id="stat-today-cust">0</div>
-          <div style="font-size:0.7rem;color:var(--gray);font-weight:600;">📅 Aaj</div>
+          <div style="font-size:0.7rem;color:var(--gray);font-weight:600;">📅 Today</div>
         </div>
       </div>
 
@@ -379,7 +379,7 @@
 
       <!-- TODAY'S P&L -->
       <div style="background:#f0fdf4;border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px;">
-        <div style="font-family:'Baloo 2',cursive;font-size:0.82rem;font-weight:700;color:var(--green);margin-bottom:8px;">🌅 Aaj Ka Report</div>
+        <div style="font-family:'Baloo 2',cursive;font-size:0.82rem;font-weight:700;color:var(--green);margin-bottom:8px;">🌅 Today's Report</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;">
           <div><div style="font-size:1.1rem;font-weight:800;color:var(--green);font-family:'Baloo 2',cursive;" id="today-sale">₹0</div><div style="font-size:0.68rem;color:var(--gray);">Sale</div></div>
           <div><div style="font-size:1.1rem;font-weight:800;color:#ef4444;font-family:'Baloo 2',cursive;" id="today-cost">₹0</div><div style="font-size:0.68rem;color:var(--gray);">Cost</div></div>
@@ -397,7 +397,7 @@
         <button class="save-btn" style="margin-top:0;background:linear-gradient(135deg,#7c3aed,#a855f7);" onclick="clearFilter()">🔄 Show All</button>
       </div>
       <button class="gen-btn" onclick="exportExcel()" style="font-size:0.92rem;padding:11px;">📥 Export to Excel (with P&L)</button>
-      <button class="new-btn" style="margin-top:8px;" onclick="if(confirm('Sari history delete karna chahte ho?')) clearAllHistory()">🗑️ Clear All History</button>
+      <button class="new-btn" style="margin-top:8px;" onclick="if(confirm('Are you sure you want to delete all history? This cannot be undone.')) clearAllHistory()">🗑️ Clear All History</button>
     </div>
 
     <!-- TABLE -->
@@ -413,11 +413,11 @@
     <!-- FIREBASE SETUP CARD -->
     <div class="fb-setup-card" id="fb-setup-card">
       <h3>🔥 Firebase Sync Setup</h3>
-      <p>4 computers ka data ek jagah sync karne ke liye <b>sirf ek baar</b> apna Firebase config daalo. Baad mein sab automatically sync hoga!</p>
+      <p>Sync data across all your computers in real-time. Enter your Firebase config <b>once</b> — everything syncs automatically after that!</p>
 
-      <div class="fb-step">📌 <b>Step 1:</b> <a href="https://console.firebase.google.com" target="_blank" style="color:#d97706;">console.firebase.google.com</a> pe jaao → New Project banao (free hai)</div>
-      <div class="fb-step">📌 <b>Step 2:</b> Project → Realtime Database → Create Database → "Test mode" select karo</div>
-      <div class="fb-step">📌 <b>Step 3:</b> Project Settings (⚙️) → Your apps → Web app (&lt;/&gt;) → Register → Config copy karo</div>
+      <div class="fb-step">📌 <b>Step 1:</b> <a href="https://console.firebase.google.com" target="_blank" style="color:#d97706;">console.firebase.google.com</a> → Create a New Project (free)</div>
+      <div class="fb-step">📌 <b>Step 2:</b> Project → Realtime Database → Create Database → select "Test mode"</div>
+      <div class="fb-step">📌 <b>Step 3:</b> Project Settings (⚙️) → Your apps → Web app (&lt;/&gt;) → Register → Copy config</div>
 
       <label style="margin-top:10px;">🔑 Firebase Database URL</label>
       <input type="text" id="fb-db-url" placeholder="https://your-project-default-rtdb.firebaseio.com">
@@ -426,7 +426,7 @@
       <label style="margin-top:8px;">📦 Project ID</label>
       <input type="text" id="fb-project-id" placeholder="your-project-id">
 
-      <button class="fb-connect-btn" onclick="connectFirebase()">🔥 Connect & Sync Karo!</button>
+      <button class="fb-connect-btn" onclick="connectFirebase()">🔥 Connect & Start Syncing!</button>
       <div id="fb-connect-status" style="font-size:0.8rem;margin-top:8px;text-align:center;font-weight:700;"></div>
     </div>
 
@@ -434,7 +434,7 @@
     <div id="fb-connected-card" style="display:none;background:#dcfce7;border:1.5px solid #86efac;border-radius:14px;padding:14px;margin-bottom:14px;">
       <div style="font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:800;color:#15803d;margin-bottom:6px;">✅ Firebase Connected!</div>
       <div style="font-size:0.78rem;color:#166534;line-height:1.7;">
-        🔄 Sab 4 systems ka data real-time sync ho raha hai<br>
+        🔄 All systems are syncing data in real-time<br>
         📊 Billing history, services, settings — sab shared hai<br>
         🔥 Project: <b id="fb-project-display"></b>
       </div>
@@ -443,7 +443,7 @@
 
     <div class="card">
       <h2>🏪 Center Details</h2>
-      <div class="settings-info">Yahan apne center ki details update karo — receipt mein automatically show hogi.</div>
+      <div class="settings-info">Update your center details here — they will appear automatically on every receipt.</div>
       <label>Center Ka Naam *</label>
       <input type="text" id="s-name" placeholder="e.g. IMI CENTER">
       <label>Tagline / Services Description</label>
@@ -459,7 +459,7 @@
 
     <div class="card">
       <h2>💬 Thank You Message</h2>
-      <div class="settings-info">Receipt ke neeche jo message dikhta hai woh customize karo.</div>
+      <div class="settings-info">Customize the message displayed at the bottom of every receipt.</div>
       <label>Title Line</label>
       <input type="text" id="s-ty-title" placeholder="e.g. Thank You for Visiting IMI CENTER! 🙏">
       <label>Message (2-3 lines)</label>
@@ -469,8 +469,8 @@
 
     <div class="card">
       <h2>🔗 WhatsApp Bill Link</h2>
-      <div class="settings-info">WhatsApp text message ke end mein ek link jayega jisse customer bill ka image download kar sake. Yahan apna GitHub Pages / Netlify link daalo.</div>
-      <label>Bill Download Link (URL)</label>
+      <div class="settings-info">A unique bill link will be added at the end of every WhatsApp message, allowing customers to view and download their bill. Enter your GitHub Pages / Netlify URL here.</div>
+      <label>Bill Download Link (Your Website URL)</label>
       <input type="url" id="s-bill-link" placeholder="e.g. https://yourname.github.io/imi-receipt">
       <div id="bill-link-preview" style="display:none;margin-top:8px;background:#f0fdf4;border-radius:8px;padding:8px 12px;font-size:0.78rem;color:var(--green);word-break:break-all;"></div>
       <button class="save-btn" onclick="saveSettings()">💾 Save Link</button>
@@ -519,7 +519,7 @@
 <div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:16px;">
   <div style="background:white;border-radius:20px;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,0.3);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <h2 style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);">✏️ Receipt Edit Karo</h2>
+      <h2 style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);">✏️ Edit Receipt</h2>
       <button onclick="closeEditModal()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
     </div>
     <div id="edit-receipt-info" style="background:var(--green-light);border-radius:10px;padding:8px 12px;font-size:0.82rem;color:var(--green);font-weight:700;margin-bottom:14px;"></div>
@@ -614,7 +614,7 @@ async function connectFirebase() {
 
   if(!dbUrl || !apiKey || !projectId) {
     statusEl.style.color = '#dc2626';
-    statusEl.textContent = '❌ Teeno fields bharo!';
+    statusEl.textContent = '❌ Please fill in all three fields!';
     return;
   }
   statusEl.style.color = '#d97706';
@@ -626,9 +626,9 @@ async function connectFirebase() {
     await initFirebaseApp(cfg);
     saveFbConfig(cfg);
     statusEl.style.color = '#15803d';
-    statusEl.textContent = '✅ Connected! Sync shuru ho gaya!';
+    statusEl.textContent = '✅ Connected! Sync has started!';
     showFbConnectedState(projectId);
-    showToast('🔥 Firebase connected! Sab systems sync ho rahe hain!');
+    showToast('🔥 Firebase connected! All systems are now syncing!');
   } catch(err) {
     statusEl.style.color = '#dc2626';
     statusEl.textContent = '❌ Error: ' + err.message;
@@ -739,15 +739,15 @@ function showFbConnectedState(projectId) {
 }
 
 function disconnectFirebase() {
-  if(!confirm('Firebase disconnect karna chahte ho? Sab systems alag ho jayenge.')) return;
+  if(!confirm('Are you sure you want to disconnect Firebase? All systems will stop syncing.')) return;
   clearFbConfig();
   try { firebase.app().delete(); } catch(e) {}
   _db = null;
   document.getElementById('fb-connected-card').style.display = 'none';
   document.getElementById('fb-setup-card').style.display = 'block';
-  setSyncStatus('red', '❌ Offline — Firebase disconnect hua');
+  setSyncStatus('red', '❌ Offline — Firebase disconnected');
   document.getElementById('sync-device-count').textContent = '';
-  showToast('🔌 Firebase disconnected');
+  showToast('🔌 Firebase disconnected successfully');
 }
 
 // ══ STORAGE (Firebase-aware) ══
@@ -784,14 +784,14 @@ function init() {
   // Auto-connect Firebase if config saved
   const cfg = loadFbConfig();
   if(cfg) {
-    setSyncStatus('yellow', '🔄 Firebase connect ho raha hai...');
+    setSyncStatus('yellow', '🔄 Connecting to Firebase...');
     initFirebaseApp(cfg).then(() => {
       showFbConnectedState(cfg.projectId);
     }).catch(err => {
-      setSyncStatus('red', '❌ Firebase error — Settings mein check karo');
+      setSyncStatus('red', '❌ Firebase error — Please check Settings');
     });
   } else {
-    setSyncStatus('red', '⚠️ Firebase setup nahi hua — Settings tab mein karo');
+    setSyncStatus('red', '⚠️ Firebase not configured — Please set up in Settings tab');
   }
 }
 
@@ -827,7 +827,7 @@ function populateSettingsForm() {
   const prev = document.getElementById('bill-link-preview');
   if(settings.billLink) {
     prev.style.display='block';
-    prev.innerHTML = `✅ Link set hai: <b>${settings.billLink}</b>`;
+    prev.innerHTML = `✅ Link configured: <b>${settings.billLink}</b>`;
   } else {
     prev.style.display='none';
   }
@@ -845,7 +845,7 @@ function saveSettings() {
   saveSettingsData(settings);
   applySettingsToPage();
   populateSettingsForm();
-  showToast('✅ Settings saved!');
+  showToast('✅ Settings saved successfully!');
 }
 
 // ══ SERVICE MANAGER ══
@@ -877,26 +877,26 @@ function editService(i) {
   const s = services[i];
   const n = prompt('Service ka naam:', s.name); if(!n) return;
   const r = prompt('Customer ko charge (Sale Price ₹):', s.rate); if(r===null) return;
-  const c = prompt('Aapka actual cost (₹) — 0 if koi cost nahi:', s.cost||0); if(c===null) return;
+  const c = prompt('Your actual cost (₹) — Enter 0 if no cost:', s.cost||0); if(c===null) return;
   services[i] = {name:n.trim(), rate:parseFloat(r)||0, cost:parseFloat(c)||0};
-  saveServices(services); renderServiceManager(); showToast('✅ Updated!');
+  saveServices(services); renderServiceManager(); showToast('✅ Updated successfully!');
 }
 
 function removeService(i) {
-  if(!confirm(`"${services[i].name}" remove karna chahte ho?`)) return;
-  services.splice(i,1); saveServices(services); renderServiceManager(); showToast('🗑️ Removed!');
+  if(!confirm(`"${services[i].name}" Are you sure you want to remove`)) return;
+  services.splice(i,1); saveServices(services); renderServiceManager(); showToast('🗑️ Service removed!');
 }
 
 function addNewService() {
   const name = document.getElementById('new-svc-name').value.trim();
   const rate = parseFloat(document.getElementById('new-svc-rate').value)||0;
   const cost = parseFloat(document.getElementById('new-svc-cost').value)||0;
-  if(!name) { alert('Service ka naam daalo!'); return; }
+  if(!name) { alert('Please enter a service name!'); return; }
   services.push({name, rate, cost}); saveServices(services);
   document.getElementById('new-svc-name').value='';
   document.getElementById('new-svc-rate').value='';
   document.getElementById('new-svc-cost').value='';
-  renderServiceManager(); showToast('✅ Service added!');
+  renderServiceManager(); showToast('✅ Service added successfully!');
 }
 
 // ══ RECEIPT FORM ══
@@ -921,7 +921,7 @@ function autoRate(sel) {
 
 function generateReceipt() {
   const name = document.getElementById('cust-name').value.trim();
-  if(!name) { alert('Customer ka naam daalo!'); return; }
+  if(!name) { alert('Please enter the customer name!'); return; }
   const rows = document.querySelectorAll('.service-row');
   let svcs=[], total=0, totalCost=0;
   rows.forEach(row => {
@@ -937,7 +937,7 @@ function generateReceipt() {
       totalCost+=costAmt;
     }
   });
-  if(!svcs.length) { alert('Kam se kam ek service add karo!'); return; }
+  if(!svcs.length) { alert('Please add at least one service!'); return; }
 
   // ── Discount ──
   const discVal  = parseFloat(document.getElementById('disc-value').value) || 0;
@@ -1023,11 +1023,11 @@ function showDeviceTip() {
   if(isMobile && canNativeShare) {
     tip.style.display='block';
     tip.style.background='#dcfce7'; tip.style.color='#15803d';
-    tip.innerHTML='📱 <b>Mobile detected!</b> Image/PDF buttons se directly WhatsApp share sheet khulegi.';
+    tip.innerHTML='📱 <b>Mobile detected!</b> Image/PDF buttons will open the WhatsApp share sheet directly.';
   } else {
     tip.style.display='block';
     tip.style.background='#fef3c7'; tip.style.color='#92400e';
-    tip.innerHTML='💻 <b>Computer detected.</b> Image/PDF pehle download hogi, phir WhatsApp Web khulega. Niche steps dekho.';
+    tip.innerHTML='💻 <b>Computer detected.</b> Image/PDF will be downloaded first, then WhatsApp Web will open. Follow the steps below.';
     document.getElementById('desktop-guide').style.display='block';
   }
 }
@@ -1053,7 +1053,7 @@ function buildWAMsg() {
   if(settings.billLink) {
     const base = settings.billLink.replace(/\/$/, '');
     const billNo = d.rNo.replace('IMI-','');
-    m+=`\n━━━━━━━━━━━━━━━━━━━━\n🧾 *Apna Bill Yahan Dekho & Download Karo:*\n${base}/bill.html?bill=${billNo}`;
+    m+=`\n━━━━━━━━━━━━━━━━━━━━\n🧾 *View & Download Your Bill:*\n${base}/bill.html?bill=${billNo}`;
   }
   return m;
 }
@@ -1080,8 +1080,8 @@ function downloadImage() {
     link.download=`IMI_Receipt_${window._R.rNo}.png`;
     link.href=canvas.toDataURL('image/png');
     link.click();
-    hideLoading(); showToast('🖼️ Image saved!');
-  }).catch(()=>{ hideLoading(); showToast('❌ Try again'); });
+    hideLoading(); showToast('🖼️ Image downloaded successfully!');
+  }).catch(()=>{ hideLoading(); showToast('❌ Something went wrong. Please try again.'); });
 }
 
 function handleImageWA() {
@@ -1103,7 +1103,7 @@ function handleImageWA() {
         desktopImageFallback(canvas);
       }
     }, 'image/png');
-  }).catch(()=>{ hideLoading(); showToast('❌ Try again'); });
+  }).catch(()=>{ hideLoading(); showToast('❌ Something went wrong. Please try again.'); });
 }
 
 function desktopImageFallback(canvas) {
@@ -1115,7 +1115,7 @@ function desktopImageFallback(canvas) {
   // Step 2: open WhatsApp Web after short delay
   setTimeout(()=>{
     window.open(waLink(window._R.phone, ''), '_blank');
-    showToast('📥 Image saved! WA Web khula — attach karo 📎');
+    showToast('📥 Image saved! WhatsApp Web opened — attach the file 📎');
   }, 1000);
 }
 
@@ -1168,7 +1168,7 @@ function buildReceiptHTML(extraHeadStyle, bodyStyle) {
 
 // ══ THERMAL 58mm BILL PRINTER ══
 function printBillThermal() {
-  if(!window._R) { showToast('❌ Pehle receipt generate karo!'); return; }
+  if(!window._R) { showToast('❌ Please generate a receipt first!'); return; }
   const style = `<style>
     @page {
       size: 58mm auto;
@@ -1345,7 +1345,7 @@ function printBillThermal() {
 
 // ══ A4 PRINTER ══
 function printA4() {
-  if(!window._R) { showToast('❌ Pehle receipt generate karo!'); return; }
+  if(!window._R) { showToast('❌ Please generate a receipt first!'); return; }
   const style = `<style>
     @page { size: A4 portrait; margin: 18mm 22mm; }
     * { box-sizing:border-box; margin:0; padding:0; }
@@ -1539,7 +1539,7 @@ function handlePdfWA() {
         desktopPdfFallback(canvas);
       }
     }, 'image/png');
-  }).catch(()=>{ hideLoading(); showToast('❌ Try again'); });
+  }).catch(()=>{ hideLoading(); showToast('❌ Something went wrong. Please try again.'); });
 }
 
 function desktopPdfFallback(canvas) {
@@ -1553,7 +1553,7 @@ function desktopPdfFallback(canvas) {
   win.document.close();
   setTimeout(()=>{
     window.open(waLink(window._R.phone,''),'_blank');
-    showToast('📄 PDF ready + WA Web khula — attach karo 📎');
+    showToast('📄 PDF ready! WhatsApp Web opened — attach the file 📎');
   }, 800);
 }
 
@@ -1592,7 +1592,7 @@ function clearAllHistory() {
   localStorage.removeItem('imiBilling');
   if(_db) _db.ref('imiBilling').remove();
   renderReports();
-  showToast('🗑️ History cleared (all devices)!');
+  showToast('🗑️ All history cleared across all devices!');
 }
 
 // ══ REPORTS ══
@@ -1661,7 +1661,7 @@ function applyFilter() {
   document.getElementById('pl-margin').textContent = margin+'%';
 
   renderReportTable(filtered);
-  showToast(`🔍 ${filtered.length} records | Profit ₹${filtProfit.toLocaleString('en-IN')}`);
+  showToast(`🔍 ${filtered.length} record(s) found | Profit ₹${filtProfit.toLocaleString('en-IN')}`);
 }
 
 function clearFilter() {
@@ -1673,7 +1673,7 @@ function clearFilter() {
 function renderReportTable(history) {
   const wrap = document.getElementById('report-table-wrap');
   if(!history.length) {
-    wrap.innerHTML = '<div class="no-data">📭 Koi billing record nahi mila.<br>Receipt generate karte hi data yahan dikhega.</div>';
+    wrap.innerHTML = '<div class="no-data">📭 No billing records found.<br>Generate a receipt to see data here.</div>';
     return;
   }
   let rows = '';
@@ -1714,7 +1714,7 @@ function renderReportTable(history) {
 // ══ EXCEL EXPORT ══
 function exportExcel() {
   const history = _filteredHistory || loadBillingHistory();
-  if(!history.length) { showToast('❌ Koi data nahi export karne ke liye!'); return; }
+  if(!history.length) { showToast('❌ No data available to export!'); return; }
 
   const BOM = '\uFEFF';
   const headers = ['Receipt No','Date','Time','Customer Name','Mobile No','Services','MRP (₹)','Discount (₹)','Sale Amount (₹)','Cost (₹)','Profit (₹)','Profit Margin','Payment Status'];
@@ -1751,7 +1751,7 @@ function exportExcel() {
   a.download = `IMI_PL_Report_${dateStr}.csv`;
   a.click();
   URL.revokeObjectURL(url);
-  showToast(`✅ ${history.length} records exported with P&L!`);
+  showToast(`✅ ${history.length} records exported successfully!`);
 }
 
 // ══ DISCOUNT PREVIEW ══
@@ -1781,7 +1781,7 @@ function reprintReceipt(rNoEncoded) {
   const rNo = decodeURIComponent(rNoEncoded);
   const history = loadBillingHistory();
   const rec = history.find(r => r.rNo === rNo);
-  if(!rec) { showToast('❌ Record nahi mila!'); return; }
+  if(!rec) { showToast('❌ Record not found!'); return; }
 
   // Load record into window._R so all print/share functions work
   window._R = {
@@ -1845,12 +1845,12 @@ function openEditModal(rNoEncoded) {
   const rNo = decodeURIComponent(rNoEncoded);
   const history = loadBillingHistory();
   const rec = history.find(r => r.rNo === rNo);
-  if(!rec) { showToast('❌ Record nahi mila!'); return; }
+  if(!rec) { showToast('❌ Record not found!'); return; }
 
   _editingRNo = rNo;
 
   // Show receipt info
-  document.getElementById('edit-receipt-info').textContent = `📄 ${rec.rNo} | ${rec.date} | 👤 ${rec.name}`;
+  document.getElementById('edit-receipt-info').textContent = `📄 Receipt: ${rec.rNo} | Date: ${rec.date} | Customer: ${rec.name}`;
 
   // Fill services
   const list = document.getElementById('edit-services-list');
@@ -1920,7 +1920,7 @@ function saveEditedReceipt() {
       totalCost += cost * qty;
     }
   });
-  if(!svcs.length) { showToast('❌ Kam se kam ek service daalo!'); return; }
+  if(!svcs.length) { showToast('❌ Please add at least one service!'); return; }
 
   const discVal  = parseFloat(document.getElementById('edit-disc-value').value)||0;
   const discType = document.getElementById('edit-disc-type').value;
@@ -1932,7 +1932,7 @@ function saveEditedReceipt() {
   // Update in history
   const history = loadBillingHistory();
   const idx = history.findIndex(r => r.rNo === _editingRNo);
-  if(idx === -1) { showToast('❌ Record nahi mila!'); return; }
+  if(idx === -1) { showToast('❌ Record not found!'); return; }
 
   history[idx] = {...history[idx], svcs, total, discAmt, discLabel, finalTotal, totalCost};
   localStorage.setItem('imiBilling', JSON.stringify(history));
@@ -1945,7 +1945,7 @@ function saveEditedReceipt() {
 
   closeEditModal();
   renderReports();
-  showToast(`✅ ${_editingRNo} updated!`);
+  showToast(`✅ Receipt ${_editingRNo} updated successfully!`);
 }
 
 init();
