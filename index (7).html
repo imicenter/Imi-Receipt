@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMI CENTER — Receipt Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<style>
+  :root {
+    --green: #1a7a4a;
+    --green-light: #e8f5ee;
+    --green-mid: #2d9e65;
+    --dark: #1a2e1e;
+    --gray: #6b7280;
+    --border: #d1fae5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans', sans-serif; background: #f0fdf4; min-height: 100vh; padding: 20px;
+    background-image: radial-gradient(circle at 20% 20%, #d1fae5 0%, transparent 50%), radial-gradient(circle at 80% 80%, #dcfce7 0%, transparent 50%); }
+  .container { max-width: 500px; margin: 0 auto; }
+  .page-title { font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 800; color: var(--green); text-align: center; margin-bottom: 2px; }
+  .subtitle { text-align: center; color: var(--gray); font-size: 0.85rem; margin-bottom: 16px; }
+
+  /* TABS */
+  .tabs { display: flex; background: white; border-radius: 14px; padding: 4px; gap: 4px; margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(26,122,74,0.08); border: 1.5px solid var(--border); }
+  .tab-btn { flex: 1; padding: 8px 4px; border: none; border-radius: 10px; font-family: 'Baloo 2', cursive;
+    font-size: 0.82rem; font-weight: 700; cursor: pointer; background: transparent; color: var(--gray); transition: all 0.2s; }
+  .tab-btn.active { background: linear-gradient(135deg, var(--green), var(--green-mid)); color: white; box-shadow: 0 2px 8px rgba(26,122,74,0.25); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* CARDS */
+  .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 24px rgba(26,122,74,0.08); border: 1.5px solid var(--border); margin-bottom: 14px; }
+  .card h2 { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700; color: var(--green); margin-bottom: 14px; }
+  label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--dark); margin-bottom: 4px; margin-top: 10px; }
+  input, select, textarea { width: 100%; padding: 9px 13px; border: 1.5px solid #d1fae5; border-radius: 10px;
+    font-family: 'Noto Sans', sans-serif; font-size: 0.88rem; color: var(--dark); background: #f0fdf4; outline: none; transition: border-color 0.2s; }
+  input:focus, select:focus, textarea:focus { border-color: var(--green-mid); background: white; }
+  textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* SERVICE ROWS */
+  .svc-header { display: grid; grid-template-columns: 1fr 60px 85px 32px; gap: 8px; margin-bottom: 4px; }
+  .svc-header span { font-size: 0.75rem; font-weight: 600; color: var(--gray); }
+  .service-row { display: grid; grid-template-columns: 1fr 60px 85px 32px; gap: 8px; align-items: center; margin-bottom: 7px; }
+  .service-row input, .service-row select { padding: 8px 9px; font-size: 0.82rem; margin-top: 0; }
+  .del-btn { background: #fee2e2; border: none; color: #ef4444; border-radius: 8px; width: 32px; height: 34px; cursor: pointer; font-size: 0.95rem; transition: background 0.2s; }
+  .del-btn:hover { background: #fca5a5; }
+  .add-svc-btn { background: var(--green-light); color: var(--green); border: 1.5px dashed var(--green-mid); border-radius: 10px;
+    padding: 7px; width: 100%; cursor: pointer; font-size: 0.85rem; font-weight: 600; font-family: 'Noto Sans', sans-serif; margin-top: 2px; transition: all 0.2s; }
+  .add-svc-btn:hover { background: #d1fae5; }
+
+  /* BUTTONS */
+  .gen-btn { width: 100%; background: linear-gradient(135deg, var(--green), var(--green-mid)); color: white; border: none;
+    border-radius: 14px; padding: 13px; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 700; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 16px rgba(26,122,74,0.25); }
+  .gen-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,122,74,0.35); }
+  .save-btn { width: 100%; margin-top: 12px; background: linear-gradient(135deg, var(--green), var(--green-mid)); color: white;
+    border: none; border-radius: 12px; padding: 11px; font-family: 'Baloo 2', cursive; font-size: 0.95rem; font-weight: 700; cursor: pointer;
+    box-shadow: 0 3px 12px rgba(26,122,74,0.2); transition: transform 0.15s; }
+  .save-btn:hover { transform: translateY(-1px); }
+
+  /* SERVICE MANAGER */
+  .svc-manager-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px;
+    background: var(--green-light); border-radius: 10px; margin-bottom: 7px; }
+  .svc-manager-row .svc-info { flex: 1; }
+  .svc-manager-row .svc-name { font-weight: 600; font-size: 0.88rem; color: var(--dark); }
+  .svc-manager-row .svc-rate { font-size: 0.78rem; color: var(--green); }
+  .svc-manager-row .svc-actions { display: flex; gap: 6px; }
+  .edit-btn { background: #dbeafe; color: #2563eb; border: none; border-radius: 7px; padding: 5px 10px; cursor: pointer; font-size: 0.78rem; font-weight: 600; }
+  .remove-btn { background: #fee2e2; color: #ef4444; border: none; border-radius: 7px; padding: 5px 10px; cursor: pointer; font-size: 0.78rem; font-weight: 600; }
+  .add-new-svc-form { background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1.5px dashed var(--green-mid); margin-top: 12px; }
+  .add-new-svc-form h3 { font-size: 0.88rem; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+
+  /* RECEIPT */
+  #receipt-area { display: none; }
+  .receipt-box { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 32px rgba(26,122,74,0.15); border: 1.5px solid var(--border); margin-bottom: 14px; }
+  .receipt-header { background: linear-gradient(135deg, #155e3a, var(--green-mid)); color: white; padding: 18px 22px 28px; text-align: center; position: relative; }
+  .receipt-header::after { content: ''; position: absolute; bottom: -14px; left: 0; right: 0; height: 28px; background: white; border-radius: 50% 50% 0 0 / 100% 100% 0 0; }
+  .shop-name { font-family: 'Baloo 2', cursive; font-size: 1.7rem; font-weight: 800; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .shop-sub { font-size: 0.75rem; opacity: 0.88; margin-top: 2px; }
+  .shop-contact { font-size: 0.72rem; opacity: 0.80; margin-top: 4px; }
+  .receipt-body { padding: 26px 22px 18px; }
+  .receipt-meta { display: flex; justify-content: space-between; background: var(--green-light); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; }
+  .meta-item .mlabel { font-size: 0.75rem; color: var(--gray); margin-bottom: 2px; }
+  .meta-item .mvalue { font-weight: 700; color: var(--dark); font-size: 0.85rem; }
+  .customer-info { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1.5px dashed var(--border); }
+  .customer-info .cname { font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 700; color: var(--dark); }
+  .customer-info .cphone { font-size: 0.8rem; color: var(--gray); margin-top: 2px; }
+  .svc-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+  .svc-table thead tr th { font-size: 0.75rem; font-weight: 700; color: var(--gray); text-align: left; padding: 0 6px 8px; border-bottom: 1.5px solid var(--border); text-transform: uppercase; letter-spacing: 0.5px; }
+  .svc-table thead tr th:last-child { text-align: right; }
+  .svc-table tbody tr td { padding: 9px 6px; font-size: 0.85rem; color: var(--dark); border-bottom: 1px solid #f0fdf4; }
+  .svc-table tbody tr td:last-child { text-align: right; font-weight: 600; }
+  .qty-badge { display: inline-block; background: var(--green-light); color: var(--green); border-radius: 5px; padding: 1px 6px; font-size: 0.73rem; font-weight: 700; margin-left: 5px; }
+  .totals { border-top: 2px solid var(--border); padding-top: 12px; }
+  .total-row-main { background: linear-gradient(135deg, var(--green), var(--green-mid)); color: white; border-radius: 12px; padding: 12px 16px; margin-top: 8px; font-size: 1rem; font-weight: 700; font-family: 'Baloo 2', cursive; display: flex; justify-content: space-between; }
+  .status-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; margin-top: 10px; }
+  .status-paid { background: #dcfce7; color: #15803d; }
+  .status-pending { background: #fef3c7; color: #d97706; }
+  .receipt-footer { padding: 14px 22px; text-align: center; border-top: 1.5px dashed var(--border); background: var(--green-light); }
+  .receipt-footer .ty-title { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700; color: var(--green); margin-bottom: 4px; }
+  .receipt-footer .ty-msg { font-size: 0.74rem; color: var(--gray); line-height: 1.6; }
+
+  /* ACTION BUTTONS */
+  .share-label { font-size: 0.78rem; font-weight: 700; color: var(--gray); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .action-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .abtn { border: none; border-radius: 12px; padding: 11px 8px; font-family: 'Baloo 2', cursive; font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: transform 0.15s; }
+  .abtn:hover { transform: translateY(-1px); }
+  .btn-wa   { background: #25D366; color: white; box-shadow: 0 3px 10px rgba(37,211,102,0.3); }
+  .btn-copy { background: white; color: var(--green); border: 1.5px solid var(--border) !important; }
+  .btn-img  { background: #ede9fe; color: #7c3aed; }
+  .btn-img-wa { background: #dcfce7; color: #15803d; border: 1.5px solid var(--border) !important; }
+  .btn-pdf  { background: #fee2e2; color: #dc2626; }
+  .btn-pdf-wa { background: #fef3c7; color: #d97706; border: 1.5px solid var(--border) !important; }
+  .new-btn { width: 100%; background: var(--green-light); color: var(--green); border: 1.5px solid var(--border); border-radius: 12px; padding: 11px; font-family: 'Baloo 2', cursive; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+  .new-btn:hover { background: #d1fae5; }
+
+  /* FIREBASE SYNC */
+  .sync-bar { display:flex; align-items:center; justify-content:space-between; background:white; border:1.5px solid var(--border); border-radius:12px; padding:8px 14px; margin-bottom:12px; font-size:0.8rem; box-shadow:0 2px 8px rgba(26,122,74,0.07); }
+  .sync-dot { width:9px; height:9px; border-radius:50%; margin-right:7px; display:inline-block; flex-shrink:0; }
+  .sync-dot.green { background:#22c55e; box-shadow:0 0 0 3px rgba(34,197,94,0.2); animation: pulse-green 1.5s infinite; }
+  .sync-dot.yellow { background:#f59e0b; box-shadow:0 0 0 3px rgba(245,158,11,0.2); }
+  .sync-dot.red { background:#ef4444; box-shadow:0 0 0 3px rgba(239,68,68,0.2); }
+  @keyframes pulse-green { 0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,0.2);} 50%{box-shadow:0 0 0 6px rgba(34,197,94,0.05);} }
+  .sync-label { display:flex; align-items:center; font-weight:600; color:var(--dark); }
+  .fb-setup-card { background:#fff7ed; border:1.5px dashed #f59e0b; border-radius:14px; padding:16px; margin-bottom:14px; }
+  .fb-setup-card h3 { font-family:'Baloo 2',cursive; font-size:0.95rem; font-weight:800; color:#d97706; margin-bottom:6px; }
+  .fb-setup-card p { font-size:0.78rem; color:#92400e; line-height:1.6; margin-bottom:8px; }
+  .fb-setup-card input { background:white; border-color:#fde68a; }
+  .fb-connect-btn { width:100%; background:linear-gradient(135deg,#f59e0b,#d97706); color:white; border:none; border-radius:10px; padding:10px; font-family:'Baloo 2',cursive; font-size:0.95rem; font-weight:700; cursor:pointer; margin-top:8px; }
+  .fb-step { background:#fef3c7; border-radius:8px; padding:8px 12px; font-size:0.77rem; color:#92400e; margin-bottom:6px; line-height:1.6; }
+  .fb-step b { color:#d97706; }
+
+  .settings-info { background: #f0fdf4; border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; color: var(--gray); margin-bottom: 14px; border-left: 3px solid var(--green-mid); }
+
+  /* REPORT TABLE */
+  .report-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .report-table thead tr th { background:var(--green); color:white; padding:8px 7px; text-align:left; white-space:nowrap; }
+  .report-table tbody tr td { padding:7px 7px; border-bottom:1px solid var(--border); color:var(--dark); vertical-align:top; }
+  .report-table tbody tr:nth-child(even) td { background:#f0fdf4; }
+  .report-table tbody tr:hover td { background:#d1fae5; }
+  .no-data { text-align:center; color:var(--gray); font-size:0.85rem; padding:30px 0; }
+  .badge-paid { background:#dcfce7;color:#15803d;border-radius:5px;padding:2px 7px;font-weight:700;font-size:0.7rem; }
+  .badge-pending { background:#fef3c7;color:#d97706;border-radius:5px;padding:2px 7px;font-weight:700;font-size:0.7rem; }
+
+  /* TOAST & LOADER */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--dark); color: white; padding: 10px 22px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; transition: transform 0.3s; z-index: 999; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; gap: 14px; }
+  .loading-overlay.show { display: flex; }
+  .spinner { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .loading-txt { color: white; font-weight: 600; font-size: 0.95rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="page-title" id="header-title">🏪 IMI CENTER</div>
+  <p class="subtitle">Receipt Generator — Professional Bills in One Click!</p>
+
+  <!-- SYNC STATUS BAR -->
+  <div class="sync-bar" id="sync-bar">
+    <div class="sync-label"><span class="sync-dot yellow" id="sync-dot"></span><span id="sync-label-txt">🔄 Firebase connect ho raha hai...</span></div>
+    <span id="sync-device-count" style="font-size:0.75rem;color:var(--gray);font-weight:600;"></span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('receipt')">🧾 Receipt</button>
+    <button class="tab-btn" onclick="switchTab('services')">🏪 Services</button>
+    <button class="tab-btn" onclick="switchTab('settings')">⚙️ Settings</button>
+    <button class="tab-btn" onclick="switchTab('reports')">📊 Reports</button>
+  </div>
+
+  <!-- ══ TAB 1: RECEIPT ══ -->
+  <div class="tab-panel active" id="tab-receipt">
+    <div class="card" id="form-area">
+      <h2>👤 Customer Details</h2>
+      <label>Customer Name *</label>
+      <input type="text" id="cust-name" placeholder="e.g. Ramesh Kumar">
+      <div class="row2">
+        <div><label>Phone Number</label><input type="text" id="cust-phone" placeholder="98XXXXXXXX"></div>
+        <div><label>Payment Status</label>
+          <select id="pay-status">
+            <option value="paid">✅ Paid</option>
+            <option value="pending">⏳ Pending</option>
+          </select>
+        </div>
+      </div>
+      <label>Note (Optional)</label>
+      <input type="text" id="cust-note" placeholder="e.g. Ready in 15 days">
+    </div>
+
+    <div class="card">
+      <h2>📋 Services</h2>
+      <div class="svc-header">
+        <span>Service</span><span>Qty</span><span>Amount (₹)</span><span></span>
+      </div>
+      <div id="services-list"></div>
+      <button class="add-svc-btn" onclick="addServiceRow()">+ Add Service</button>
+    </div>
+
+    <div class="card" style="padding:14px 16px;">
+      <h2>🏷️ Discount (Optional)</h2>
+      <div class="row2" style="align-items:flex-end;">
+        <div>
+          <label style="margin-top:0;">Discount Value</label>
+          <input type="number" id="disc-value" placeholder="e.g. 50" min="0" oninput="previewDiscount()">
+        </div>
+        <div>
+          <label style="margin-top:0;">Type</label>
+          <select id="disc-type" onchange="previewDiscount()">
+            <option value="flat">₹ Flat Amount</option>
+            <option value="pct">% Percentage</option>
+          </select>
+        </div>
+      </div>
+      <div id="disc-preview" style="display:none;margin-top:8px;background:#fef3c7;border-radius:8px;padding:7px 12px;font-size:0.82rem;font-weight:700;color:#d97706;"></div>
+    </div>
+
+    <div class="card">
+      <button class="gen-btn" onclick="generateReceipt()">🧾 Generate Receipt</button>
+    </div>
+
+    <!-- RECEIPT PREVIEW -->
+    <div id="receipt-area">
+      <div class="receipt-box" id="receipt-content">
+        <div class="receipt-header">
+          <div class="shop-name" id="r-shop-name">IMI CENTER</div>
+          <div class="shop-sub" id="r-shop-tagline">CSC • Aadhar • PAN • Certificates • Printing & More</div>
+          <div class="shop-contact" id="r-shop-address"></div>
+          <div class="shop-contact" id="r-shop-contact"></div>
+        </div>
+        <div class="receipt-body">
+          <div class="receipt-meta">
+            <div class="meta-item"><div class="mlabel">Receipt No.</div><div class="mvalue" id="r-no">—</div></div>
+            <div class="meta-item" style="text-align:center"><div class="mlabel">Date</div><div class="mvalue" id="r-date">—</div></div>
+            <div class="meta-item" style="text-align:right"><div class="mlabel">Time</div><div class="mvalue" id="r-time">—</div></div>
+          </div>
+          <div class="customer-info">
+            <div class="cname" id="r-name">—</div>
+            <div class="cphone" id="r-phone"></div>
+            <div id="r-note" style="font-size:0.78rem;color:#6b7280;margin-top:3px;"></div>
+          </div>
+          <table class="svc-table">
+            <thead><tr>
+              <th>Service</th>
+              <th style="text-align:center">Qty</th>
+              <th style="text-align:right">Amount</th>
+            </tr></thead>
+            <tbody id="r-svcs"></tbody>
+          </table>
+          <div class="totals">
+            <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:#6b7280;padding:4px 0;" id="r-subtotal-row">
+              <span>Subtotal</span><span id="r-subtotal">₹0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:#dc2626;padding:4px 0;font-weight:700;" id="r-discount-row">
+              <span id="r-discount-label">🏷️ Discount</span><span id="r-discount-amt">- ₹0</span>
+            </div>
+            <div class="total-row-main">
+              <span>💰 TOTAL AMOUNT</span>
+              <span id="r-total">₹0</span>
+            </div>
+            <div style="text-align:center">
+              <span class="status-badge" id="r-status"></span>
+            </div>
+          </div>
+        </div>
+        <div class="receipt-footer">
+          <div class="ty-title" id="r-ty-title">Thank You for Visiting IMI CENTER! 🙏</div>
+          <div class="ty-msg" id="r-ty-msg">We are committed to providing fast, reliable & trusted government services. Your satisfaction is our priority. We look forward to serving you again!</div>
+        </div>
+      </div>
+
+      <!-- SHARE BUTTONS -->
+      <div class="card" style="padding:16px;">
+        <div id="device-tip" style="font-size:0.78rem;padding:8px 12px;border-radius:10px;margin-bottom:14px;display:none;"></div>
+        <div class="share-label">💬 Text</div>
+        <div class="action-grid" style="margin-bottom:14px;">
+          <button class="abtn btn-wa" onclick="sendWAText()">📲 WhatsApp Text</button>
+          <button class="abtn btn-copy" onclick="copyText()">📋 Copy Text</button>
+        </div>
+
+        <div class="share-label">🖼️ Image</div>
+        <div class="action-grid" style="margin-bottom:14px;">
+          <button class="abtn btn-img-wa" onclick="handleImageWA()">📲 Image → WA</button>
+          <button class="abtn btn-img" onclick="downloadImage()">⬇️ Download</button>
+        </div>
+
+        <div class="share-label">🖨️ Print</div>
+        <div class="action-grid-3" style="margin-bottom:14px;">
+          <button class="abtn btn-pdf-wa" onclick="handlePdfWA()">📲 PDF→WA</button>
+          <button class="abtn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffcc80;" onclick="printBillThermal()">🧾 58mm<br><span style="font-size:0.7rem;font-weight:500;">Bill Printer</span></button>
+          <button class="abtn btn-pdf" onclick="printA4()">📄 A4<br><span style="font-size:0.7rem;font-weight:500;">A4 Printer</span></button>
+        </div>
+
+        <!-- Desktop step-by-step guide -->
+        <div id="desktop-guide" style="display:none;background:#f0fdf4;border:1.5px dashed var(--green-mid);border-radius:12px;padding:12px;margin-bottom:12px;font-size:0.78rem;color:var(--gray);line-height:1.8;">
+          <strong style="color:var(--green);">💻 Computer pe WhatsApp pe kaise bhejein:</strong><br>
+          1️⃣ Upar <b>Download</b> button dabao — file save hogi<br>
+          2️⃣ <b>WhatsApp Web</b> tab apne aap khulega<br>
+          3️⃣ Customer ka chat open karo<br>
+          4️⃣ 📎 Paperclip icon → file select karo → Send! ✅
+        </div>
+
+        <button class="new-btn" onclick="newReceipt()">➕ New Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB 2: SERVICES ══ -->
+  <div class="tab-panel" id="tab-services">
+    <div class="card">
+      <h2>⚙️ Manage Services</h2>
+      <p style="font-size:0.82rem;color:var(--gray);margin-bottom:14px;">Services add, edit ya remove karo. Changes automatically save honge.</p>
+      <div id="svc-manager-list"></div>
+      <div class="add-new-svc-form">
+        <h3>➕ Nayi Service Add Karo</h3>
+        <label style="margin-top:0">Service Ka Naam</label>
+        <input type="text" id="new-svc-name" placeholder="e.g. RC Update">
+        <div class="row2">
+          <div><label style="margin-top:6px;">Sale Price (₹) <span style="color:var(--green);font-size:0.72rem;">Customer se loge</span></label><input type="number" id="new-svc-rate" placeholder="200" min="0"></div>
+          <div><label style="margin-top:6px;">Cost Price (₹) <span style="color:#ef4444;font-size:0.72rem;">Aapka kharcha</span></label><input type="number" id="new-svc-cost" placeholder="0" min="0"></div>
+        </div>
+        <button class="save-btn" onclick="addNewService()">✅ Save Service</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB 4: REPORTS ══ -->
+  <div class="tab-panel" id="tab-reports">
+
+    <!-- STATS CARDS -->
+    <div class="card" id="report-summary">
+      <h2>📊 Billing Summary</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
+        <div style="background:var(--green-light);border-radius:12px;padding:10px;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:800;color:var(--green);font-family:'Baloo 2',cursive;" id="stat-total-cust">0</div>
+          <div style="font-size:0.7rem;color:var(--gray);font-weight:600;">👥 Customers</div>
+        </div>
+        <div style="background:#fef3c7;border-radius:12px;padding:10px;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:800;color:#d97706;font-family:'Baloo 2',cursive;" id="stat-total-rev">₹0</div>
+          <div style="font-size:0.7rem;color:var(--gray);font-weight:600;">💰 Total Sale</div>
+        </div>
+        <div style="background:#ede9fe;border-radius:12px;padding:10px;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:800;color:#7c3aed;font-family:'Baloo 2',cursive;" id="stat-today-cust">0</div>
+          <div style="font-size:0.7rem;color:var(--gray);font-weight:600;">📅 Aaj</div>
+        </div>
+      </div>
+
+      <!-- P&L BREAKDOWN -->
+      <div style="background:linear-gradient(135deg,#1a7a4a,#2d9e65);border-radius:14px;padding:14px;color:white;margin-bottom:12px;">
+        <div style="font-family:'Baloo 2',cursive;font-size:0.85rem;font-weight:700;margin-bottom:10px;opacity:0.9;">📈 Profit & Loss Breakdown</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
+          <div>
+            <div style="font-size:1.3rem;font-weight:800;font-family:'Baloo 2',cursive;" id="pl-sale">₹0</div>
+            <div style="font-size:0.68rem;opacity:0.85;">💳 Total Sale</div>
+          </div>
+          <div style="border-left:1px solid rgba(255,255,255,0.3);border-right:1px solid rgba(255,255,255,0.3);">
+            <div style="font-size:1.3rem;font-weight:800;font-family:'Baloo 2',cursive;color:#fca5a5;" id="pl-cost">₹0</div>
+            <div style="font-size:0.68rem;opacity:0.85;">📤 Total Cost</div>
+          </div>
+          <div>
+            <div style="font-size:1.3rem;font-weight:800;font-family:'Baloo 2',cursive;color:#86efac;" id="pl-profit">₹0</div>
+            <div style="font-size:0.68rem;opacity:0.85;">🏆 Net Profit</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:rgba(255,255,255,0.15);border-radius:8px;padding:6px 10px;font-size:0.78rem;display:flex;justify-content:space-between;">
+          <span>Profit Margin:</span>
+          <span style="font-weight:700;" id="pl-margin">0%</span>
+        </div>
+      </div>
+
+      <!-- TODAY'S P&L -->
+      <div style="background:#f0fdf4;border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px;">
+        <div style="font-family:'Baloo 2',cursive;font-size:0.82rem;font-weight:700;color:var(--green);margin-bottom:8px;">🌅 Aaj Ka Report</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;">
+          <div><div style="font-size:1.1rem;font-weight:800;color:var(--green);font-family:'Baloo 2',cursive;" id="today-sale">₹0</div><div style="font-size:0.68rem;color:var(--gray);">Sale</div></div>
+          <div><div style="font-size:1.1rem;font-weight:800;color:#ef4444;font-family:'Baloo 2',cursive;" id="today-cost">₹0</div><div style="font-size:0.68rem;color:var(--gray);">Cost</div></div>
+          <div><div style="font-size:1.1rem;font-weight:800;color:#7c3aed;font-family:'Baloo 2',cursive;" id="today-profit">₹0</div><div style="font-size:0.68rem;color:var(--gray);">Profit</div></div>
+        </div>
+      </div>
+
+      <!-- FILTER -->
+      <div class="row2" style="margin-bottom:8px;">
+        <div><label style="margin-top:0;font-size:0.78rem;">📅 From</label><input type="date" id="filter-from"></div>
+        <div><label style="margin-top:0;font-size:0.78rem;">📅 To</label><input type="date" id="filter-to"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+        <button class="save-btn" style="margin-top:0;" onclick="applyFilter()">🔍 Filter</button>
+        <button class="save-btn" style="margin-top:0;background:linear-gradient(135deg,#7c3aed,#a855f7);" onclick="clearFilter()">🔄 Show All</button>
+      </div>
+      <button class="gen-btn" onclick="exportExcel()" style="font-size:0.92rem;padding:11px;">📥 Export to Excel (with P&L)</button>
+      <button class="new-btn" style="margin-top:8px;" onclick="if(confirm('Sari history delete karna chahte ho?')) clearAllHistory()">🗑️ Clear All History</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card" style="padding:12px;">
+      <h2>📋 Customer Billing History</h2>
+      <div id="report-table-wrap" style="overflow-x:auto;"></div>
+    </div>
+  </div>
+
+  <!-- ══ TAB 3: SETTINGS ══ -->
+  <div class="tab-panel" id="tab-settings">
+
+    <!-- FIREBASE SETUP CARD -->
+    <div class="fb-setup-card" id="fb-setup-card">
+      <h3>🔥 Firebase Sync Setup</h3>
+      <p>4 computers ka data ek jagah sync karne ke liye <b>sirf ek baar</b> apna Firebase config daalo. Baad mein sab automatically sync hoga!</p>
+
+      <div class="fb-step">📌 <b>Step 1:</b> <a href="https://console.firebase.google.com" target="_blank" style="color:#d97706;">console.firebase.google.com</a> pe jaao → New Project banao (free hai)</div>
+      <div class="fb-step">📌 <b>Step 2:</b> Project → Realtime Database → Create Database → "Test mode" select karo</div>
+      <div class="fb-step">📌 <b>Step 3:</b> Project Settings (⚙️) → Your apps → Web app (&lt;/&gt;) → Register → Config copy karo</div>
+
+      <label style="margin-top:10px;">🔑 Firebase Database URL</label>
+      <input type="text" id="fb-db-url" placeholder="https://your-project-default-rtdb.firebaseio.com">
+      <label style="margin-top:8px;">🆔 API Key</label>
+      <input type="text" id="fb-api-key" placeholder="AIzaSy...">
+      <label style="margin-top:8px;">📦 Project ID</label>
+      <input type="text" id="fb-project-id" placeholder="your-project-id">
+
+      <button class="fb-connect-btn" onclick="connectFirebase()">🔥 Connect & Sync Karo!</button>
+      <div id="fb-connect-status" style="font-size:0.8rem;margin-top:8px;text-align:center;font-weight:700;"></div>
+    </div>
+
+    <!-- FIREBASE CONNECTED STATUS -->
+    <div id="fb-connected-card" style="display:none;background:#dcfce7;border:1.5px solid #86efac;border-radius:14px;padding:14px;margin-bottom:14px;">
+      <div style="font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:800;color:#15803d;margin-bottom:6px;">✅ Firebase Connected!</div>
+      <div style="font-size:0.78rem;color:#166534;line-height:1.7;">
+        🔄 Sab 4 systems ka data real-time sync ho raha hai<br>
+        📊 Billing history, services, settings — sab shared hai<br>
+        🔥 Project: <b id="fb-project-display"></b>
+      </div>
+      <button onclick="disconnectFirebase()" style="margin-top:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:7px 14px;font-weight:700;font-size:0.8rem;cursor:pointer;">🔌 Disconnect Firebase</button>
+    </div>
+
+    <div class="card">
+      <h2>🏪 Center Details</h2>
+      <div class="settings-info">Yahan apne center ki details update karo — receipt mein automatically show hogi.</div>
+      <label>Center Ka Naam *</label>
+      <input type="text" id="s-name" placeholder="e.g. IMI CENTER">
+      <label>Tagline / Services Description</label>
+      <input type="text" id="s-tagline" placeholder="e.g. CSC • Aadhar • PAN • Certificates">
+      <label>Address</label>
+      <input type="text" id="s-address" placeholder="e.g. Near Tulsi Vidhyalaya, Padrauna">
+      <label>Phone Number</label>
+      <input type="text" id="s-phone" placeholder="e.g. 8542843598">
+      <label>Email</label>
+      <input type="text" id="s-email" placeholder="e.g. imicenterpdn@gmail.com">
+      <button class="save-btn" onclick="saveSettings()">💾 Save Center Details</button>
+    </div>
+
+    <div class="card">
+      <h2>💬 Thank You Message</h2>
+      <div class="settings-info">Receipt ke neeche jo message dikhta hai woh customize karo.</div>
+      <label>Title Line</label>
+      <input type="text" id="s-ty-title" placeholder="e.g. Thank You for Visiting IMI CENTER! 🙏">
+      <label>Message (2-3 lines)</label>
+      <textarea id="s-ty-msg" placeholder="e.g. We are committed to providing fast, reliable & trusted government services..."></textarea>
+      <button class="save-btn" onclick="saveSettings()">💾 Save Message</button>
+    </div>
+
+    <div class="card">
+      <h2>🔗 WhatsApp Bill Link</h2>
+      <div class="settings-info">WhatsApp text message ke end mein ek link jayega jisse customer bill ka image download kar sake. Yahan apna GitHub Pages / Netlify link daalo.</div>
+      <label>Bill Download Link (URL)</label>
+      <input type="url" id="s-bill-link" placeholder="e.g. https://yourname.github.io/imi-receipt">
+      <div id="bill-link-preview" style="display:none;margin-top:8px;background:#f0fdf4;border-radius:8px;padding:8px 12px;font-size:0.78rem;color:var(--green);word-break:break-all;"></div>
+      <button class="save-btn" onclick="saveSettings()">💾 Save Link</button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-txt" id="loading-txt">Processing...</div>
+</div>
+<div class="toast" id="toast">✅ Done!</div>
+
+<!-- ══ REPRINT MODAL ══ -->
+<div id="reprint-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:white;border-radius:20px;padding:20px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,0.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:#7c3aed;">🖨️ Reprint / Share</h2>
+      <button onclick="closeReprintModal()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
+    </div>
+
+    <div class="share-label">💬 Text</div>
+    <div class="action-grid" style="margin-bottom:14px;">
+      <button class="abtn btn-wa" onclick="sendWAText();closeReprintModal();">📲 WhatsApp Text</button>
+      <button class="abtn btn-copy" onclick="copyText();closeReprintModal();">📋 Copy Text</button>
+    </div>
+
+    <div class="share-label">🖼️ Image</div>
+    <div class="action-grid" style="margin-bottom:14px;">
+      <button class="abtn btn-img-wa" onclick="handleImageWA();closeReprintModal();">📲 Image → WA</button>
+      <button class="abtn btn-img" onclick="downloadImage();closeReprintModal();">⬇️ Download</button>
+    </div>
+
+    <div class="share-label">🖨️ Print</div>
+    <div class="action-grid-3" style="margin-bottom:14px;">
+      <button class="abtn btn-pdf-wa" onclick="handlePdfWA();closeReprintModal();">📲 PDF→WA</button>
+      <button class="abtn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffcc80;" onclick="printBillThermal();closeReprintModal();">🧾 58mm</button>
+      <button class="abtn btn-pdf" onclick="printA4();closeReprintModal();">📄 A4</button>
+    </div>
+
+    <button onclick="closeReprintModal()" style="width:100%;background:#f3f4f6;border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;color:var(--gray);">❌ Close</button>
+  </div>
+</div>
+
+<!-- ══ EDIT RECEIPT MODAL ══ -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:white;border-radius:20px;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,0.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);">✏️ Receipt Edit Karo</h2>
+      <button onclick="closeEditModal()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
+    </div>
+    <div id="edit-receipt-info" style="background:var(--green-light);border-radius:10px;padding:8px 12px;font-size:0.82rem;color:var(--green);font-weight:700;margin-bottom:14px;"></div>
+
+    <div style="font-size:0.82rem;font-weight:700;color:var(--dark);margin-bottom:6px;">📋 Services</div>
+    <div style="display:grid;grid-template-columns:1fr 60px 85px 32px;gap:8px;margin-bottom:4px;">
+      <span style="font-size:0.75rem;font-weight:600;color:var(--gray);">Service</span>
+      <span style="font-size:0.75rem;font-weight:600;color:var(--gray);">Qty</span>
+      <span style="font-size:0.75rem;font-weight:600;color:var(--gray);">Amount (₹)</span>
+      <span></span>
+    </div>
+    <div id="edit-services-list"></div>
+    <button class="add-svc-btn" onclick="addEditServiceRow()" style="margin-bottom:14px;">+ Add Service</button>
+
+    <div style="font-size:0.82rem;font-weight:700;color:var(--dark);margin-bottom:6px;">🏷️ Discount</div>
+    <div class="row2" style="margin-bottom:6px;">
+      <div>
+        <label style="margin-top:0;font-size:0.78rem;">Value</label>
+        <input type="number" id="edit-disc-value" placeholder="0" min="0" oninput="previewEditDiscount()">
+      </div>
+      <div>
+        <label style="margin-top:0;font-size:0.78rem;">Type</label>
+        <select id="edit-disc-type" onchange="previewEditDiscount()">
+          <option value="flat">₹ Flat</option>
+          <option value="pct">% Percent</option>
+        </select>
+      </div>
+    </div>
+    <div id="edit-disc-preview" style="display:none;margin-bottom:12px;background:#fef3c7;border-radius:8px;padding:7px 12px;font-size:0.82rem;font-weight:700;color:#d97706;"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;">
+      <button onclick="closeEditModal()" style="background:#f3f4f6;border:none;border-radius:12px;padding:12px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;color:var(--gray);">❌ Cancel</button>
+      <button onclick="saveEditedReceipt()" style="background:linear-gradient(135deg,var(--green),var(--green-mid));border:none;border-radius:12px;padding:12px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;color:white;box-shadow:0 3px 12px rgba(26,122,74,0.25);">✅ Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ DEFAULT DATA ══
+const DEFAULT_SERVICES = [
+  {name:"Aadhar Card New",rate:50,cost:0},{name:"Aadhar Card Update/Correction",rate:100,cost:0},
+  {name:"PAN Card New",rate:207,cost:107},{name:"PAN Card Correction",rate:207,cost:107},
+  {name:"Voter ID New",rate:50,cost:0},{name:"Voter ID Correction",rate:50,cost:0},
+  {name:"Ration Card",rate:100,cost:0},{name:"Income Certificate",rate:50,cost:0},
+  {name:"Caste Certificate",rate:50,cost:0},{name:"Domicile Certificate",rate:50,cost:0},
+  {name:"Birth / Death Certificate",rate:50,cost:0},{name:"Scholarship Form",rate:50,cost:0},
+  {name:"Govt Job Application Form",rate:50,cost:0},{name:"PM Kisan / PM Awas",rate:50,cost:0},
+  {name:"Ayushman Bharat Card",rate:30,cost:0},{name:"ABHA Health ID",rate:30,cost:0},
+  {name:"Driving Licence Apply",rate:300,cost:0},{name:"Insurance (PMJJBY/PMSBY)",rate:486,cost:0},
+  {name:"Bank Account Opening",rate:50,cost:0},{name:"Bill Payment / Recharge",rate:10,cost:0},
+  {name:"Printing B&W (per page)",rate:5,cost:1},{name:"Printing Color (per page)",rate:15,cost:5},
+  {name:"Scanning (per page)",rate:10,cost:1},{name:"Passport Photo (4 pcs)",rate:40,cost:10},
+  {name:"Lamination (per page)",rate:20,cost:5},
+];
+
+const DEFAULT_SETTINGS = {
+  name: "IMI CENTER",
+  tagline: "CSC • Aadhar • PAN • Certificates • Printing & More",
+  address: "📍 Near Tulsi Vidhyalaya, Padrauna",
+  phone: "8542843598",
+  email: "imicenterpdn@gmail.com",
+  tyTitle: "Thank You for Visiting IMI CENTER! 🙏",
+  tyMsg: "We are committed to providing fast, reliable & trusted government services. Your satisfaction is our priority. We look forward to serving you again!",
+  billLink: ""
+};
+
+// ══ FIREBASE CONFIG ══
+let _db = null;
+let _fbConfig = null;
+
+const _HARDCODED_FB_CONFIG = {
+  apiKey: "AIzaSyCAqhdSvI_JknGoRoPYGxSbXb29CBQnPDY",
+  authDomain: "imi-receipt.firebaseapp.com",
+  databaseURL: "https://imi-receipt-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "imi-receipt",
+  storageBucket: "imi-receipt.firebasestorage.app",
+  messagingSenderId: "31901120608",
+  appId: "1:31901120608:web:edba3de2bbe4499ff2ab05"
+};
+
+function loadFbConfig() {
+  return _HARDCODED_FB_CONFIG;
+}
+function saveFbConfig(cfg) { localStorage.setItem('imiFbConfig', JSON.stringify(cfg)); }
+function clearFbConfig() { localStorage.removeItem('imiFbConfig'); }
+
+async function connectFirebase() {
+  const dbUrl = document.getElementById('fb-db-url').value.trim();
+  const apiKey = document.getElementById('fb-api-key').value.trim();
+  const projectId = document.getElementById('fb-project-id').value.trim();
+  const statusEl = document.getElementById('fb-connect-status');
+
+  if(!dbUrl || !apiKey || !projectId) {
+    statusEl.style.color = '#dc2626';
+    statusEl.textContent = '❌ Teeno fields bharo!';
+    return;
+  }
+  statusEl.style.color = '#d97706';
+  statusEl.textContent = '⏳ Connecting...';
+
+  try {
+    const cfg = { apiKey, projectId, databaseURL: dbUrl,
+      authDomain: projectId+'.firebaseapp.com', storageBucket: projectId+'.appspot.com', messagingSenderId: '000000000000', appId: '1:000000000000:web:000000' };
+    await initFirebaseApp(cfg);
+    saveFbConfig(cfg);
+    statusEl.style.color = '#15803d';
+    statusEl.textContent = '✅ Connected! Sync shuru ho gaya!';
+    showFbConnectedState(projectId);
+    showToast('🔥 Firebase connected! Sab systems sync ho rahe hain!');
+  } catch(err) {
+    statusEl.style.color = '#dc2626';
+    statusEl.textContent = '❌ Error: ' + err.message;
+  }
+}
+
+async function initFirebaseApp(cfg) {
+  // Delete existing app if any
+  try {
+    const existingApp = firebase.app();
+    await existingApp.delete();
+  } catch(e) {}
+
+  firebase.initializeApp(cfg);
+  _db = firebase.database();
+
+  // Test connection
+  await _db.ref('.info/connected').once('value');
+
+  // Setup realtime listeners
+  setupFirebaseListeners();
+  setSyncStatus('green', '🔥 Firebase Synced — 4 Systems Connected');
+}
+
+function setupFirebaseListeners() {
+  if(!_db) return;
+
+  // Listen for services changes
+  _db.ref('imiServices').on('value', snap => {
+    const val = snap.val();
+    if(val) {
+      services = val;
+      if(document.getElementById('tab-services').classList.contains('active')) renderServiceManager();
+      // Refresh service dropdowns in receipt form
+      const rows = document.querySelectorAll('.service-row select');
+      rows.forEach(sel => {
+        const prev = sel.value;
+        const opts = services.map(s=>`<option value="${s.name}" data-rate="${s.rate}" data-cost="${s.cost||0}">${s.name}</option>`).join('');
+        sel.innerHTML = `<option value="">-- Select --</option>${opts}`;
+        sel.value = prev;
+      });
+    }
+  });
+
+  // Listen for settings changes
+  _db.ref('imiSettings').on('value', snap => {
+    const val = snap.val();
+    if(val) {
+      settings = {...DEFAULT_SETTINGS, ...val};
+      applySettingsToPage();
+      if(document.getElementById('tab-settings').classList.contains('active')) populateSettingsForm();
+    }
+  });
+
+  // Listen for billing history
+  _db.ref('imiBilling').on('value', snap => {
+    const val = snap.val();
+    if(val) {
+      const arr = Object.values(val).sort((a,b) => b._ts - a._ts);
+      localStorage.setItem('imiBilling', JSON.stringify(arr));
+      if(document.getElementById('tab-reports').classList.contains('active')) renderReports();
+    }
+  });
+
+  // Receipt counter
+  _db.ref('imiRNo').on('value', snap => {
+    const val = snap.val();
+    if(val) localStorage.setItem('imiRNo', val);
+  });
+
+  // Online presence
+  _db.ref('.info/connected').on('value', snap => {
+    if(snap.val()) {
+      setSyncStatus('green', '🔥 Firebase Synced — Real-time Active');
+      const deviceRef = _db.ref('activeDevices/' + getDeviceId());
+      deviceRef.set({ lastSeen: Date.now(), agent: navigator.userAgent.substring(0,30) });
+      deviceRef.onDisconnect().remove();
+    } else {
+      setSyncStatus('yellow', '⚡ Reconnecting...');
+    }
+  });
+
+  // Count active devices
+  _db.ref('activeDevices').on('value', snap => {
+    const count = snap.numChildren();
+    document.getElementById('sync-device-count').textContent = count > 0 ? `📱 ${count} device${count>1?'s':''} online` : '';
+  });
+}
+
+function getDeviceId() {
+  let id = localStorage.getItem('imiDeviceId');
+  if(!id) { id = 'dev_' + Math.random().toString(36).substr(2,9); localStorage.setItem('imiDeviceId', id); }
+  return id;
+}
+
+function setSyncStatus(color, text) {
+  const dot = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-label-txt');
+  dot.className = 'sync-dot ' + color;
+  label.textContent = text;
+}
+
+function showFbConnectedState(projectId) {
+  document.getElementById('fb-setup-card').style.display = 'none';
+  const card = document.getElementById('fb-connected-card');
+  card.style.display = 'block';
+  document.getElementById('fb-project-display').textContent = projectId;
+}
+
+function disconnectFirebase() {
+  if(!confirm('Firebase disconnect karna chahte ho? Sab systems alag ho jayenge.')) return;
+  clearFbConfig();
+  try { firebase.app().delete(); } catch(e) {}
+  _db = null;
+  document.getElementById('fb-connected-card').style.display = 'none';
+  document.getElementById('fb-setup-card').style.display = 'block';
+  setSyncStatus('red', '❌ Offline — Firebase disconnect hua');
+  document.getElementById('sync-device-count').textContent = '';
+  showToast('🔌 Firebase disconnected');
+}
+
+// ══ STORAGE (Firebase-aware) ══
+function loadServices() {
+  try { return JSON.parse(localStorage.getItem('imiServices')) || [...DEFAULT_SERVICES]; } catch(e) { return [...DEFAULT_SERVICES]; }
+}
+function saveServices(l) {
+  localStorage.setItem('imiServices', JSON.stringify(l));
+  if(_db) _db.ref('imiServices').set(l);
+}
+function loadSettings() {
+  try { return {...DEFAULT_SETTINGS, ...JSON.parse(localStorage.getItem('imiSettings'))}; } catch(e) { return {...DEFAULT_SETTINGS}; }
+}
+function saveSettingsData(s) {
+  localStorage.setItem('imiSettings', JSON.stringify(s));
+  if(_db) _db.ref('imiSettings').set(s);
+}
+function getReceiptNo() {
+  const n = parseInt(localStorage.getItem('imiRNo')||'1000')+1;
+  localStorage.setItem('imiRNo', n);
+  if(_db) _db.ref('imiRNo').set(n);
+  return 'IMI-'+n;
+}
+
+let services = loadServices();
+let settings = loadSettings();
+
+// ══ INIT ══
+function init() {
+  applySettingsToPage();
+  addServiceRow();
+  populateSettingsForm();
+
+  // Auto-connect Firebase if config saved
+  const cfg = loadFbConfig();
+  if(cfg) {
+    setSyncStatus('yellow', '🔄 Firebase connect ho raha hai...');
+    initFirebaseApp(cfg).then(() => {
+      showFbConnectedState(cfg.projectId);
+    }).catch(err => {
+      setSyncStatus('red', '❌ Firebase error — Settings mein check karo');
+    });
+  } else {
+    setSyncStatus('red', '⚠️ Firebase setup nahi hua — Settings tab mein karo');
+  }
+}
+
+function applySettingsToPage() {
+  document.getElementById('header-title').textContent = '🏪 ' + settings.name;
+}
+
+// ══ TABS ══
+function switchTab(tab) {
+  const tabs = ['receipt','services','settings','reports'];
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===tab));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-'+tab));
+  if (tab==='services') renderServiceManager();
+  if (tab==='settings') {
+    populateSettingsForm();
+    const cfg = loadFbConfig();
+    if(cfg) { showFbConnectedState(cfg.projectId); }
+    else { document.getElementById('fb-setup-card').style.display='block'; document.getElementById('fb-connected-card').style.display='none'; }
+  }
+  if (tab==='reports') renderReports();
+}
+
+// ══ SETTINGS ══
+function populateSettingsForm() {
+  document.getElementById('s-name').value    = settings.name;
+  document.getElementById('s-tagline').value = settings.tagline;
+  document.getElementById('s-address').value = settings.address.replace('📍 ','');
+  document.getElementById('s-phone').value   = settings.phone;
+  document.getElementById('s-email').value   = settings.email;
+  document.getElementById('s-ty-title').value = settings.tyTitle;
+  document.getElementById('s-ty-msg').value   = settings.tyMsg;
+  document.getElementById('s-bill-link').value = settings.billLink||'';
+  const prev = document.getElementById('bill-link-preview');
+  if(settings.billLink) {
+    prev.style.display='block';
+    prev.innerHTML = `✅ Link set hai: <b>${settings.billLink}</b>`;
+  } else {
+    prev.style.display='none';
+  }
+}
+
+function saveSettings() {
+  settings.name    = document.getElementById('s-name').value.trim() || settings.name;
+  settings.tagline = document.getElementById('s-tagline').value.trim();
+  settings.address = '📍 ' + document.getElementById('s-address').value.trim();
+  settings.phone   = document.getElementById('s-phone').value.trim();
+  settings.email   = document.getElementById('s-email').value.trim();
+  settings.tyTitle = document.getElementById('s-ty-title').value.trim();
+  settings.tyMsg   = document.getElementById('s-ty-msg').value.trim();
+  settings.billLink = document.getElementById('s-bill-link').value.trim();
+  saveSettingsData(settings);
+  applySettingsToPage();
+  populateSettingsForm();
+  showToast('✅ Settings saved!');
+}
+
+// ══ SERVICE MANAGER ══
+function renderServiceManager() {
+  const list = document.getElementById('svc-manager-list');
+  list.innerHTML = '';
+  services.forEach((s,i) => {
+    const cost = s.cost||0;
+    const profit = s.rate - cost;
+    const div = document.createElement('div');
+    div.className = 'svc-manager-row';
+    div.innerHTML = `<div class="svc-info">
+        <div class="svc-name">${s.name}</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:3px;">
+          <span style="font-size:0.75rem;color:var(--green);">💰 Sale: ₹${s.rate}</span>
+          <span style="font-size:0.75rem;color:#ef4444;">📤 Cost: ₹${cost}</span>
+          <span style="font-size:0.75rem;color:#7c3aed;font-weight:700;">📈 Profit: ₹${profit}</span>
+        </div>
+      </div>
+      <div class="svc-actions">
+        <button class="edit-btn" onclick="editService(${i})">✏️ Edit</button>
+        <button class="remove-btn" onclick="removeService(${i})">🗑️</button>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function editService(i) {
+  const s = services[i];
+  const n = prompt('Service ka naam:', s.name); if(!n) return;
+  const r = prompt('Customer ko charge (Sale Price ₹):', s.rate); if(r===null) return;
+  const c = prompt('Aapka actual cost (₹) — 0 if koi cost nahi:', s.cost||0); if(c===null) return;
+  services[i] = {name:n.trim(), rate:parseFloat(r)||0, cost:parseFloat(c)||0};
+  saveServices(services); renderServiceManager(); showToast('✅ Updated!');
+}
+
+function removeService(i) {
+  if(!confirm(`"${services[i].name}" remove karna chahte ho?`)) return;
+  services.splice(i,1); saveServices(services); renderServiceManager(); showToast('🗑️ Removed!');
+}
+
+function addNewService() {
+  const name = document.getElementById('new-svc-name').value.trim();
+  const rate = parseFloat(document.getElementById('new-svc-rate').value)||0;
+  const cost = parseFloat(document.getElementById('new-svc-cost').value)||0;
+  if(!name) { alert('Service ka naam daalo!'); return; }
+  services.push({name, rate, cost}); saveServices(services);
+  document.getElementById('new-svc-name').value='';
+  document.getElementById('new-svc-rate').value='';
+  document.getElementById('new-svc-cost').value='';
+  renderServiceManager(); showToast('✅ Service added!');
+}
+
+// ══ RECEIPT FORM ══
+function addServiceRow() {
+  const list = document.getElementById('services-list');
+  const div = document.createElement('div'); div.className='service-row';
+  const opts = services.map(s=>`<option value="${s.name}" data-rate="${s.rate}" data-cost="${s.cost||0}">${s.name}</option>`).join('');
+  div.innerHTML = `
+    <select onchange="autoRate(this)"><option value="">-- Select --</option>${opts}</select>
+    <input type="number" placeholder="Qty" value="1" min="1" class="qty-inp">
+    <input type="number" placeholder="₹ Amount" min="0" class="amt-inp">
+    <button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;
+  list.appendChild(div);
+}
+
+function autoRate(sel) {
+  const r = sel.options[sel.selectedIndex].getAttribute('data-rate');
+  const c = sel.options[sel.selectedIndex].getAttribute('data-cost');
+  if(r) sel.parentElement.querySelector('.amt-inp').value = r;
+  sel.parentElement.dataset.cost = c||0;
+}
+
+function generateReceipt() {
+  const name = document.getElementById('cust-name').value.trim();
+  if(!name) { alert('Customer ka naam daalo!'); return; }
+  const rows = document.querySelectorAll('.service-row');
+  let svcs=[], total=0, totalCost=0;
+  rows.forEach(row => {
+    const svc=row.querySelector('select').value;
+    const qty=parseInt(row.querySelector('.qty-inp').value)||1;
+    const rate=parseFloat(row.querySelector('.amt-inp').value)||0;
+    const unitCost=parseFloat(row.dataset.cost)||0;
+    if(svc && rate>0) {
+      const amt=rate*qty;
+      const costAmt=unitCost*qty;
+      svcs.push({svc,qty,amt,rate,unitCost,costAmt});
+      total+=amt;
+      totalCost+=costAmt;
+    }
+  });
+  if(!svcs.length) { alert('Kam se kam ek service add karo!'); return; }
+
+  // ── Discount ──
+  const discVal  = parseFloat(document.getElementById('disc-value').value) || 0;
+  const discType = document.getElementById('disc-type').value;
+  let discAmt = 0;
+  let discLabel = '';
+  if(discVal > 0) {
+    if(discType === 'pct') {
+      discAmt  = Math.round(total * discVal / 100);
+      discLabel = `🏷️ Discount (${discVal}%)`;
+    } else {
+      discAmt  = Math.min(discVal, total);
+      discLabel = `🏷️ Discount (Flat)`;
+    }
+  }
+  const finalTotal = total - discAmt;
+
+  const now=new Date();
+  const date=now.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const time=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const rNo=getReceiptNo();
+
+  // Fill receipt with SETTINGS
+  document.getElementById('r-shop-name').textContent    = settings.name;
+  document.getElementById('r-shop-tagline').textContent = settings.tagline;
+  document.getElementById('r-shop-address').textContent = settings.address + ' | 📞 ' + settings.phone;
+  document.getElementById('r-shop-contact').textContent = '✉️ ' + settings.email;
+  document.getElementById('r-ty-title').textContent     = settings.tyTitle;
+  document.getElementById('r-ty-msg').textContent       = settings.tyMsg;
+
+  document.getElementById('r-no').textContent   = rNo;
+  document.getElementById('r-date').textContent = date;
+  document.getElementById('r-time').textContent = time;
+  document.getElementById('r-name').textContent = name;
+  const phone = document.getElementById('cust-phone').value.trim();
+  document.getElementById('r-phone').textContent = phone ? '📞 '+phone : '';
+  const note = document.getElementById('cust-note').value.trim();
+  document.getElementById('r-note').textContent = note ? '📌 '+note : '';
+
+  const tbody = document.getElementById('r-svcs'); tbody.innerHTML='';
+  svcs.forEach(s => {
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${s.svc}${s.qty>1?`<span class="qty-badge">×${s.qty}</span>`:''}</td><td style="text-align:center;color:#6b7280">${s.qty}</td><td>₹${s.amt.toLocaleString('en-IN')}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // subtotal / discount / total rows
+  const subRow  = document.getElementById('r-subtotal-row');
+  const discRow = document.getElementById('r-discount-row');
+  if(discAmt > 0) {
+    subRow.style.display  = 'flex';
+    discRow.style.display = 'flex';
+    document.getElementById('r-subtotal').textContent     = '₹'+total.toLocaleString('en-IN');
+    document.getElementById('r-discount-label').textContent = discLabel;
+    document.getElementById('r-discount-amt').textContent   = '- ₹'+discAmt.toLocaleString('en-IN');
+  } else {
+    subRow.style.display  = 'none';
+    discRow.style.display = 'none';
+  }
+  document.getElementById('r-total').textContent = '₹'+finalTotal.toLocaleString('en-IN');
+
+  const status=document.getElementById('pay-status').value;
+  const badge=document.getElementById('r-status');
+  badge.textContent = status==='paid' ? '✅ Payment Received — Thank You!' : '⏳ Payment Pending';
+  badge.className = 'status-badge '+(status==='paid'?'status-paid':'status-pending');
+
+  document.getElementById('receipt-area').style.display='block';
+  document.getElementById('receipt-area').scrollIntoView({behavior:'smooth'});
+  window._R = {name,phone,note,svcs,total,discAmt,discLabel,finalTotal,totalCost,profit:finalTotal-totalCost,status,rNo,date,time};
+
+  // ── Save to billing history ──
+  saveBillingRecord({name,phone,note,svcs,total,discAmt,discLabel,finalTotal,totalCost,profit:finalTotal-totalCost,status,rNo,date,time});
+
+  showDeviceTip();
+}
+
+// ══ DEVICE DETECTION ══
+const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+const canNativeShare = !!navigator.share;
+
+function showDeviceTip() {
+  const tip = document.getElementById('device-tip');
+  if(isMobile && canNativeShare) {
+    tip.style.display='block';
+    tip.style.background='#dcfce7'; tip.style.color='#15803d';
+    tip.innerHTML='📱 <b>Mobile detected!</b> Image/PDF buttons se directly WhatsApp share sheet khulegi.';
+  } else {
+    tip.style.display='block';
+    tip.style.background='#fef3c7'; tip.style.color='#92400e';
+    tip.innerHTML='💻 <b>Computer detected.</b> Image/PDF pehle download hogi, phir WhatsApp Web khulega. Niche steps dekho.';
+    document.getElementById('desktop-guide').style.display='block';
+  }
+}
+
+// ══ TEXT ══
+function buildWAMsg() {
+  const d=window._R, s=settings;
+  let m=`🏪 *${s.name}*\n${s.address}\n📞 ${s.phone} | ✉️ ${s.email}\n`;
+  m+=`━━━━━━━━━━━━━━━━━━━━\n🧾 *Receipt:* ${d.rNo} | 📅 ${d.date} ${d.time}\n`;
+  m+=`━━━━━━━━━━━━━━━━━━━━\n👤 *${d.name}*\n`;
+  if(d.phone) m+=`📞 ${d.phone}\n`;
+  if(d.note) m+=`📌 ${d.note}\n`;
+  m+=`━━━━━━━━━━━━━━━━━━━━\n*SERVICES:*\n`;
+  d.svcs.forEach((s,i)=>{ m+=`${i+1}. ${s.svc}${s.qty>1?` ×${s.qty}`:''} — ₹${s.amt.toLocaleString('en-IN')}\n`; });
+  m+=`━━━━━━━━━━━━━━━━━━━━\n`;
+  if(d.discAmt>0) {
+    m+=`🧾 Subtotal: ₹${d.total.toLocaleString('en-IN')}\n`;
+    m+=`🏷️ ${d.discLabel}: - ₹${d.discAmt.toLocaleString('en-IN')}\n`;
+  }
+  m+=`💰 *TOTAL: ₹${d.finalTotal.toLocaleString('en-IN')}*\n`;
+  m+=d.status==='paid'?`✅ *Payment Received*\n`:`⏳ *Payment Pending*\n`;
+  m+=`━━━━━━━━━━━━━━━━━━━━\n${settings.tyTitle}\n${settings.tyMsg}`;
+  if(settings.billLink) {
+    const base = settings.billLink.replace(/\/$/, '');
+    const billNo = d.rNo.replace('IMI-','');
+    m+=`\n━━━━━━━━━━━━━━━━━━━━\n🧾 *Apna Bill Yahan Dekho & Download Karo:*\n${base}/bill.html?bill=${billNo}`;
+  }
+  return m;
+}
+
+function waLink(phone, msg) {
+  const p=(phone||'').replace(/\D/g,'');
+  const base = p.length>=10 ? `https://wa.me/91${p}` : `https://web.whatsapp.com`;
+  return msg ? `${base}?text=${encodeURIComponent(msg)}` : base;
+}
+
+function sendWAText() { window.open(waLink(window._R.phone, buildWAMsg()),'_blank'); }
+function copyText() { navigator.clipboard.writeText(buildWAMsg()).then(()=>showToast('📋 Copied!')); }
+
+// ══ CANVAS CAPTURE ══
+function captureCanvas() {
+  return html2canvas(document.getElementById('receipt-content'), {scale:2, backgroundColor:'#ffffff', useCORS:true, logging:false});
+}
+
+// ══ IMAGE ══
+function downloadImage() {
+  showLoading('Creating Image...');
+  captureCanvas().then(canvas => {
+    const link=document.createElement('a');
+    link.download=`IMI_Receipt_${window._R.rNo}.png`;
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+    hideLoading(); showToast('🖼️ Image saved!');
+  }).catch(()=>{ hideLoading(); showToast('❌ Try again'); });
+}
+
+function handleImageWA() {
+  showLoading('Creating Image...');
+  captureCanvas().then(canvas => {
+    canvas.toBlob(async blob => {
+      const file = new File([blob], `IMI_Receipt_${window._R.rNo}.png`, {type:'image/png'});
+      // Try native share (works on Android Chrome, iOS Safari)
+      if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+        hideLoading();
+        try {
+          await navigator.share({ title: settings.name+' Receipt', files:[file] });
+          showToast('✅ Shared!');
+        } catch(e) {
+          if(e.name !== 'AbortError') desktopImageFallback(canvas);
+        }
+      } else {
+        hideLoading();
+        desktopImageFallback(canvas);
+      }
+    }, 'image/png');
+  }).catch(()=>{ hideLoading(); showToast('❌ Try again'); });
+}
+
+function desktopImageFallback(canvas) {
+  // Step 1: download image
+  const link=document.createElement('a');
+  link.download=`IMI_Receipt_${window._R.rNo}.png`;
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+  // Step 2: open WhatsApp Web after short delay
+  setTimeout(()=>{
+    window.open(waLink(window._R.phone, ''), '_blank');
+    showToast('📥 Image saved! WA Web khula — attach karo 📎');
+  }, 1000);
+}
+
+// ══ PRINT HELPERS ══
+function buildReceiptHTML(extraHeadStyle, bodyStyle) {
+  const d = window._R, s = settings;
+  let svcsRows = d.svcs.map((sv,i) =>
+    `<tr><td>${sv.svc}${sv.qty>1?` ×${sv.qty}`:''}</td><td class="right">₹${sv.amt.toLocaleString('en-IN')}</td></tr>`
+  ).join('');
+  const statusTxt = d.status==='paid' ? '✅ Payment Received' : '⏳ Payment Pending';
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>Receipt ${d.rNo}</title>${extraHeadStyle}</head>
+  <body style="${bodyStyle}">
+    <div class="receipt">
+      <div class="header">
+        <div class="shop">${s.name}</div>
+        <div class="sub">${s.tagline}</div>
+        <div class="contact">${s.address}</div>
+        <div class="contact">📞 ${s.phone} &nbsp;|&nbsp; ✉️ ${s.email}</div>
+      </div>
+      <div class="divider"></div>
+      <div class="meta">
+        <span><b>Receipt:</b> ${d.rNo}</span>
+        <span><b>Date:</b> ${d.date}</span>
+        <span><b>Time:</b> ${d.time}</span>
+      </div>
+      <div class="divider"></div>
+      <div class="cname">${d.name}</div>
+      ${d.phone?`<div class="cphone">📞 ${d.phone}</div>`:''}
+      ${d.note?`<div class="cnote">📌 ${d.note}</div>`:''}
+      <div class="divider"></div>
+      <table>
+        <thead><tr><th>Service</th><th class="right">Amount</th></tr></thead>
+        <tbody>${svcsRows}</tbody>
+      </table>
+      <div class="divider-bold"></div>
+      ${d.discAmt>0 ? `
+      <div class="subtotal-row"><span>Subtotal</span><span>₹${d.total.toLocaleString('en-IN')}</span></div>
+      <div class="discount-row"><span>${d.discLabel}</span><span>- ₹${d.discAmt.toLocaleString('en-IN')}</span></div>
+      ` : ''}
+      <div class="total-row"><span>💰 TOTAL</span><span>₹${d.finalTotal.toLocaleString('en-IN')}</span></div>
+      <div class="status">${statusTxt}</div>
+      <div class="divider"></div>
+      <div class="footer">${s.tyTitle}</div>
+      <div class="footer-msg">${s.tyMsg}</div>
+    </div>
+    <script>window.onload=function(){setTimeout(()=>{window.print();},350);}<\/script>
+  </body></html>`;
+}
+
+// ══ THERMAL 58mm BILL PRINTER ══
+function printBillThermal() {
+  if(!window._R) { showToast('❌ Pehle receipt generate karo!'); return; }
+  const style = `<style>
+    @page {
+      size: 58mm auto;
+      margin: 3mm 2mm 5mm 2mm;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family: Arial, 'Helvetica Neue', sans-serif;
+      font-size: 12pt;
+      color: #000;
+      width: 54mm;
+      background: #fff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .receipt { width:100%; }
+
+    /* HEADER */
+    .header { text-align:center; margin-bottom:3mm; padding-bottom:2mm; }
+    .shop {
+      font-size: 17pt;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+    .sub {
+      font-size: 9pt;
+      font-weight: 600;
+      margin-top: 1.5mm;
+      line-height: 1.4;
+    }
+    .contact {
+      font-size: 9pt;
+      font-weight: 500;
+      margin-top: 1mm;
+      line-height: 1.4;
+    }
+
+    /* DIVIDERS */
+    .divider {
+      border: none;
+      border-top: 1.5px dashed #000;
+      margin: 2.5mm 0;
+    }
+    .divider-bold {
+      border: none;
+      border-top: 2.5px solid #000;
+      margin: 2.5mm 0;
+    }
+
+    /* META — Receipt No, Date, Time each on own line */
+    .meta { margin: 1.5mm 0; }
+    .meta span {
+      display: block;
+      font-size: 10pt;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+    .meta span b {
+      font-weight: 900;
+    }
+
+    /* CUSTOMER */
+    .cname {
+      font-size: 14pt;
+      font-weight: 900;
+      margin: 2mm 0 1mm;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .cphone {
+      font-size: 11pt;
+      font-weight: 700;
+      margin-bottom: 1mm;
+    }
+    .cnote {
+      font-size: 10pt;
+      font-weight: 600;
+      margin-bottom: 1mm;
+    }
+
+    /* SERVICES TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5mm 0;
+    }
+    thead tr th {
+      text-align: left;
+      font-size: 10pt;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #000;
+      padding-bottom: 2mm;
+    }
+    th.right, td.right { text-align: right; }
+    tbody tr td {
+      font-size: 11pt;
+      font-weight: 600;
+      padding: 2mm 0;
+      border-bottom: 1px dashed #555;
+      line-height: 1.4;
+      vertical-align: top;
+    }
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* TOTAL */
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15pt;
+      font-weight: 900;
+      margin: 3mm 0 2mm;
+      padding: 2mm 0;
+      border-top: 2.5px solid #000;
+      border-bottom: 2.5px solid #000;
+      letter-spacing: 0.5px;
+    }
+    .subtotal-row {
+      display: flex; justify-content: space-between;
+      font-size: 10pt; font-weight: 600; color: #555;
+      margin: 1mm 0;
+    }
+    .discount-row {
+      display: flex; justify-content: space-between;
+      font-size: 11pt; font-weight: 800;
+      margin: 1mm 0 2mm;
+      padding: 1.5mm 2mm;
+      border: 1.5px dashed #000;
+      border-radius: 2px;
+    }
+
+    /* STATUS */
+    .status {
+      text-align: center;
+      font-size: 11pt;
+      font-weight: 900;
+      margin: 2mm 0 3mm;
+      padding: 1.5mm;
+      border: 2px solid #000;
+      border-radius: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      font-size: 11pt;
+      font-weight: 900;
+      margin-top: 3mm;
+      padding-top: 2mm;
+      border-top: 1.5px dashed #000;
+      line-height: 1.4;
+    }
+    .footer-msg {
+      text-align: center;
+      font-size: 9pt;
+      font-weight: 500;
+      margin-top: 2mm;
+      line-height: 1.5;
+    }
+  </style>`;
+  const win = window.open('','_blank','width=320,height=700');
+  win.document.write(buildReceiptHTML(style, 'background:#fff;'));
+  win.document.close();
+  showToast('🧾 58mm Bill Printer ready!');
+}
+
+// ══ A4 PRINTER ══
+function printA4() {
+  if(!window._R) { showToast('❌ Pehle receipt generate karo!'); return; }
+  const style = `<style>
+    @page { size: A4 portrait; margin: 18mm 22mm; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family: Arial, 'Helvetica Neue', sans-serif;
+      font-size: 13pt;
+      color: #1a2e1e;
+      background: #fff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .receipt { max-width: 166mm; margin: 0 auto; }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      background: #1a7a4a;
+      color: white;
+      padding: 10mm 8mm 9mm;
+      border-radius: 5px 5px 0 0;
+    }
+    .shop {
+      font-size: 26pt;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .sub {
+      font-size: 11pt;
+      font-weight: 600;
+      opacity: 0.95;
+      margin-top: 2mm;
+    }
+    .contact {
+      font-size: 10pt;
+      font-weight: 500;
+      opacity: 0.9;
+      margin-top: 1.5mm;
+    }
+
+    /* DIVIDERS */
+    .divider { border-top: 1.5px dashed #b7e4c7; margin: 5mm 0; }
+    .divider-bold { border-top: 2.5px solid #1a7a4a; margin: 5mm 0; }
+
+    /* META */
+    .meta {
+      background: #e8f5ee;
+      border-radius: 4px;
+      padding: 4mm 5mm;
+      display: flex;
+      justify-content: space-between;
+      margin: 4mm 0;
+    }
+    .meta span {
+      font-size: 11pt;
+      font-weight: 600;
+    }
+    .meta span b {
+      font-size: 12pt;
+      font-weight: 900;
+      display: block;
+      color: #1a2e1e;
+    }
+
+    /* CUSTOMER */
+    .cname {
+      font-size: 20pt;
+      font-weight: 900;
+      color: #1a2e1e;
+      margin: 3mm 0 2mm;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .cphone {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 1.5mm;
+    }
+    .cnote {
+      font-size: 12pt;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 1.5mm;
+    }
+
+    /* TABLE */
+    table { width:100%; border-collapse:collapse; margin: 3mm 0; }
+    thead tr { background: #1a7a4a; color: white; }
+    thead tr th {
+      padding: 4mm 5mm;
+      text-align: left;
+      font-size: 11pt;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    th.right, td.right { text-align: right; }
+    tbody tr td {
+      padding: 4mm 5mm;
+      font-size: 13pt;
+      font-weight: 600;
+      border-bottom: 1.5px solid #d1fae5;
+      line-height: 1.4;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:nth-child(even) td { background: #f0fdf4; }
+
+    /* TOTAL */
+    .total-row {
+      background: #1a7a4a;
+      color: white;
+      border-radius: 4px;
+      padding: 5mm 6mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 18pt;
+      font-weight: 900;
+      margin: 4mm 0;
+      letter-spacing: 0.5px;
+    }
+    .subtotal-row {
+      display: flex; justify-content: space-between;
+      font-size: 11pt; font-weight: 600; color: #6b7280;
+      padding: 2mm 1mm; border-bottom: 1px solid #e5e7eb;
+    }
+    .discount-row {
+      display: flex; justify-content: space-between;
+      font-size: 13pt; font-weight: 800; color: #dc2626;
+      background: #fef2f2; border-radius: 4px;
+      padding: 3mm 4mm; margin: 2mm 0;
+      border: 1.5px dashed #fca5a5;
+    }
+
+    /* STATUS */
+    .status {
+      text-align: center;
+      font-size: 13pt;
+      font-weight: 900;
+      padding: 3mm 5mm;
+      margin-bottom: 4mm;
+      color: #15803d;
+      background: #dcfce7;
+      border-radius: 4px;
+      border: 2px solid #15803d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      font-size: 14pt;
+      font-weight: 900;
+      color: #1a7a4a;
+      margin-top: 6mm;
+      padding-top: 4mm;
+      border-top: 1.5px dashed #b7e4c7;
+    }
+    .footer-msg {
+      text-align: center;
+      font-size: 11pt;
+      font-weight: 500;
+      color: #4b5563;
+      margin-top: 2mm;
+      line-height: 1.7;
+    }
+  </style>`;
+  const win = window.open('','_blank');
+  win.document.write(buildReceiptHTML(style, 'background:#fff;'));
+  win.document.close();
+  showToast('📄 A4 Print ready!');
+}
+
+function handlePdfWA() {
+  showLoading('Creating PDF...');
+  captureCanvas().then(canvas => {
+    canvas.toBlob(async blob => {
+      const file = new File([blob], `IMI_Receipt_${window._R.rNo}.pdf`, {type:'image/png'});
+      if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+        hideLoading();
+        try {
+          await navigator.share({ title: settings.name+' Receipt', files:[file] });
+          showToast('✅ Shared!');
+        } catch(e) {
+          if(e.name !== 'AbortError') desktopPdfFallback(canvas);
+        }
+      } else {
+        hideLoading();
+        desktopPdfFallback(canvas);
+      }
+    }, 'image/png');
+  }).catch(()=>{ hideLoading(); showToast('❌ Try again'); });
+}
+
+function desktopPdfFallback(canvas) {
+  hideLoading();
+  const imgData = canvas.toDataURL('image/png');
+  const win = window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>Receipt ${window._R.rNo}</title>
+    <style>*{margin:0;padding:0}body{background:#fff}img{width:100%;max-width:480px;display:block;margin:0 auto}</style>
+    </head><body><img src="${imgData}">
+    <script>window.onload=function(){setTimeout(()=>{window.print();},400);}<\/script></body></html>`);
+  win.document.close();
+  setTimeout(()=>{
+    window.open(waLink(window._R.phone,''),'_blank');
+    showToast('📄 PDF ready + WA Web khula — attach karo 📎');
+  }, 800);
+}
+
+function newReceipt() {
+  document.getElementById('receipt-area').style.display='none';
+  document.getElementById('cust-name').value='';
+  document.getElementById('cust-phone').value='';
+  document.getElementById('cust-note').value='';
+  document.getElementById('disc-value').value='';
+  document.getElementById('disc-type').value='flat';
+  document.getElementById('disc-preview').style.display='none';
+  document.getElementById('services-list').innerHTML='';
+  addServiceRow();
+  window.scrollTo(0,0);
+}
+
+function showLoading(t) { document.getElementById('loading-txt').textContent=t; document.getElementById('loading').classList.add('show'); }
+function hideLoading() { document.getElementById('loading').classList.remove('show'); }
+function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+
+// ══ BILLING HISTORY ══
+function loadBillingHistory() {
+  try { return JSON.parse(localStorage.getItem('imiBilling')) || []; } catch(e) { return []; }
+}
+function saveBillingRecord(rec) {
+  const history = loadBillingHistory();
+  history.unshift(rec); // newest first
+  localStorage.setItem('imiBilling', JSON.stringify(history));
+  if(_db) {
+    const key = rec.rNo.replace('IMI-','rec_');
+    rec._ts = Date.now();
+    _db.ref('imiBilling/' + key).set(rec);
+  }
+}
+function clearAllHistory() {
+  localStorage.removeItem('imiBilling');
+  if(_db) _db.ref('imiBilling').remove();
+  renderReports();
+  showToast('🗑️ History cleared (all devices)!');
+}
+
+// ══ REPORTS ══
+let _filteredHistory = null;
+
+function renderReports() {
+  const history = loadBillingHistory();
+  const today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  const todayRecs = history.filter(r=>r.date===today);
+  const todaySale = todayRecs.reduce((s,r)=>s+r.total,0);
+  const todayCost = todayRecs.reduce((s,r)=>s+(r.totalCost||0),0);
+  const todayProfit = todaySale - todayCost;
+
+  const totalSale = history.reduce((s,r)=>s+(r.finalTotal||r.total),0);
+  const totalCostAll = history.reduce((s,r)=>s+(r.totalCost||0),0);
+  const totalDisc = history.reduce((s,r)=>s+(r.discAmt||0),0);
+  const totalProfit = totalSale - totalCostAll;
+  const margin = totalSale>0 ? ((totalProfit/totalSale)*100).toFixed(1) : 0;
+
+  document.getElementById('stat-total-cust').textContent = history.length;
+  document.getElementById('stat-total-rev').textContent = '₹'+totalSale.toLocaleString('en-IN');
+  document.getElementById('stat-today-cust').textContent = todayRecs.length;
+
+  document.getElementById('pl-sale').textContent = '₹'+totalSale.toLocaleString('en-IN');
+  document.getElementById('pl-cost').textContent = '₹'+totalCostAll.toLocaleString('en-IN');
+  document.getElementById('pl-profit').textContent = '₹'+totalProfit.toLocaleString('en-IN');
+  document.getElementById('pl-margin').textContent = margin+'%';
+
+  document.getElementById('today-sale').textContent = '₹'+todaySale.toLocaleString('en-IN');
+  document.getElementById('today-cost').textContent = '₹'+todayCost.toLocaleString('en-IN');
+  document.getElementById('today-profit').textContent = '₹'+todayProfit.toLocaleString('en-IN');
+
+  const todayISO = new Date().toISOString().split('T')[0];
+  if(!document.getElementById('filter-from').value) document.getElementById('filter-from').value = '2020-01-01';
+  if(!document.getElementById('filter-to').value) document.getElementById('filter-to').value = todayISO;
+
+  _filteredHistory = history;
+  renderReportTable(history);
+}
+
+function applyFilter() {
+  const from = document.getElementById('filter-from').value;
+  const to = document.getElementById('filter-to').value;
+  const history = loadBillingHistory();
+  const filtered = history.filter(r => {
+    const parts = r.date.split('/');
+    if(parts.length!==3) return true;
+    const rDate = new Date(parts[2]+'-'+parts[1]+'-'+parts[0]);
+    const fDate = from ? new Date(from) : new Date('2000-01-01');
+    const tDate = to ? new Date(to) : new Date('2099-12-31');
+    return rDate >= fDate && rDate <= tDate;
+  });
+  _filteredHistory = filtered;
+
+  const filtSale = filtered.reduce((s,r)=>s+(r.finalTotal||r.total),0);
+  const filtCost = filtered.reduce((s,r)=>s+(r.totalCost||0),0);
+  const filtProfit = filtSale - filtCost;
+  const margin = filtSale>0 ? ((filtProfit/filtSale)*100).toFixed(1) : 0;
+
+  document.getElementById('stat-total-cust').textContent = filtered.length;
+  document.getElementById('stat-total-rev').textContent = '₹'+filtSale.toLocaleString('en-IN');
+  document.getElementById('pl-sale').textContent = '₹'+filtSale.toLocaleString('en-IN');
+  document.getElementById('pl-cost').textContent = '₹'+filtCost.toLocaleString('en-IN');
+  document.getElementById('pl-profit').textContent = '₹'+filtProfit.toLocaleString('en-IN');
+  document.getElementById('pl-margin').textContent = margin+'%';
+
+  renderReportTable(filtered);
+  showToast(`🔍 ${filtered.length} records | Profit ₹${filtProfit.toLocaleString('en-IN')}`);
+}
+
+function clearFilter() {
+  document.getElementById('filter-from').value = '2020-01-01';
+  document.getElementById('filter-to').value = new Date().toISOString().split('T')[0];
+  renderReports();
+}
+
+function renderReportTable(history) {
+  const wrap = document.getElementById('report-table-wrap');
+  if(!history.length) {
+    wrap.innerHTML = '<div class="no-data">📭 Koi billing record nahi mila.<br>Receipt generate karte hi data yahan dikhega.</div>';
+    return;
+  }
+  let rows = '';
+  history.forEach(r => {
+    const svcNames = r.svcs.map(s=>s.svc+(s.qty>1?` ×${s.qty}`:'')).join(', ');
+    const cost = r.totalCost||0;
+    const finalAmt = r.finalTotal || r.total;
+    const profit = finalAmt - cost;
+    const discStr = r.discAmt>0 ? `- ₹${r.discAmt} (${r.discLabel||'Disc'})` : '—';
+    const profitColor = profit>=0 ? '#15803d' : '#dc2626';
+    const recKey = encodeURIComponent(r.rNo);
+    rows += `<tr>
+      <td>${r.rNo}</td>
+      <td>${r.date}<br><span style="color:var(--gray);font-size:0.7rem;">${r.time}</span></td>
+      <td><b>${r.name}</b><br><span style="color:var(--gray);font-size:0.7rem;">${r.phone||'—'}</span></td>
+      <td style="max-width:110px;word-break:break-word;font-size:0.75rem;">${svcNames}</td>
+      <td style="color:#d97706;font-weight:700;">₹${r.total.toLocaleString('en-IN')}</td>
+      <td style="color:#dc2626;font-size:0.78rem;">${discStr}</td>
+      <td style="color:var(--green);font-weight:800;">₹${finalAmt.toLocaleString('en-IN')}</td>
+      <td style="color:#ef4444;">₹${cost.toLocaleString('en-IN')}</td>
+      <td style="color:${profitColor};font-weight:800;">₹${profit.toLocaleString('en-IN')}</td>
+      <td><span class="${r.status==='paid'?'badge-paid':'badge-pending'}">${r.status==='paid'?'✅':'⏳'}</span></td>
+      <td style="white-space:nowrap;">
+        <button class="edit-btn" onclick="openEditModal('${recKey}')" style="font-size:0.75rem;margin-bottom:4px;display:block;width:100%;">✏️ Edit</button>
+        <button onclick="reprintReceipt('${recKey}')" style="background:#ede9fe;color:#7c3aed;border:none;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:0.75rem;font-weight:600;width:100%;">🖨️ Reprint</button>
+      </td>
+    </tr>`;
+  });
+  wrap.innerHTML = `<table class="report-table">
+    <thead><tr>
+      <th>Rcpt#</th><th>Date</th><th>Customer</th><th>Services</th>
+      <th style="color:#fde68a;">MRP</th><th style="color:#fca5a5;">Discount</th><th style="color:#a7f3d0;">Sale</th><th style="color:#fca5a5;">Cost</th><th style="color:#86efac;">Profit</th><th>Pay</th><th>Actions</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+// ══ EXCEL EXPORT ══
+function exportExcel() {
+  const history = _filteredHistory || loadBillingHistory();
+  if(!history.length) { showToast('❌ Koi data nahi export karne ke liye!'); return; }
+
+  const BOM = '\uFEFF';
+  const headers = ['Receipt No','Date','Time','Customer Name','Mobile No','Services','MRP (₹)','Discount (₹)','Sale Amount (₹)','Cost (₹)','Profit (₹)','Profit Margin','Payment Status'];
+  const rows = history.map(r => {
+    const svcNames = r.svcs.map(s=>s.svc+(s.qty>1?` x${s.qty}`:'')+` - ₹${s.amt}`).join(' | ');
+    const cost = r.totalCost||0;
+    const discAmt = r.discAmt||0;
+    const finalAmt = r.finalTotal||r.total;
+    const profit = finalAmt - cost;
+    const margin = finalAmt>0 ? ((profit/finalAmt)*100).toFixed(1)+'%' : '0%';
+    return [
+      r.rNo, r.date, r.time, r.name, r.phone||'',
+      '"'+svcNames.replace(/"/g,'""')+'"',
+      r.total, discAmt, finalAmt, cost, profit, margin,
+      r.status==='paid'?'Paid':'Pending'
+    ].join(',');
+  });
+
+  const totalMRP   = history.reduce((s,r)=>s+r.total,0);
+  const totalDisc  = history.reduce((s,r)=>s+(r.discAmt||0),0);
+  const totalSale  = history.reduce((s,r)=>s+(r.finalTotal||r.total),0);
+  const totalCostAll = history.reduce((s,r)=>s+(r.totalCost||0),0);
+  const totalProfit = totalSale-totalCostAll;
+  const totalMargin = totalSale>0 ? ((totalProfit/totalSale)*100).toFixed(1)+'%' : '0%';
+  rows.push('');
+  rows.push(`TOTAL,,,,,,${totalMRP},${totalDisc},${totalSale},${totalCostAll},${totalProfit},${totalMargin},`);
+
+  const csv = BOM + [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dateStr = new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = `IMI_PL_Report_${dateStr}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`✅ ${history.length} records exported with P&L!`);
+}
+
+// ══ DISCOUNT PREVIEW ══
+function previewDiscount() {
+  const val = parseFloat(document.getElementById('disc-value').value)||0;
+  const type = document.getElementById('disc-type').value;
+  const preview = document.getElementById('disc-preview');
+  if(val <= 0) { preview.style.display='none'; return; }
+
+  // calculate current subtotal from service rows
+  let sub = 0;
+  document.querySelectorAll('.service-row').forEach(row => {
+    const qty = parseInt(row.querySelector('.qty-inp').value)||1;
+    const amt = parseFloat(row.querySelector('.amt-inp').value)||0;
+    sub += qty * amt;
+  });
+  if(sub <= 0) { preview.style.display='none'; return; }
+
+  let discAmt = type==='pct' ? Math.round(sub*val/100) : Math.min(val,sub);
+  let final = sub - discAmt;
+  preview.style.display='block';
+  preview.innerHTML = `Subtotal ₹${sub.toLocaleString('en-IN')} &nbsp;→&nbsp; <b style="color:#dc2626;">- ₹${discAmt.toLocaleString('en-IN')}</b> &nbsp;→&nbsp; <b style="color:#15803d;">Pay ₹${final.toLocaleString('en-IN')}</b>`;
+}
+
+// ══ REPRINT ══
+function reprintReceipt(rNoEncoded) {
+  const rNo = decodeURIComponent(rNoEncoded);
+  const history = loadBillingHistory();
+  const rec = history.find(r => r.rNo === rNo);
+  if(!rec) { showToast('❌ Record nahi mila!'); return; }
+
+  // Load record into window._R so all print/share functions work
+  window._R = {
+    name: rec.name, phone: rec.phone||'', note: rec.note||'',
+    svcs: rec.svcs, total: rec.total,
+    discAmt: rec.discAmt||0, discLabel: rec.discLabel||'',
+    finalTotal: rec.finalTotal||rec.total,
+    totalCost: rec.totalCost||0,
+    profit: (rec.finalTotal||rec.total)-(rec.totalCost||0),
+    status: rec.status, rNo: rec.rNo, date: rec.date, time: rec.time
+  };
+
+  // Update visible receipt card on page too
+  document.getElementById('r-shop-name').textContent    = settings.name;
+  document.getElementById('r-shop-tagline').textContent = settings.tagline;
+  document.getElementById('r-shop-address').textContent = settings.address + ' | 📞 ' + settings.phone;
+  document.getElementById('r-shop-contact').textContent = '✉️ ' + settings.email;
+  document.getElementById('r-ty-title').textContent     = settings.tyTitle;
+  document.getElementById('r-ty-msg').textContent       = settings.tyMsg;
+  document.getElementById('r-no').textContent   = rec.rNo;
+  document.getElementById('r-date').textContent = rec.date;
+  document.getElementById('r-time').textContent = rec.time;
+  document.getElementById('r-name').textContent = rec.name;
+  document.getElementById('r-phone').textContent = rec.phone ? '📞 '+rec.phone : '';
+  document.getElementById('r-note').textContent  = rec.note  ? '📌 '+rec.note  : '';
+
+  const tbody = document.getElementById('r-svcs'); tbody.innerHTML='';
+  rec.svcs.forEach(s => {
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${s.svc}${s.qty>1?`<span class="qty-badge">×${s.qty}</span>`:''}</td><td style="text-align:center;color:#6b7280">${s.qty}</td><td>₹${s.amt.toLocaleString('en-IN')}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  const subRow  = document.getElementById('r-subtotal-row');
+  const discRow = document.getElementById('r-discount-row');
+  if((rec.discAmt||0) > 0) {
+    subRow.style.display='flex'; discRow.style.display='flex';
+    document.getElementById('r-subtotal').textContent       = '₹'+(rec.total||0).toLocaleString('en-IN');
+    document.getElementById('r-discount-label').textContent = rec.discLabel||'Discount';
+    document.getElementById('r-discount-amt').textContent   = '- ₹'+(rec.discAmt||0).toLocaleString('en-IN');
+  } else {
+    subRow.style.display='none'; discRow.style.display='none';
+  }
+  document.getElementById('r-total').textContent = '₹'+(rec.finalTotal||rec.total).toLocaleString('en-IN');
+  const badge=document.getElementById('r-status');
+  badge.textContent = rec.status==='paid'?'✅ Payment Received — Thank You!':'⏳ Payment Pending';
+  badge.className = 'status-badge '+(rec.status==='paid'?'status-paid':'status-pending');
+
+  // Show reprint modal with share options
+  document.getElementById('reprint-modal').style.display='flex';
+}
+
+function closeReprintModal() {
+  document.getElementById('reprint-modal').style.display='none';
+}
+
+// ══ EDIT MODAL ══
+let _editingRNo = null;
+
+function openEditModal(rNoEncoded) {
+  const rNo = decodeURIComponent(rNoEncoded);
+  const history = loadBillingHistory();
+  const rec = history.find(r => r.rNo === rNo);
+  if(!rec) { showToast('❌ Record nahi mila!'); return; }
+
+  _editingRNo = rNo;
+
+  // Show receipt info
+  document.getElementById('edit-receipt-info').textContent = `📄 ${rec.rNo} | ${rec.date} | 👤 ${rec.name}`;
+
+  // Fill services
+  const list = document.getElementById('edit-services-list');
+  list.innerHTML = '';
+  rec.svcs.forEach(s => addEditServiceRow(s.svc, s.qty, s.amt));
+
+  // Fill discount
+  document.getElementById('edit-disc-value').value = rec.discAmt > 0 ? rec.discAmt : '';
+  document.getElementById('edit-disc-type').value = 'flat';
+  document.getElementById('edit-disc-preview').style.display = 'none';
+
+  // Show modal
+  const modal = document.getElementById('edit-modal');
+  modal.style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').style.display = 'none';
+  _editingRNo = null;
+}
+
+function addEditServiceRow(svcName='', qty=1, amt='') {
+  const list = document.getElementById('edit-services-list');
+  const row = document.createElement('div');
+  row.className = 'service-row';
+  const opts = services.map(s => `<option value="${s.name}" data-rate="${s.rate}" data-cost="${s.cost||0}" ${s.name===svcName?'selected':''}>${s.name}</option>`).join('');
+  row.innerHTML = `
+    <select class="edit-svc-sel" onchange="this.closest('.service-row').querySelector('.edit-amt-inp').value=this.options[this.selectedIndex].dataset.rate||''; previewEditDiscount();">
+      <option value="">-- Select --</option>${opts}
+    </select>
+    <input type="number" class="edit-qty-inp" value="${qty}" min="1" style="padding:8px 9px;font-size:0.82rem;" oninput="previewEditDiscount()">
+    <input type="number" class="edit-amt-inp" value="${amt}" min="0" placeholder="₹" style="padding:8px 9px;font-size:0.82rem;" oninput="previewEditDiscount()">
+    <button class="del-btn" onclick="this.closest('.service-row').remove(); previewEditDiscount();">✕</button>`;
+  list.appendChild(row);
+}
+
+function previewEditDiscount() {
+  const val = parseFloat(document.getElementById('edit-disc-value').value)||0;
+  const type = document.getElementById('edit-disc-type').value;
+  const preview = document.getElementById('edit-disc-preview');
+  let sub = 0;
+  document.querySelectorAll('#edit-services-list .service-row').forEach(row => {
+    const qty = parseInt(row.querySelector('.edit-qty-inp').value)||1;
+    const amt = parseFloat(row.querySelector('.edit-amt-inp').value)||0;
+    sub += qty * amt;
+  });
+  if(val <= 0 || sub <= 0) { preview.style.display='none'; return; }
+  let discAmt = type==='pct' ? Math.round(sub*val/100) : Math.min(val,sub);
+  let final = sub - discAmt;
+  preview.style.display = 'block';
+  preview.innerHTML = `Subtotal ₹${sub.toLocaleString('en-IN')} &nbsp;→&nbsp; <b style="color:#dc2626;">- ₹${discAmt.toLocaleString('en-IN')}</b> &nbsp;→&nbsp; <b style="color:#15803d;">Pay ₹${final.toLocaleString('en-IN')}</b>`;
+}
+
+function saveEditedReceipt() {
+  if(!_editingRNo) return;
+
+  // Collect updated services
+  const svcs = [];
+  let totalCost = 0;
+  document.querySelectorAll('#edit-services-list .service-row').forEach(row => {
+    const sel  = row.querySelector('.edit-svc-sel');
+    const qty  = parseInt(row.querySelector('.edit-qty-inp').value)||1;
+    const amt  = parseFloat(row.querySelector('.edit-amt-inp').value)||0;
+    const cost = parseFloat(sel.options[sel.selectedIndex]?.dataset.cost||0);
+    if(sel.value) {
+      svcs.push({svc: sel.value, qty, amt});
+      totalCost += cost * qty;
+    }
+  });
+  if(!svcs.length) { showToast('❌ Kam se kam ek service daalo!'); return; }
+
+  const discVal  = parseFloat(document.getElementById('edit-disc-value').value)||0;
+  const discType = document.getElementById('edit-disc-type').value;
+  const total    = svcs.reduce((s,r)=>s+(r.qty*r.amt),0);
+  const discAmt  = discVal>0 ? (discType==='pct' ? Math.round(total*discVal/100) : Math.min(discVal,total)) : 0;
+  const discLabel = discVal>0 ? (discType==='pct' ? `${discVal}% Discount` : `Flat ₹${discVal} Off`) : '';
+  const finalTotal = total - discAmt;
+
+  // Update in history
+  const history = loadBillingHistory();
+  const idx = history.findIndex(r => r.rNo === _editingRNo);
+  if(idx === -1) { showToast('❌ Record nahi mila!'); return; }
+
+  history[idx] = {...history[idx], svcs, total, discAmt, discLabel, finalTotal, totalCost};
+  localStorage.setItem('imiBilling', JSON.stringify(history));
+
+  // Update Firebase
+  if(_db) {
+    const key = _editingRNo.replace('IMI-','rec_');
+    _db.ref('imiBilling/' + key).update({svcs, total, discAmt, discLabel, finalTotal, totalCost});
+  }
+
+  closeEditModal();
+  renderReports();
+  showToast(`✅ ${_editingRNo} updated!`);
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMI CENTER — Your Bill</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<style>
+  :root {
+    --green: #1a7a4a;
+    --green-light: #e8f5ee;
+    --green-mid: #2d9e65;
+    --dark: #1a2e1e;
+    --gray: #6b7280;
+    --border: #d1fae5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: #f0fdf4;
+    min-height: 100vh;
+    padding: 20px;
+    background-image: radial-gradient(circle at 20% 20%, #d1fae5 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, #dcfce7 0%, transparent 50%);
+  }
+  .container { max-width: 480px; margin: 0 auto; }
+
+  /* LOADING STATE */
+  .loading-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 4px solid rgba(26,122,74,0.2);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-txt { color: var(--green); font-weight: 600; font-size: 0.95rem; }
+
+  /* ERROR STATE */
+  .error-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(26,122,74,0.08);
+    border: 1.5px solid var(--border);
+  }
+  .error-icon { font-size: 3rem; margin-bottom: 12px; }
+  .error-title { font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800; color: #dc2626; margin-bottom: 8px; }
+  .error-msg { font-size: 0.85rem; color: var(--gray); line-height: 1.6; }
+
+  /* RECEIPT */
+  .receipt-box {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(26,122,74,0.15);
+    border: 1.5px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .receipt-header {
+    background: linear-gradient(135deg, #155e3a, var(--green-mid));
+    color: white;
+    padding: 18px 22px 28px;
+    text-align: center;
+    position: relative;
+  }
+  .receipt-header::after {
+    content: '';
+    position: absolute;
+    bottom: -14px; left: 0; right: 0;
+    height: 28px;
+    background: white;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  }
+  .shop-name { font-family: 'Baloo 2', cursive; font-size: 1.7rem; font-weight: 800; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .shop-sub  { font-size: 0.75rem; opacity: 0.88; margin-top: 2px; }
+  .shop-contact { font-size: 0.72rem; opacity: 0.80; margin-top: 4px; }
+
+  .receipt-body { padding: 26px 22px 18px; }
+  .receipt-meta {
+    display: flex; justify-content: space-between;
+    background: var(--green-light); border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 16px;
+  }
+  .meta-item .mlabel { font-size: 0.75rem; color: var(--gray); margin-bottom: 2px; }
+  .meta-item .mvalue { font-weight: 700; color: var(--dark); font-size: 0.85rem; }
+  .customer-info { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1.5px dashed var(--border); }
+  .customer-info .cname { font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 700; color: var(--dark); }
+  .customer-info .cphone { font-size: 0.8rem; color: var(--gray); margin-top: 2px; }
+  .svc-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+  .svc-table thead tr th {
+    font-size: 0.75rem; font-weight: 700; color: var(--gray);
+    text-align: left; padding: 0 6px 8px;
+    border-bottom: 1.5px solid var(--border);
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .svc-table thead tr th:last-child { text-align: right; }
+  .svc-table tbody tr td { padding: 9px 6px; font-size: 0.85rem; color: var(--dark); border-bottom: 1px solid #f0fdf4; }
+  .svc-table tbody tr td:last-child { text-align: right; font-weight: 600; }
+  .qty-badge { display: inline-block; background: var(--green-light); color: var(--green); border-radius: 5px; padding: 1px 6px; font-size: 0.73rem; font-weight: 700; margin-left: 5px; }
+  .totals { border-top: 2px solid var(--border); padding-top: 12px; }
+  .total-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray); padding: 4px 0; }
+  .total-row-disc { display: flex; justify-content: space-between; font-size: 0.85rem; color: #dc2626; font-weight: 700; padding: 4px 0; }
+  .total-row-main {
+    background: linear-gradient(135deg, var(--green), var(--green-mid));
+    color: white; border-radius: 12px; padding: 12px 16px; margin-top: 8px;
+    font-size: 1rem; font-weight: 700; font-family: 'Baloo 2', cursive;
+    display: flex; justify-content: space-between;
+  }
+  .status-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; margin-top: 10px; }
+  .status-paid    { background: #dcfce7; color: #15803d; }
+  .status-pending { background: #fef3c7; color: #d97706; }
+  .receipt-footer {
+    padding: 14px 22px; text-align: center;
+    border-top: 1.5px dashed var(--border);
+    background: var(--green-light);
+  }
+  .receipt-footer .ty-title { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700; color: var(--green); margin-bottom: 4px; }
+  .receipt-footer .ty-msg   { font-size: 0.74rem; color: var(--gray); line-height: 1.6; }
+
+  /* ACTION BUTTONS */
+  .actions-card {
+    background: white; border-radius: 20px; padding: 18px;
+    box-shadow: 0 4px 24px rgba(26,122,74,0.08);
+    border: 1.5px solid var(--border);
+    margin-bottom: 14px;
+  }
+  .actions-card h3 { font-family: 'Baloo 2', cursive; font-size: 0.95rem; font-weight: 800; color: var(--green); margin-bottom: 14px; text-align: center; }
+  .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .abtn {
+    border: none; border-radius: 12px; padding: 13px 8px;
+    font-family: 'Baloo 2', cursive; font-size: 0.9rem; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 6px; transition: transform 0.15s;
+  }
+  .abtn:hover { transform: translateY(-1px); }
+  .btn-dl  { background: linear-gradient(135deg, var(--green), var(--green-mid)); color: white; box-shadow: 0 3px 12px rgba(26,122,74,0.3); }
+  .btn-wa  { background: #25D366; color: white; box-shadow: 0 3px 10px rgba(37,211,102,0.3); }
+  .btn-full { grid-column: 1 / -1; }
+
+  /* POWERED BY */
+  .powered {
+    text-align: center; font-size: 0.72rem; color: var(--gray);
+    margin-top: 8px; padding-bottom: 20px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--dark); color: white;
+    padding: 10px 22px; border-radius: 20px;
+    font-size: 0.85rem; font-weight: 600;
+    transition: transform 0.3s; z-index: 999; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- LOADING -->
+  <div class="loading-state" id="loading-state">
+    <div class="spinner"></div>
+    <div class="loading-txt">Aapka bill load ho raha hai...</div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-state" id="error-state" style="display:none;">
+    <div class="error-icon">😕</div>
+    <div class="error-title">Bill Nahi Mila</div>
+    <div class="error-msg" id="error-msg">Yeh link galat ho sakta hai ya bill delete ho gaya hoga. IMI CENTER se contact karein.</div>
+  </div>
+
+  <!-- RECEIPT -->
+  <div id="bill-area" style="display:none;">
+    <div class="receipt-box" id="receipt-content">
+      <div class="receipt-header">
+        <div class="shop-name" id="r-shop-name">IMI CENTER</div>
+        <div class="shop-sub"  id="r-shop-tagline"></div>
+        <div class="shop-contact" id="r-shop-address"></div>
+        <div class="shop-contact" id="r-shop-contact"></div>
+      </div>
+      <div class="receipt-body">
+        <div class="receipt-meta">
+          <div class="meta-item"><div class="mlabel">Receipt No.</div><div class="mvalue" id="r-no">—</div></div>
+          <div class="meta-item" style="text-align:center"><div class="mlabel">Date</div><div class="mvalue" id="r-date">—</div></div>
+          <div class="meta-item" style="text-align:right"><div class="mlabel">Time</div><div class="mvalue" id="r-time">—</div></div>
+        </div>
+        <div class="customer-info">
+          <div class="cname" id="r-name">—</div>
+          <div class="cphone" id="r-phone"></div>
+          <div class="cphone" id="r-note" style="color:var(--green);margin-top:3px;"></div>
+        </div>
+        <table class="svc-table">
+          <thead><tr>
+            <th>Service</th>
+            <th style="text-align:center;width:50px;">Qty</th>
+            <th style="text-align:right;">Amount</th>
+          </tr></thead>
+          <tbody id="r-svcs"></tbody>
+        </table>
+        <div class="totals">
+          <div class="total-row" id="r-subtotal-row" style="display:none;">
+            <span>Subtotal</span><span id="r-subtotal">—</span>
+          </div>
+          <div class="total-row-disc" id="r-discount-row" style="display:none;">
+            <span id="r-discount-label">Discount</span>
+            <span id="r-discount-amt">—</span>
+          </div>
+          <div class="total-row-main">
+            <span>💰 TOTAL</span>
+            <span id="r-total">—</span>
+          </div>
+          <div style="text-align:center;">
+            <span class="status-badge" id="r-status"></span>
+          </div>
+        </div>
+      </div>
+      <div class="receipt-footer">
+        <div class="ty-title" id="r-ty-title"></div>
+        <div class="ty-msg"   id="r-ty-msg"></div>
+      </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="actions-card">
+      <h3>📥 Bill Save Karo</h3>
+      <div class="action-grid">
+        <button class="abtn btn-dl btn-full" onclick="downloadBillImage()">⬇️ Image Download Karo</button>
+        <button class="abtn btn-wa" onclick="shareOnWA()">📲 WhatsApp</button>
+        <button class="abtn" style="background:#ede9fe;color:#7c3aed;" onclick="copyBillLink()">🔗 Link Copy</button>
+      </div>
+    </div>
+
+    <div class="powered">Powered by IMI CENTER Receipt System</div>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Firebase Config (same as main app) ──
+const FB_CONFIG = {
+  apiKey: "AIzaSyCAqhdSvI_JknGoRoPYGxSbXb29CBQnPDY",
+  authDomain: "imi-receipt.firebaseapp.com",
+  databaseURL: "https://imi-receipt-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "imi-receipt",
+  storageBucket: "imi-receipt.firebasestorage.app",
+  messagingSenderId: "31901120608",
+  appId: "1:31901120608:web:edba3de2bbe4499ff2ab05"
+};
+
+firebase.initializeApp(FB_CONFIG);
+const db = firebase.database();
+
+// ── Get bill number from URL ──
+function getBillNo() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('bill');
+}
+
+// ── Show / Hide states ──
+function showError(msg) {
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('error-state').style.display   = 'block';
+  document.getElementById('bill-area').style.display     = 'none';
+  if(msg) document.getElementById('error-msg').textContent = msg;
+}
+function showBill() {
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('error-state').style.display   = 'none';
+  document.getElementById('bill-area').style.display     = 'block';
+}
+
+// ── Render bill data ──
+function renderBill(rec, shopSettings) {
+  const s = shopSettings || {};
+  document.getElementById('r-shop-name').textContent    = s.name    || 'IMI CENTER';
+  document.getElementById('r-shop-tagline').textContent = s.tagline || '';
+  document.getElementById('r-shop-address').textContent = (s.address||'') + (s.phone ? ' | 📞 '+s.phone : '');
+  document.getElementById('r-shop-contact').textContent = s.email   ? '✉️ '+s.email : '';
+  document.getElementById('r-ty-title').textContent     = s.tyTitle || '';
+  document.getElementById('r-ty-msg').textContent       = s.tyMsg   || '';
+
+  document.title = `${s.name||'IMI CENTER'} — Bill ${rec.rNo}`;
+
+  document.getElementById('r-no').textContent   = rec.rNo;
+  document.getElementById('r-date').textContent = rec.date;
+  document.getElementById('r-time').textContent = rec.time;
+  document.getElementById('r-name').textContent = rec.name;
+  document.getElementById('r-phone').textContent = rec.phone ? '📞 '+rec.phone : '';
+  document.getElementById('r-note').textContent  = rec.note  ? '📌 '+rec.note  : '';
+
+  const tbody = document.getElementById('r-svcs');
+  tbody.innerHTML = '';
+  (rec.svcs||[]).forEach(sv => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${sv.svc}${sv.qty>1?`<span class="qty-badge">×${sv.qty}</span>`:''}</td>
+      <td style="text-align:center;color:#6b7280;">${sv.qty}</td>
+      <td style="text-align:right;font-weight:600;">₹${sv.amt.toLocaleString('en-IN')}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  const discAmt = rec.discAmt || 0;
+  const subRow  = document.getElementById('r-subtotal-row');
+  const discRow = document.getElementById('r-discount-row');
+  if(discAmt > 0) {
+    subRow.style.display  = 'flex';
+    discRow.style.display = 'flex';
+    document.getElementById('r-subtotal').textContent       = '₹'+(rec.total||0).toLocaleString('en-IN');
+    document.getElementById('r-discount-label').textContent = rec.discLabel || 'Discount';
+    document.getElementById('r-discount-amt').textContent   = '- ₹'+discAmt.toLocaleString('en-IN');
+  } else {
+    subRow.style.display  = 'none';
+    discRow.style.display = 'none';
+  }
+
+  const finalTotal = rec.finalTotal || rec.total || 0;
+  document.getElementById('r-total').textContent = '₹'+finalTotal.toLocaleString('en-IN');
+
+  const badge = document.getElementById('r-status');
+  badge.textContent  = rec.status==='paid' ? '✅ Payment Received — Thank You!' : '⏳ Payment Pending';
+  badge.className    = 'status-badge '+(rec.status==='paid' ? 'status-paid' : 'status-pending');
+
+  showBill();
+}
+
+// ── Load from Firebase ──
+async function loadBill() {
+  const billNo = getBillNo();
+  if(!billNo) { showError('URL mein bill number nahi hai. Sahi link use karein.'); return; }
+
+  const key = 'rec_' + billNo;
+  try {
+    const [billSnap, settingsSnap] = await Promise.all([
+      db.ref('imiBilling/' + key).once('value'),
+      db.ref('imiSettings').once('value')
+    ]);
+
+    if(!billSnap.exists()) {
+      showError(`Bill #${billNo} nahi mila. Link galat ho sakta hai ya bill delete ho gaya ho.`);
+      return;
+    }
+
+    renderBill(billSnap.val(), settingsSnap.val());
+  } catch(err) {
+    showError('Firebase se connect nahi ho paya. Internet check karein aur reload karein.');
+  }
+}
+
+// ── Download as Image ──
+function downloadBillImage() {
+  showToast('⏳ Image ban rahi hai...');
+  html2canvas(document.getElementById('receipt-content'), {
+    scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false
+  }).then(canvas => {
+    const link = document.createElement('a');
+    const billNo = getBillNo();
+    link.download = `IMI_Bill_${billNo}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('✅ Image saved!');
+  }).catch(() => showToast('❌ Try again'));
+}
+
+// ── Share on WhatsApp ──
+function shareOnWA() {
+  const billNo = getBillNo();
+  const link = window.location.href;
+  const name = document.getElementById('r-name').textContent;
+  const msg  = `🧾 Apna bill yahan dekho:\n${link}`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+}
+
+// ── Copy bill link ──
+function copyBillLink() {
+  navigator.clipboard.writeText(window.location.href)
+    .then(() => showToast('🔗 Link copied!'))
+    .catch(() => showToast('❌ Copy nahi hua'));
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Init ──
+loadBill();
+</script>
+</body>
+</html>
