@@ -145,13 +145,54 @@
 
   /* REPORT TABLE */
   .report-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
-  .report-table thead tr th { background:var(--green); color:white; padding:8px 7px; text-align:left; white-space:nowrap; }
+  .report-table thead tr th { background:var(--green); color:white; padding:8px 7px; text-align:left; white-space:nowrap; position:sticky; top:0; z-index:2; }
   .report-table tbody tr td { padding:7px 7px; border-bottom:1px solid var(--border); color:var(--dark); vertical-align:top; }
   .report-table tbody tr:nth-child(even) td { background:#f0fdf4; }
   .report-table tbody tr:hover td { background:#d1fae5; }
   .no-data { text-align:center; color:var(--gray); font-size:0.85rem; padding:30px 0; }
   .badge-paid { background:#dcfce7;color:#15803d;border-radius:5px;padding:2px 7px;font-weight:700;font-size:0.7rem; }
   .badge-pending { background:#fef3c7;color:#d97706;border-radius:5px;padding:2px 7px;font-weight:700;font-size:0.7rem; }
+
+  /* CHECKBOX DELETE BAR */
+  .delete-bar {
+    display: none; align-items: center; justify-content: space-between;
+    background: #fee2e2; border: 1.5px solid #fca5a5; border-radius: 10px;
+    padding: 8px 12px; margin-bottom: 8px; gap: 10px;
+  }
+  .delete-bar.show { display: flex; }
+  .delete-bar-left { font-size: 0.82rem; font-weight: 700; color: #dc2626; }
+  .delete-bar-btn {
+    background: #dc2626; color: white; border: none; border-radius: 8px;
+    padding: 6px 14px; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+    font-family: 'Baloo 2', cursive; white-space: nowrap;
+  }
+  .delete-bar-cancel {
+    background: white; color: #6b7280; border: 1.5px solid #d1d5db; border-radius: 8px;
+    padding: 6px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  }
+  .row-checkbox { width: 16px; height: 16px; cursor: pointer; accent-color: #dc2626; }
+  .th-checkbox { width: 28px; }
+  tr.row-selected td { background: #fff1f1 !important; }
+
+  /* SCROLLABLE HISTORY TABLE */
+  .history-scroll-wrap {
+    max-height: 420px;
+    overflow-y: auto;
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    scrollbar-width: thin;
+    scrollbar-color: var(--green-mid) #f0fdf4;
+  }
+  .history-scroll-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+  .history-scroll-wrap::-webkit-scrollbar-track { background: #f0fdf4; border-radius: 10px; }
+  .history-scroll-wrap::-webkit-scrollbar-thumb { background: var(--green-mid); border-radius: 10px; }
+  .history-scroll-wrap::-webkit-scrollbar-thumb:hover { background: var(--green); }
+  .history-count-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 4px 8px;
+    font-size: 0.78rem; font-weight: 600; color: var(--gray);
+  }
 
   /* TOAST & LOADER */
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--dark); color: white; padding: 10px 22px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; transition: transform 0.3s; z-index: 999; white-space: nowrap; }
@@ -400,13 +441,28 @@
         <button class="save-btn" style="margin-top:0;background:linear-gradient(135deg,#7c3aed,#a855f7);" onclick="clearFilter()">🔄 Show All</button>
       </div>
       <button class="gen-btn" onclick="exportExcel()" style="font-size:0.92rem;padding:11px;">📥 Export to Excel (with P&L)</button>
-      <button class="new-btn" style="margin-top:8px;" onclick="if(confirm('Are you sure you want to delete all history? This cannot be undone.')) clearAllHistory()">🗑️ Clear All History</button>
+      <div style="text-align:right;margin-top:10px;"><button onclick="if(confirm('⚠️ Sabhi billing history delete ho jayegi!
+
+Kya aap sure hain? Yeh undo nahi ho sakta.')) clearAllHistory()" style="background:none;border:1px solid #fca5a5;color:#ef4444;border-radius:8px;padding:4px 10px;font-size:0.72rem;font-weight:600;cursor:pointer;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">🗑️ clear history</button></div>
     </div>
 
     <!-- TABLE -->
     <div class="card" style="padding:12px;">
       <h2>📋 Customer Billing History</h2>
-      <div id="report-table-wrap" style="overflow-x:auto;"></div>
+      <div class="history-count-bar">
+        <span id="history-count-label">📄 Loading records...</span>
+        <span style="color:var(--green);font-size:0.72rem;">⬆️⬇️ Scroll to see all</span>
+      </div>
+      <div class="delete-bar" id="delete-bar">
+        <span class="delete-bar-left">🗑️ <span id="delete-count">0</span> selected</span>
+        <div style="display:flex;gap:6px;">
+          <button class="delete-bar-cancel" onclick="clearSelection()">✕ Cancel</button>
+          <button class="delete-bar-btn" onclick="deleteSelectedBills()">🗑️ Delete Selected</button>
+        </div>
+      </div>
+      <div class="history-scroll-wrap">
+        <div id="report-table-wrap"></div>
+      </div>
     </div>
   </div>
 
@@ -1630,7 +1686,7 @@ function renderReports() {
   document.getElementById('today-profit').textContent = '₹'+todayProfit.toLocaleString('en-IN');
 
   const todayISO = new Date().toISOString().split('T')[0];
-  if(!document.getElementById('filter-from').value) document.getElementById('filter-from').value = '2020-01-01';
+  if(!document.getElementById('filter-from').value) document.getElementById('filter-from').value = todayISO;
   if(!document.getElementById('filter-to').value) document.getElementById('filter-to').value = todayISO;
 
   _filteredHistory = history;
@@ -1668,17 +1724,21 @@ function applyFilter() {
 }
 
 function clearFilter() {
-  document.getElementById('filter-from').value = '2020-01-01';
-  document.getElementById('filter-to').value = new Date().toISOString().split('T')[0];
+  const todayISO = new Date().toISOString().split('T')[0];
+  document.getElementById('filter-from').value = todayISO;
+  document.getElementById('filter-to').value = todayISO;
   renderReports();
 }
 
 function renderReportTable(history) {
   const wrap = document.getElementById('report-table-wrap');
+  const countLabel = document.getElementById('history-count-label');
   if(!history.length) {
     wrap.innerHTML = '<div class="no-data">📭 No billing records found.<br>Generate a receipt to see data here.</div>';
+    if(countLabel) countLabel.textContent = '📭 0 records';
     return;
   }
+  if(countLabel) countLabel.textContent = `📄 ${history.length} record${history.length>1?'s':''} found`;
   let rows = '';
   history.forEach(r => {
     const svcNames = r.svcs.map(s=>s.svc+(s.qty>1?` ×${s.qty}`:'')).join(', ');
@@ -1688,7 +1748,9 @@ function renderReportTable(history) {
     const discStr = r.discAmt>0 ? `- ₹${r.discAmt} (${r.discLabel||'Disc'})` : '—';
     const profitColor = profit>=0 ? '#15803d' : '#dc2626';
     const recKey = encodeURIComponent(r.rNo);
-    rows += `<tr>
+    const rNoSafe = r.rNo.replace(/"/g, '&quot;');
+    rows += `<tr id="row-${recKey}">
+      <td><input type="checkbox" class="row-checkbox" data-rno="${rNoSafe}" onchange="onRowCheck(this)"></td>
       <td>${r.rNo}</td>
       <td>${r.date}<br><span style="color:var(--gray);font-size:0.7rem;">${r.time}</span></td>
       <td><b>${r.name}</b><br><span style="color:var(--gray);font-size:0.7rem;">${r.phone||'—'}</span></td>
@@ -1707,11 +1769,77 @@ function renderReportTable(history) {
   });
   wrap.innerHTML = `<table class="report-table">
     <thead><tr>
+      <th class="th-checkbox"><input type="checkbox" class="row-checkbox" id="select-all-chk" onchange="toggleSelectAll(this)" title="Select All"></th>
       <th>Rcpt#</th><th>Date</th><th>Customer</th><th>Services</th>
       <th style="color:#fde68a;">MRP</th><th style="color:#fca5a5;">Discount</th><th style="color:#a7f3d0;">Sale</th><th style="color:#fca5a5;">Cost</th><th style="color:#86efac;">Profit</th><th>Pay</th><th>Actions</th>
     </tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
+}
+
+// ══ CHECKBOX DELETE SYSTEM ══
+function onRowCheck(chk) {
+  const row = chk.closest('tr');
+  if(chk.checked) row.classList.add('row-selected');
+  else row.classList.remove('row-selected');
+  updateDeleteBar();
+}
+
+function toggleSelectAll(masterChk) {
+  document.querySelectorAll('.row-checkbox:not(#select-all-chk)').forEach(chk => {
+    chk.checked = masterChk.checked;
+    const row = chk.closest('tr');
+    if(masterChk.checked) row.classList.add('row-selected');
+    else row.classList.remove('row-selected');
+  });
+  updateDeleteBar();
+}
+
+function updateDeleteBar() {
+  const selected = document.querySelectorAll('.row-checkbox:not(#select-all-chk):checked');
+  const bar = document.getElementById('delete-bar');
+  const countEl = document.getElementById('delete-count');
+  if(selected.length > 0) {
+    bar.classList.add('show');
+    countEl.textContent = selected.length;
+  } else {
+    bar.classList.remove('show');
+  }
+}
+
+function clearSelection() {
+  document.querySelectorAll('.row-checkbox').forEach(chk => {
+    chk.checked = false;
+    const row = chk.closest('tr');
+    if(row) row.classList.remove('row-selected');
+  });
+  document.getElementById('delete-bar').classList.remove('show');
+}
+
+function deleteSelectedBills() {
+  const selected = document.querySelectorAll('.row-checkbox:not(#select-all-chk):checked');
+  if(!selected.length) return;
+  const count = selected.length;
+  if(!confirm(`⚠️ ${count} bill${count>1?'s':''} delete ho jayega!\n\nKya aap sure hain? Yeh undo nahi ho sakta.`)) return;
+
+  const rNosToDelete = Array.from(selected).map(chk => chk.dataset.rno);
+
+  // Remove from localStorage
+  let history = loadBillingHistory();
+  history = history.filter(r => !rNosToDelete.includes(r.rNo));
+  localStorage.setItem('imiBilling', JSON.stringify(history));
+
+  // Remove from Firebase
+  if(_db) {
+    rNosToDelete.forEach(rNo => {
+      const key = 'rec_' + rNo.replace('IMI-','');
+      _db.ref('imiBilling/' + key).remove();
+    });
+  }
+
+  document.getElementById('delete-bar').classList.remove('show');
+  renderReports();
+  showToast(`✅ ${count} bill${count>1?'s':''} delete ho gaya!`);
 }
 
 // ══ EXCEL EXPORT ══
