@@ -974,6 +974,8 @@ function setupFirebaseListeners() {
     const val = snap.val();
     if(val) {
       services = val;
+      // ✅ FIX: Save to localStorage so next load (including bookmark) has data immediately
+      localStorage.setItem('imiServices', JSON.stringify(val));
       if(document.getElementById('tab-services').classList.contains('active')) renderServiceManager();
       // Refresh service dropdowns in receipt form
       const rows = document.querySelectorAll('.service-row select');
@@ -982,6 +984,17 @@ function setupFirebaseListeners() {
         const opts = services.map(s=>`<option value="${s.name}" data-rate="${s.rate}" data-cost="${s.cost||0}">${s.name}</option>`).join('');
         sel.innerHTML = `<option value="">-- Select --</option>${opts}`;
         sel.value = prev;
+      });
+      // ✅ FIX: Refresh all existing search-based service dropdowns with fresh services
+      document.querySelectorAll('.service-row').forEach(row => {
+        const dropdown = row.querySelector('.search-dropdown');
+        if(dropdown) {
+          dropdown.innerHTML = services.map(s =>
+            `<div class="search-option" data-name="${s.name}" data-rate="${s.rate}" data-cost="${s.cost||0}" onclick="selectServiceOption(this)">
+              <strong>${s.name}</strong> <span style="font-size:0.7rem;color:#6b7280;margin-left:8px;">₹${s.rate}</span>
+            </div>`
+          ).join('');
+        }
       });
     }
   });
