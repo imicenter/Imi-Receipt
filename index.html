@@ -1121,6 +1121,20 @@ let categories = loadCategories();
 
 // ══ INIT ══
 function init() {
+  // ✅ LOAD SERVICES FIRST - Critical for dropdown to work properly
+  const savedServices = loadServices();
+  if (savedServices && savedServices.length > 0) {
+    window._servicesLoaded = true;
+  }
+  
+  // ✅ PERIODIC SYNC - Refresh services every 3 seconds
+  setInterval(() => {
+    const freshServices = loadServices();
+    if (freshServices && freshServices.length > 0) {
+      window._servicesLoaded = true;
+    }
+  }, 3000);
+  
   applySettingsToPage();
   populateCategorySelect();
   addServiceRow();
@@ -1686,21 +1700,17 @@ function confirmMoveService(serviceIndex, newCat) {
 // ══ RECEIPT FORM ══
 function addServiceRow() {
   const list = document.getElementById('services-list');
-  const div = document.createElement('div'); div.className='service-row';
+  const div = document.createElement('div'); 
+  div.className='service-row';
   
-  // Create searchable service dropdown
   const searchId = 'svc-search-' + Date.now();
   const dropdownId = 'svc-dropdown-' + Date.now();
   
-  const opts = services.map(s=>`<div class="search-option" data-name="${s.name}" data-rate="${s.rate}" data-cost="${s.cost||0}" onclick="selectServiceOption(this)">
-    <strong>${s.name}</strong> <span style="font-size:0.7rem;color:#6b7280;margin-left:8px;">₹${s.rate}</span>
-  </div>`).join('');
-  
   div.innerHTML = `
     <div style="position:relative;width:100%;">
-      <input type="text" class="service-search-input" id="${searchId}" placeholder="Search service..." oninput="filterServiceDropdown(this)">
+      <input type="text" class="service-search-input" id="${searchId}" placeholder="Search service...">
       <div class="search-dropdown" id="${dropdownId}" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border:1.5px solid #d1fae5;border-top:none;border-radius:0 0 10px 10px;max-height:200px;overflow-y:auto;z-index:1000;">
-        ${opts}
+        <!-- Options will load dynamically -->
       </div>
     </div>
     <input type="number" placeholder="Qty" value="1" min="1" class="qty-inp" oninput="updateSubtotal()">
@@ -1710,36 +1720,92 @@ function addServiceRow() {
   
   list.appendChild(div);
   
-  // Add event listeners
   const searchInput = div.querySelector('.service-search-input');
   const dropdown = div.querySelector('.search-dropdown');
   
+  // ✅ Function to update dropdown options dynamically
+  function updateDropdownOptions() {
+    const allServices = loadServices();
+    if (!allServices || allServices.length === 0) {
+      dropdown.innerHTML = '<div style="padding:10px;color:#6b7280;text-align:center;font-size:0.85rem;">No services added yet</div>';
+      return;
+    }
+    
+    dropdown.innerHTML = allServices
+      .map(s => `<div class="search-option" data-name="${s.name}" data-rate="${s.rate}" data-cost="${s.cost||0}" onclick="selectServiceOption(this)">
+        <strong>${s.name}</strong> <span style="font-size:0.7rem;color:#6b7280;margin-left:8px;">₹${s.rate}</span>
+      </div>`)
+      .join('');
+  }
+  
+  // ✅ On focus: show dropdown and load fresh services
   searchInput.addEventListener('focus', function() {
+    updateDropdownOptions();
     dropdown.style.display = 'block';
   });
   
-  document.addEventListener('click', function(e) {
-    if(!div.contains(e.target)) {
-      dropdown.style.display = 'none';
-    }
+  // ✅ On input: filter dropdown
+  searchInput.addEventListener('input', function() {
+    filterServiceDropdown(this);
+  });
+  
+  // ✅ FIXED: Proper blur handling to close dropdown
+  searchInput.addEventListener('blur', function(e) {
+    setTimeout(() => {
+      if (!div.contains(document.activeElement)) {
+        dropdown.style.display = 'none';
+      }
+    }, 150);
   });
   
   updateSubtotal();
 }
 
 function filterServiceDropdown(input) {
-  const query = input.value.toLowerCase().trim();
+  const query = input.value.trim().toLowerCase();
   const dropdown = input.closest('div').querySelector('.search-dropdown');
   const options = dropdown.querySelectorAll('.search-option');
   
+  let hasVisible = false;
+  
   options.forEach(opt => {
     const serviceName = opt.dataset.name.toLowerCase();
+    const rate = opt.dataset.rate.toString();
+    
+    // ✅ IMPROVED MATCHING LOGIC:
+    // 1. Empty search = show all
+    // 2. Exact match
+    // 3. Starts with query (e.g., "RTE" matches "RTE Account")
+    // 4. Contains query anywhere (e.g., "account" matches "RTE Account")
+    // 5. Partial word match (e.g., "rt" matches "RTE")
     const matches = query === '' || 
+      serviceName === query ||
+      serviceName.startsWith(query) ||
       serviceName.includes(query) ||
       serviceName.split(' ').some(word => word.startsWith(query));
     
-    opt.style.display = matches ? 'block' : 'none';
+    if (matches) {
+      opt.style.display = 'block';
+      hasVisible = true;
+    } else {
+      opt.style.display = 'none';
+    }
   });
+  
+  // ✅ Show helpful message if no results found
+  if (!hasVisible && query !== '' && options.length > 0) {
+    const noResults = dropdown.querySelector('.no-results-msg');
+    if (!noResults) {
+      const msg = document.createElement('div');
+      msg.className = 'no-results-msg';
+      msg.style.cssText = 'padding:10px;text-align:center;color:#ef4444;font-size:0.85rem;border-top:1px solid #f0fdf4;';
+      msg.textContent = `❌ No service found for "${query}"`;
+      dropdown.appendChild(msg);
+    }
+  } else {
+    const noResults = dropdown.querySelector('.no-results-msg');
+    if (noResults) noResults.remove();
+  }
   
   dropdown.style.display = 'block';
 }
