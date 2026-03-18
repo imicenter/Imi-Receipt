@@ -1872,14 +1872,18 @@ function generateReceipt() {
   const rows = document.querySelectorAll('.service-row');
   let svcs=[], total=0, totalCost=0;
   rows.forEach(row => {
-    const svc=row.querySelector('select').value;
+    // ✅ FIX: Use search input (new UI) instead of select (old UI)
+    const svcInput = row.querySelector('.service-search-input');
+    const svc = svcInput ? svcInput.value.trim() : '';
     const qty=parseInt(row.querySelector('.qty-inp').value)||1;
     const rate=parseFloat(row.querySelector('.amt-inp').value)||0;
-    const unitCost=parseFloat(row.dataset.cost)||0;
+    // ✅ FIX: Use profit-inp field directly — respects manual override by user
+    const manualProfit=parseFloat(row.querySelector('.profit-inp')?.value)||0;
     if(svc && rate>0) {
       const amt=rate*qty;
-      const costAmt=unitCost*qty;
-      svcs.push({svc,qty,amt,rate,unitCost,costAmt});
+      const profitAmt=manualProfit*qty;
+      const costAmt=amt-profitAmt;
+      svcs.push({svc,qty,amt,rate,unitCost:costAmt/qty,costAmt});
       total+=amt;
       totalCost+=costAmt;
     }
