@@ -48,15 +48,30 @@
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
   /* SERVICE ROWS */
-  .svc-header { display: grid; grid-template-columns: 1fr 60px 85px 32px; gap: 8px; margin-bottom: 4px; }
+  .svc-header { display: grid; grid-template-columns: 1fr 60px 85px 70px 32px; gap: 8px; margin-bottom: 4px; transition: all 0.3s; }
+  .svc-header.profit-hidden { grid-template-columns: 1.5fr 60px 85px 32px; }
   .svc-header span { font-size: 0.75rem; font-weight: 600; color: var(--gray); }
-  .service-row { display: grid; grid-template-columns: 1fr 60px 85px 32px; gap: 8px; align-items: center; margin-bottom: 7px; }
+  .svc-header span.profit-hidden { display: none; }
+  .service-row { display: grid; grid-template-columns: 1fr 60px 85px 70px 32px; gap: 8px; align-items: center; margin-bottom: 7px; transition: all 0.3s; }
+  .service-row.profit-hidden { grid-template-columns: 1.5fr 60px 85px 32px; }
+  .service-row .profit-inp { display: block; }
+  .service-row.profit-hidden .profit-inp { display: none; }
   .service-row input, .service-row select { padding: 8px 9px; font-size: 0.82rem; margin-top: 0; }
   .del-btn { background: #fee2e2; border: none; color: #ef4444; border-radius: 8px; width: 32px; height: 34px; cursor: pointer; font-size: 0.95rem; transition: background 0.2s; }
   .del-btn:hover { background: #fca5a5; }
   .add-svc-btn { background: var(--green-light); color: var(--green); border: 1.5px dashed var(--green-mid); border-radius: 10px;
     padding: 7px; width: 100%; cursor: pointer; font-size: 0.85rem; font-weight: 600; font-family: 'Noto Sans', sans-serif; margin-top: 2px; transition: all 0.2s; }
   .add-svc-btn:hover { background: #d1fae5; }
+
+  /* SERVICE SEARCH STYLES */
+  .service-search-input { width: 100%; padding: 8px 9px; border: 1.5px solid #d1fae5; border-radius: 10px;
+    font-family: 'Noto Sans', sans-serif; font-size: 0.82rem; color: var(--dark); background: #f0fdf4; outline: none; transition: border-color 0.2s; }
+  .service-search-input:focus { border-color: var(--green-mid); background: white; }
+  .search-dropdown { background: white; border: 1.5px solid #d1fae5; border-radius: 0 0 10px 10px; overflow-y: auto; box-shadow: 0 4px 12px rgba(26,122,74,0.1); }
+  .search-option { padding: 8px 10px; cursor: pointer; border-bottom: 1px solid #f0fdf4; transition: background 0.2s; }
+  .search-option:hover { background: var(--green-light); }
+  .search-option strong { color: var(--dark); display: block; font-size: 0.82rem; }
+  .search-option span { color: var(--gray); }
 
   /* BUTTONS */
   .gen-btn { width: 100%; background: linear-gradient(135deg, var(--green), var(--green-mid)); color: white; border: none;
@@ -69,16 +84,39 @@
   .save-btn:hover { transform: translateY(-1px); }
 
   /* SERVICE MANAGER */
-  .svc-manager-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px;
-    background: var(--green-light); border-radius: 10px; margin-bottom: 7px; }
+  .svc-search-box { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'Noto Sans', sans-serif; font-size: 0.88rem; color: var(--dark); background: white; outline: none; transition: border-color 0.2s; margin-bottom: 10px; }
+  .svc-search-box:focus { border-color: var(--green-mid); background: white; }
+  .svc-container { max-height: 450px; overflow-y: auto; border: 1.5px solid var(--border); border-radius: 10px; padding: 6px; background: white; margin-bottom: 10px; }
+  .svc-container::-webkit-scrollbar { width: 6px; }
+  .svc-container::-webkit-scrollbar-track { background: var(--green-light); border-radius: 10px; }
+  .svc-container::-webkit-scrollbar-thumb { background: var(--green); border-radius: 10px; }
+  .svc-container::-webkit-scrollbar-thumb:hover { background: var(--green-mid); }
+  
+  /* Category Manager */
+  .category-card { background: var(--green-light); border-radius: 12px; padding: 10px 12px; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .category-card .cat-info { flex: 1; }
+  .category-card .cat-name { font-weight: 700; font-size: 0.88rem; color: var(--dark); }
+  .category-card .cat-count { font-size: 0.75rem; color: var(--green); margin-top: 2px; }
+  .category-card .cat-actions { display: flex; gap: 6px; }
+  .cat-edit-btn { background: #dbeafe; color: #2563eb; border: none; border-radius: 7px; padding: 6px 12px; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; }
+  .cat-edit-btn:hover { background: #93c5fd; }
+  .cat-delete-btn { background: #fee2e2; color: #ef4444; border: none; border-radius: 7px; padding: 6px 12px; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; }
+  .cat-delete-btn:hover { background: #fca5a5; }
+  
+  .svc-manager-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 8px;
+    background: var(--green-light); border-radius: 8px; margin-bottom: 4px; gap: 4px; }
+  .svc-manager-row.hidden { display: none; }
   .svc-manager-row .svc-info { flex: 1; }
-  .svc-manager-row .svc-name { font-weight: 600; font-size: 0.88rem; color: var(--dark); }
-  .svc-manager-row .svc-rate { font-size: 0.78rem; color: var(--green); }
-  .svc-manager-row .svc-actions { display: flex; gap: 6px; }
-  .edit-btn { background: #dbeafe; color: #2563eb; border: none; border-radius: 7px; padding: 5px 10px; cursor: pointer; font-size: 0.78rem; font-weight: 600; }
-  .remove-btn { background: #fee2e2; color: #ef4444; border: none; border-radius: 7px; padding: 5px 10px; cursor: pointer; font-size: 0.78rem; font-weight: 600; }
+  .svc-manager-row .svc-name { font-weight: 700; font-size: 0.78rem; color: var(--dark); }
+  .svc-manager-row .svc-rate { font-size: 0.7rem; color: var(--gray); margin-top: 1px; }
+  .svc-manager-row .svc-actions { display: flex; gap: 3px; }
+  .edit-btn { background: #dbeafe; color: #2563eb; border: none; border-radius: 5px; padding: 3px 6px; cursor: pointer; font-size: 0.65rem; font-weight: 600; }
+  .remove-btn { background: #fee2e2; color: #ef4444; border: none; border-radius: 5px; padding: 3px 6px; cursor: pointer; font-size: 0.65rem; font-weight: 600; }
+  .move-btn { background: #fef3c7; color: #d97706; border: none; border-radius: 5px; padding: 3px 6px; cursor: pointer; font-size: 0.65rem; font-weight: 600; }
   .add-new-svc-form { background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1.5px dashed var(--green-mid); margin-top: 12px; }
   .add-new-svc-form h3 { font-size: 0.88rem; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+  .no-results { text-align: center; padding: 20px 10px; color: var(--gray); font-size: 0.85rem; }
 
   /* RECEIPT */
   #receipt-area { display: none; }
@@ -298,12 +336,20 @@
     </div>
 
     <div class="card">
-      <h2>📋 Services</h2>
+      <h2 style="display:flex;justify-content:space-between;align-items:center;">📋 Services <button onclick="toggleProfitDisplay()" style="background:#fff;border:1px solid var(--green);color:var(--green);padding:4px 12px;border-radius:8px;font-size:0.7rem;font-weight:700;cursor:pointer;">Hide Profit</button></h2>
       <div class="svc-header">
-        <span>Service</span><span>Qty</span><span>Amount (₹)</span><span></span>
+        <span>Service</span><span>Qty</span><span>Amount (₹)</span><span id="profit-col-header">Profit (₹)</span><span></span>
       </div>
       <div id="services-list"></div>
       <button class="add-svc-btn" onclick="addServiceRow()">+ Add Service</button>
+      
+      <!-- Subtotal Display -->
+      <div id="subtotal-display" style="display:none;margin-top:12px;background:linear-gradient(135deg,#e8f5ee,#d1fae5);border-radius:12px;padding:12px;border:1.5px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;color:var(--green);">📊 Subtotal</span>
+          <span style="font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--green);">₹<span id="subtotal-amount">0</span></span>
+        </div>
+      </div>
     </div>
 
     <div class="card" style="padding:14px 16px;">
@@ -321,7 +367,22 @@
           </select>
         </div>
       </div>
-      <div id="disc-preview" style="display:none;margin-top:8px;background:#fef3c7;border-radius:8px;padding:7px 12px;font-size:0.82rem;font-weight:700;color:#d97706;"></div>
+      <!-- Discount Calculation Preview -->
+      <div id="disc-preview" style="display:none;margin-top:12px;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:12px;padding:12px;border:1.5px solid #fcd34d;">
+        <div style="font-family:'Baloo 2',cursive;font-size:0.88rem;font-weight:700;color:#d97706;margin-bottom:10px;">📊 Billing Breakdown</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #fcd34d;">
+          <span style="color:#666;">Subtotal</span>
+          <span style="font-weight:700;color:#d97706;">₹<span id="preview-subtotal">0</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px;color:#dc2626;">
+          <span>Discount</span>
+          <span style="font-weight:700;">- ₹<span id="preview-discount">0</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;background:white;border-radius:8px;padding:10px;border:1.5px solid #fcd34d;">
+          <span style="font-family:'Baloo 2',cursive;font-weight:700;color:#15803d;">💰 Final Amount</span>
+          <span style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:#15803d;">₹<span id="preview-final">0</span></span>
+        </div>
+      </div>
     </div>
 
     <div class="card">
@@ -416,19 +477,72 @@
 
   <!-- ══ TAB 2: SERVICES ══ -->
   <div class="tab-panel" id="tab-services">
+    <!-- Add New Service Card (Top) -->
     <div class="card">
-      <h2>⚙️ Manage Services</h2>
-      <p style="font-size:0.82rem;color:var(--gray);margin-bottom:14px;">Add, edit or remove services. Changes are saved automatically.</p>
-      <div id="svc-manager-list"></div>
-      <div class="add-new-svc-form">
-        <h3>➕ Add New Service</h3>
-        <label style="margin-top:0">Service Name</label>
-        <input type="text" id="new-svc-name" placeholder="e.g. RC Update">
-        <div class="row2">
-          <div><label style="margin-top:6px;">Sale Price (₹) <span style="color:var(--green);font-size:0.72rem;">Charged to Customer</span></label><input type="number" id="new-svc-rate" placeholder="200" min="0"></div>
-          <div><label style="margin-top:6px;">Cost Price (₹) <span style="color:#ef4444;font-size:0.72rem;">Your Expense</span></label><input type="number" id="new-svc-cost" placeholder="0" min="0"></div>
+      <h2>➕ Add New Service</h2>
+      <p style="font-size:0.82rem;color:var(--gray);margin-bottom:14px;">Quickly add naye services aur organize them by category.</p>
+      <label style="margin-top:0">Category *</label>
+      <select id="new-svc-category">
+        <option value="">-- Select Category --</option>
+      </select>
+      <label style="margin-top:10px">Service Name *</label>
+      <input type="text" id="new-svc-name" placeholder="e.g. RC Update">
+      <div class="row2">
+        <div><label style="margin-top:6px;">Sale Price (₹) <span style="color:var(--green);font-size:0.72rem;">Charged to Customer</span></label><input type="number" id="new-svc-rate" placeholder="200" min="0"></div>
+        <div><label style="margin-top:6px;">Cost Price (₹) <span style="color:#ef4444;font-size:0.72rem;">Your Expense</span></label><input type="number" id="new-svc-cost" placeholder="0" min="0"></div>
+      </div>
+      <button class="save-btn" onclick="addNewService()">✅ Save Service</button>
+    </div>
+
+    <!-- Manage Services Card (Middle) -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <h2 style="margin-bottom:4px;">⚙️ Services</h2>
+          <p style="font-size:0.78rem;color:var(--gray);margin:0;">Edit, move or remove services</p>
         </div>
-        <button class="save-btn" onclick="addNewService()">✅ Save Service</button>
+        <div style="background:linear-gradient(135deg,var(--green),var(--green-mid));color:white;border-radius:10px;padding:6px 12px;text-align:center;box-shadow:0 2px 8px rgba(26,122,74,0.2);">
+          <div style="font-size:1.5rem;font-weight:800;font-family:'Baloo 2',cursive;" id="total-services-count">0</div>
+          <div style="font-size:0.65rem;font-weight:600;opacity:0.9;">Total</div>
+        </div>
+      </div>
+      
+      <!-- Search Box -->
+      <input type="text" class="svc-search-box" id="svc-search-input" placeholder="🔍 Service dhundhen... (naam ya price se search Karen)" oninput="filterServices()">
+      
+      <!-- Bulk Move Controls -->
+      <div id="bulk-move-controls" style="display:none;background:#e8f5ee;border-radius:12px;padding:10px;margin-bottom:10px;border:1.5px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+          <span style="font-size:0.85rem;font-weight:700;color:var(--green);">
+            <span id="selected-count">0</span> selected
+          </span>
+          <div style="display:flex;gap:6px;">
+            <button class="move-btn" onclick="showBulkMoveModal()" style="padding:6px 12px;font-size:0.78rem;margin:0;">↔️ Move Selected</button>
+            <button onclick="clearServiceSelection()" style="background:#fee2e2;color:#ef4444;border:none;border-radius:7px;padding:6px 12px;cursor:pointer;font-size:0.78rem;font-weight:600;">✕ Clear</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Scrollable Service List -->
+      <div class="svc-container" id="svc-container">
+        <div id="svc-manager-list"></div>
+        <div class="no-results" id="svc-no-results" style="display:none;">❌ Koi service nahi mila</div>
+      </div>
+    </div>
+
+    <!-- Manage Categories Card (Bottom) -->
+    <div class="card">
+      <h2>📂 Manage Categories</h2>
+      <p style="font-size:0.82rem;color:var(--gray);margin-bottom:14px;">Organize services by creating and managing categories.</p>
+      <div id="category-manager" style="display:grid;gap:8px;margin-bottom:14px;"></div>
+      <div style="background:var(--green-light);border-radius:12px;padding:12px;border:1.5px dashed var(--green-mid);">
+        <div style="display:grid;grid-template-columns:1fr 80px;gap:8px;align-items:flex-end;">
+          <div>
+            <label style="margin-top:0;font-size:0.82rem;">➕ New Category Name</label>
+            <input type="text" id="new-cat-name" placeholder="e.g. 🚗 Driving & Transport">
+          </div>
+          <button class="save-btn" style="margin-top:0;" onclick="addNewCategory()">Add</button>
+        </div>
       </div>
     </div>
   </div>
@@ -736,19 +850,42 @@ Kya aap sure hain? Yeh undo nahi ho sakta.')) clearAllHistory()" style="backgrou
 <script>
 // ══ DEFAULT DATA ══
 const DEFAULT_SERVICES = [
-  {name:"Aadhar Card New",rate:50,cost:0},{name:"Aadhar Card Update/Correction",rate:100,cost:0},
-  {name:"PAN Card New",rate:207,cost:107},{name:"PAN Card Correction",rate:207,cost:107},
-  {name:"Voter ID New",rate:50,cost:0},{name:"Voter ID Correction",rate:50,cost:0},
-  {name:"Ration Card",rate:100,cost:0},{name:"Income Certificate",rate:50,cost:0},
-  {name:"Caste Certificate",rate:50,cost:0},{name:"Domicile Certificate",rate:50,cost:0},
-  {name:"Birth / Death Certificate",rate:50,cost:0},{name:"Scholarship Form",rate:50,cost:0},
-  {name:"Govt Job Application Form",rate:50,cost:0},{name:"PM Kisan / PM Awas",rate:50,cost:0},
-  {name:"Ayushman Bharat Card",rate:30,cost:0},{name:"ABHA Health ID",rate:30,cost:0},
-  {name:"Driving Licence Apply",rate:300,cost:0},{name:"Insurance (PMJJBY/PMSBY)",rate:486,cost:0},
-  {name:"Bank Account Opening",rate:50,cost:0},{name:"Bill Payment / Recharge",rate:10,cost:0},
-  {name:"Printing B&W (per page)",rate:5,cost:1},{name:"Printing Color (per page)",rate:15,cost:5},
-  {name:"Scanning (per page)",rate:10,cost:1},{name:"Passport Photo (4 pcs)",rate:40,cost:10},
-  {name:"Lamination (per page)",rate:20,cost:5},
+  // Government Documents
+  {category:"🏛️ Government Documents", name:"Aadhar Card New",rate:50,cost:0},
+  {category:"🏛️ Government Documents", name:"Aadhar Card Update/Correction",rate:100,cost:0},
+  {category:"🏛️ Government Documents", name:"PAN Card New",rate:207,cost:107},
+  {category:"🏛️ Government Documents", name:"PAN Card Correction",rate:207,cost:107},
+  {category:"🏛️ Government Documents", name:"Voter ID New",rate:50,cost:0},
+  {category:"🏛️ Government Documents", name:"Voter ID Correction",rate:50,cost:0},
+  {category:"🏛️ Government Documents", name:"Birth / Death Certificate",rate:50,cost:0},
+  {category:"🏛️ Government Documents", name:"Passport Photo (4 pcs)",rate:40,cost:10},
+  
+  // Certificates
+  {category:"📜 Certificates", name:"Ration Card",rate:100,cost:0},
+  {category:"📜 Certificates", name:"Income Certificate",rate:50,cost:0},
+  {category:"📜 Certificates", name:"Caste Certificate",rate:50,cost:0},
+  {category:"📜 Certificates", name:"Domicile Certificate",rate:50,cost:0},
+  
+  // Government Schemes & Forms
+  {category:"📋 Government Schemes & Forms", name:"Scholarship Form",rate:50,cost:0},
+  {category:"📋 Government Schemes & Forms", name:"Govt Job Application Form",rate:50,cost:0},
+  {category:"📋 Government Schemes & Forms", name:"PM Kisan / PM Awas",rate:50,cost:0},
+  
+  // Health & Insurance
+  {category:"🏥 Health & Insurance", name:"Ayushman Bharat Card",rate:30,cost:0},
+  {category:"🏥 Health & Insurance", name:"ABHA Health ID",rate:30,cost:0},
+  {category:"🏥 Health & Insurance", name:"Insurance (PMJJBY/PMSBY)",rate:486,cost:0},
+  
+  // Banking & Finance
+  {category:"🏦 Banking & Finance", name:"Driving Licence Apply",rate:300,cost:0},
+  {category:"🏦 Banking & Finance", name:"Bank Account Opening",rate:50,cost:0},
+  {category:"🏦 Banking & Finance", name:"Bill Payment / Recharge",rate:10,cost:0},
+  
+  // Printing & Photostat
+  {category:"🖨️ Printing & Photostat", name:"Printing B&W (per page)",rate:5,cost:1},
+  {category:"🖨️ Printing & Photostat", name:"Printing Color (per page)",rate:15,cost:5},
+  {category:"🖨️ Printing & Photostat", name:"Scanning (per page)",rate:10,cost:1},
+  {category:"🖨️ Printing & Photostat", name:"Lamination (per page)",rate:20,cost:5},
 ];
 
 const DEFAULT_SETTINGS = {
@@ -934,6 +1071,36 @@ function saveServices(l) {
   localStorage.setItem('imiServices', JSON.stringify(l));
   if(_db) _db.ref('imiServices').set(l);
 }
+
+// Category Storage
+function loadCategories() {
+  try { 
+    const saved = localStorage.getItem('imiCategories');
+    if (saved) return JSON.parse(saved);
+    // If not saved, extract from services
+    return getDefaultCategories();
+  } catch(e) { 
+    return getDefaultCategories();
+  }
+}
+
+function getDefaultCategories() {
+  return [
+    '🏛️ Government Documents',
+    '📜 Certificates',
+    '📋 Government Schemes & Forms',
+    '🏥 Health & Insurance',
+    '🏦 Banking & Finance',
+    '🖨️ Printing & Photostat',
+    '📦 Other Services'
+  ];
+}
+
+function saveCategories(cats) {
+  localStorage.setItem('imiCategories', JSON.stringify(cats));
+  if(_db) _db.ref('imiCategories').set(cats);
+}
+
 function loadSettings() {
   try { return {...DEFAULT_SETTINGS, ...JSON.parse(localStorage.getItem('imiSettings'))}; } catch(e) { return {...DEFAULT_SETTINGS}; }
 }
@@ -950,10 +1117,12 @@ function getReceiptNo() {
 
 let services = loadServices();
 let settings = loadSettings();
+let categories = loadCategories();
 
 // ══ INIT ══
 function init() {
   applySettingsToPage();
+  populateCategorySelect();
   addServiceRow();
   populateSettingsForm();
 
@@ -980,7 +1149,11 @@ function switchTab(tab) {
   const tabs = ['receipt','services','settings','reports'];
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===tab));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-'+tab));
-  if (tab==='services') renderServiceManager();
+  if (tab==='services') {
+    renderCategoryManager();
+    populateCategorySelect();
+    renderServiceManager();
+  }
   if (tab==='settings') {
     populateSettingsForm();
     const cfg = loadFbConfig();
@@ -1028,71 +1201,590 @@ function saveSettings() {
 function renderServiceManager() {
   const list = document.getElementById('svc-manager-list');
   list.innerHTML = '';
-  services.forEach((s,i) => {
-    const cost = s.cost||0;
-    const profit = s.rate - cost;
-    const div = document.createElement('div');
-    div.className = 'svc-manager-row';
-    div.innerHTML = `<div class="svc-info">
-        <div class="svc-name">${s.name}</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:3px;">
-          <span style="font-size:0.75rem;color:var(--green);">💰 Sale: ₹${s.rate}</span>
-          <span style="font-size:0.75rem;color:#ef4444;">📤 Cost: ₹${cost}</span>
-          <span style="font-size:0.75rem;color:#7c3aed;font-weight:700;">📈 Profit: ₹${profit}</span>
-        </div>
-      </div>
-      <div class="svc-actions">
-        <button class="edit-btn" onclick="editService(${i})">✏️ Edit</button>
-        <button class="remove-btn" onclick="removeService(${i})">🗑️</button>
-      </div>`;
-    list.appendChild(div);
+  const searchQuery = document.getElementById('svc-search-input')?.value.toLowerCase() || '';
+  
+  // Group services by category
+  const categories = {};
+  let totalVisible = 0;
+  
+  services.forEach((s, i) => {
+    const cat = s.category || '📦 Uncategorized';
+    if (!categories[cat]) categories[cat] = [];
+    
+    // Search filtering
+    const matchesSearch = searchQuery === '' || 
+                         s.name.toLowerCase().includes(searchQuery) || 
+                         s.rate.toString().includes(searchQuery);
+    
+    if (matchesSearch) {
+      totalVisible++;
+      categories[cat].push({...s, index: i});
+    }
   });
+  
+  // Display categories with services
+  Object.keys(categories).sort().forEach(catName => {
+    const catServices = categories[catName];
+    
+    // Category header
+    const catHeader = document.createElement('div');
+    catHeader.style.cssText = 'font-family:"Baloo 2",cursive;font-size:0.9rem;font-weight:700;color:var(--green);margin-top:12px;margin-bottom:8px;padding:8px 0 4px 0;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:6px;';
+    catHeader.innerHTML = `${catName} <span style="font-size:0.75rem;background:var(--green);color:white;border-radius:12px;padding:2px 8px;margin-left:auto;">${catServices.length}</span>`;
+    list.appendChild(catHeader);
+    
+    // Services in category
+    catServices.forEach(s => {
+      const cost = s.cost || 0;
+      const profit = s.rate - cost;
+      const div = document.createElement('div');
+      div.className = 'svc-manager-row';
+      div.innerHTML = `<div style="display:flex;align-items:center;gap:6px;flex:1;overflow:hidden;min-width:0;">
+          <input type="checkbox" class="svc-checkbox" data-svc-idx="${s.index}" onchange="updateBulkMoveControls()" style="flex-shrink:0;width:16px;">
+          <div style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:0.76rem;font-weight:700;color:var(--dark);">${s.name}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+          <span style="font-size:0.62rem;color:var(--green);white-space:nowrap;">💰${s.rate}</span>
+          <span style="font-size:0.62rem;color:#ef4444;white-space:nowrap;">📈${profit}</span>
+          <button class="edit-btn" onclick="editService(${s.index})" style="padding:2px 5px;font-size:0.62rem;margin:0;">✏️</button>
+          <button class="remove-btn" onclick="removeService(${s.index})" style="padding:2px 5px;font-size:0.62rem;margin:0;">🗑️</button>
+        </div>`;
+      list.appendChild(div);
+    });
+  });
+  
+  // Show/hide no results message
+  const noResults = document.getElementById('svc-no-results');
+  if (totalVisible === 0 && services.length > 0) {
+    noResults.style.display = 'block';
+  } else {
+    noResults.style.display = 'none';
+  }
+}
+
+function filterServices() {
+  renderServiceManager();
+}
+
+function updateBulkMoveControls() {
+  const checkboxes = document.querySelectorAll('.svc-checkbox:checked');
+  const controlsDiv = document.getElementById('bulk-move-controls');
+  const selectedCount = document.getElementById('selected-count');
+  
+  if (checkboxes.length > 0) {
+    controlsDiv.style.display = 'block';
+    selectedCount.textContent = checkboxes.length;
+  } else {
+    controlsDiv.style.display = 'none';
+  }
+}
+
+function clearServiceSelection() {
+  document.querySelectorAll('.svc-checkbox').forEach(cb => cb.checked = false);
+  updateBulkMoveControls();
+}
+
+function getSelectedServiceIndices() {
+  const checkboxes = document.querySelectorAll('.svc-checkbox:checked');
+  return Array.from(checkboxes).map(cb => parseInt(cb.dataset.svcIdx));
+}
+
+function showBulkMoveModal() {
+  const selectedIndices = getSelectedServiceIndices();
+  if (selectedIndices.length === 0) {
+    alert('❌ Koi service select nahi hai!');
+    return;
+  }
+  
+  const availableCats = categories;
+  
+  if (availableCats.length === 0) {
+    alert('❌ Koi category nahi hai!');
+    return;
+  }
+  
+  // Create a modal for category selection
+  const modal = document.createElement('div');
+  modal.style.cssText = `position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:2000;padding:16px;`;
+  
+  const box = document.createElement('div');
+  box.style.cssText = `background:white;border-radius:20px;padding:24px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,0.3);`;
+  
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);margin:0;">↔️ Move Services</h2>
+      <button onclick="this.closest('div').parentElement.remove()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
+    </div>
+    
+    <div style="background:#e8f5ee;border-radius:12px;padding:12px;margin-bottom:16px;border-left:4px solid var(--green);">
+      <p style="font-size:0.88rem;color:var(--green);font-weight:600;margin:0;">✅ ${selectedIndices.length} service${selectedIndices.length !== 1 ? 's' : ''} selected</p>
+    </div>
+    
+    <div style="margin-bottom:16px;">
+      <label style="font-size:0.82rem;font-weight:600;color:var(--dark);display:block;margin-bottom:8px;">Kaun se category mein move Karen?</label>
+      <select id="bulk-move-cat-select" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.88rem;color:var(--dark);background:white;outline:none;">
+        <option value="">-- Select Category --</option>
+        ${availableCats.map(cat => `<option value="${cat.replace(/"/g, '&quot;')}">${cat}</option>`).join('')}
+      </select>
+    </div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <button onclick="this.closest('div').parentElement.remove()" style="background:#f3f4f6;border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;color:var(--gray);">❌ Cancel</button>
+      <button onclick="confirmBulkMove(document.getElementById('bulk-move-cat-select').value)" style="background:linear-gradient(135deg,var(--green),var(--green-mid));color:white;border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(26,122,74,0.2);">✅ Move All</button>
+    </div>
+  `;
+  
+  modal.appendChild(box);
+  document.body.appendChild(modal);
+  
+  document.getElementById('bulk-move-cat-select').focus();
+}
+
+function confirmBulkMove(newCat) {
+  if (!newCat) {
+    alert('❌ Category select Karen!');
+    return;
+  }
+  
+  const selectedIndices = getSelectedServiceIndices();
+  let movedCount = 0;
+  
+  selectedIndices.forEach(idx => {
+    if (services[idx]) {
+      services[idx].category = newCat;
+      movedCount++;
+    }
+  });
+  
+  saveServices(services);
+  
+  // Close modal
+  document.querySelectorAll('div[style*="position:fixed"]').forEach(m => m.remove());
+  
+  // Refresh everything
+  document.getElementById('svc-search-input').value = '';
+  clearServiceSelection();
+  renderCategoryManager();
+  renderServiceManager();
+  updateTotalServicesCount();
+  
+  showToast(`✅ ${movedCount} service${movedCount !== 1 ? 's' : ''} moved to "${newCat}"`);
+}
+
+function filterServices() {
+  renderServiceManager();
 }
 
 function editService(i) {
   const s = services[i];
+  const cat = prompt('Category:', s.category || '📦 Other Services'); if(!cat) return;
   const n = prompt('Service ka naam:', s.name); if(!n) return;
   const r = prompt('Customer ko charge (Sale Price ₹):', s.rate); if(r===null) return;
   const c = prompt('Your actual cost (₹) — Enter 0 if no cost:', s.cost||0); if(c===null) return;
-  services[i] = {name:n.trim(), rate:parseFloat(r)||0, cost:parseFloat(c)||0};
-  saveServices(services); renderServiceManager(); showToast('✅ Updated successfully!');
+  services[i] = {category: cat.trim(), name:n.trim(), rate:parseFloat(r)||0, cost:parseFloat(c)||0};
+  saveServices(services); 
+  
+  // Clear search and selections
+  document.getElementById('svc-search-input').value = '';
+  clearServiceSelection();
+  
+  renderCategoryManager();
+  renderServiceManager(); 
+  updateTotalServicesCount();
+  showToast('✅ Updated successfully!');
 }
 
 function removeService(i) {
   if(!confirm(`"${services[i].name}" Are you sure you want to remove`)) return;
-  services.splice(i,1); saveServices(services); renderServiceManager(); showToast('🗑️ Service removed!');
+  services.splice(i,1); 
+  saveServices(services); 
+  
+  // Clear search and selections
+  document.getElementById('svc-search-input').value = '';
+  clearServiceSelection();
+  
+  renderCategoryManager();
+  renderServiceManager(); 
+  updateTotalServicesCount();
+  showToast('🗑️ Service removed!');
 }
 
 function addNewService() {
+  const category = document.getElementById('new-svc-category').value.trim();
   const name = document.getElementById('new-svc-name').value.trim();
   const rate = parseFloat(document.getElementById('new-svc-rate').value)||0;
   const cost = parseFloat(document.getElementById('new-svc-cost').value)||0;
-  if(!name) { alert('Please enter a service name!'); return; }
-  services.push({name, rate, cost}); saveServices(services);
+  
+  if(!category) { alert('❌ Kripay category select Karen!'); return; }
+  if(!name) { alert('❌ Kripay service ka naam likhen!'); return; }
+  if(rate <= 0) { alert('❌ Sale price 0 se zyada honi chahiye!'); return; }
+  
+  // Check duplicate service
+  const duplicate = services.find(s => s.name.toLowerCase() === name.toLowerCase());
+  if(duplicate) { alert(`⚠️ "${name}" already exists!\n\nIs service ko edit karna chahte hain?`); return; }
+  
+  services.push({category, name, rate, cost}); 
+  saveServices(services);
+  
+  // Clear form
+  document.getElementById('new-svc-category').value='';
   document.getElementById('new-svc-name').value='';
   document.getElementById('new-svc-rate').value='';
   document.getElementById('new-svc-cost').value='';
-  renderServiceManager(); showToast('✅ Service added successfully!');
+  
+  // Clear search and re-render
+  document.getElementById('svc-search-input').value = '';
+  renderCategoryManager();
+  renderServiceManager();
+  updateTotalServicesCount();
+  showToast('✅ Service successfully add ho gaya!');
+}
+
+// ══ CATEGORY MANAGEMENT ══
+function getCategories() {
+  // Return all stored categories, sorted
+  return categories.sort();
+}
+
+function populateCategorySelect() {
+  const select = document.getElementById('new-svc-category');
+  const currentVal = select.value;
+  select.innerHTML = '<option value="">-- Select Category --</option>';
+  getCategories().forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    select.appendChild(opt);
+  });
+  if (currentVal) select.value = currentVal;
+}
+
+function renderCategoryManager() {
+  const container = document.getElementById('category-manager');
+  container.innerHTML = '';
+  
+  getCategories().forEach(cat => {
+    const count = services.filter(s => s.category === cat).length;
+    const div = document.createElement('div');
+    div.className = 'category-card';
+    div.innerHTML = `
+      <div class="cat-info">
+        <div class="cat-name">${cat}</div>
+        <div class="cat-count">${count} service${count !== 1 ? 's' : ''}</div>
+      </div>
+      <div class="cat-actions">
+        <button class="cat-edit-btn" onclick="editCategory('${cat.replace(/'/g, "\\'")}')">✏️ Rename</button>
+        <button class="cat-delete-btn" onclick="deleteCategory('${cat.replace(/'/g, "\\'")}')">🗑️ Delete</button>
+      </div>`;
+    container.appendChild(div);
+  });
+  
+  updateTotalServicesCount();
+}
+
+function updateTotalServicesCount() {
+  const countEl = document.getElementById('total-services-count');
+  if (countEl) {
+    countEl.textContent = services.length;
+  }
+}
+
+function editCategory(oldCat) {
+  const newCat = prompt('Category ka naya naam:', oldCat);
+  if (!newCat || newCat.trim() === '') return;
+  if (newCat === oldCat) return;
+  
+  // Check duplicate
+  if (categories.includes(newCat.trim())) {
+    alert('⚠️ Yeh category already exist karti hai!');
+    return;
+  }
+  
+  // Update in global categories list
+  const idx = categories.indexOf(oldCat);
+  if (idx > -1) {
+    categories[idx] = newCat.trim();
+    saveCategories(categories);
+  }
+  
+  // Update all services with old category
+  services.forEach(s => {
+    if (s.category === oldCat) {
+      s.category = newCat.trim();
+    }
+  });
+  
+  saveServices(services);
+  renderCategoryManager();
+  renderServiceManager();
+  populateCategorySelect();
+  showToast(`✅ Category renamed: "${oldCat}" → "${newCat.trim()}"`);
+}
+
+function deleteCategory(cat) {
+  const servicesInCat = services.filter(s => s.category === cat).length;
+  
+  const availableCats = categories.filter(c => c !== cat);
+  
+  if (availableCats.length === 0) {
+    alert('❌ Koi aur category nahi hai! Kam se kam ek category honi chahiye.');
+    return;
+  }
+  
+  // Create a modal for category selection
+  const modal = document.createElement('div');
+  modal.style.cssText = `position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:2000;padding:16px;`;
+  
+  const box = document.createElement('div');
+  box.style.cssText = `background:white;border-radius:20px;padding:24px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,0.3);`;
+  
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:#dc2626;margin:0;">🗑️ Delete Category</h2>
+      <button onclick="this.closest('div').parentElement.remove()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
+    </div>
+    
+    <div style="background:#fef3c7;border-radius:12px;padding:12px;margin-bottom:16px;border-left:4px solid #d97706;">
+      <p style="font-size:0.88rem;color:#d97706;font-weight:600;margin:0;">⚠️ "${cat}" category mein ${servicesInCat} service${servicesInCat !== 1 ? 's are' : ' hai'}!</p>
+    </div>
+    
+    <div style="margin-bottom:16px;">
+      <label style="font-size:0.82rem;font-weight:600;color:var(--dark);display:block;margin-bottom:8px;">Services ko kaun se category mein move Karen?</label>
+      <select id="delete-cat-select" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.88rem;color:var(--dark);background:white;outline:none;">
+        <option value="">-- Select Category --</option>
+        ${availableCats.map(c => `<option value="${c.replace(/"/g, '&quot;')}">${c}</option>`).join('')}
+      </select>
+    </div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <button onclick="this.closest('div').parentElement.remove()" style="background:#f3f4f6;border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;color:var(--gray);">❌ Cancel</button>
+      <button onclick="confirmDeleteCategory('${cat.replace(/'/g, "\\'")}', document.getElementById('delete-cat-select').value)" style="background:#dc2626;color:white;border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(220,38,38,0.2);">🗑️ Delete</button>
+    </div>
+  `;
+  
+  modal.appendChild(box);
+  document.body.appendChild(modal);
+  
+  document.getElementById('delete-cat-select').focus();
+}
+
+function confirmDeleteCategory(cat, newCat) {
+  if (!newCat) {
+    alert('❌ Category select Karen jahan services move Karen!');
+    return;
+  }
+  
+  const servicesInCat = services.filter(s => s.category === cat).length;
+  
+  // Move services to new category
+  services.forEach(s => {
+    if (s.category === cat) {
+      s.category = newCat;
+    }
+  });
+  
+  // Remove category from list
+  const idx = categories.indexOf(cat);
+  if (idx > -1) {
+    categories.splice(idx, 1);
+    saveCategories(categories);
+  }
+  
+  saveServices(services);
+  renderCategoryManager();
+  renderServiceManager();
+  updateTotalServicesCount();
+  populateCategorySelect();
+  showToast(`✅ ${servicesInCat} service${servicesInCat !== 1 ? 's' : ''} moved to "${newCat}"`);
+  
+  // Close modal
+  document.querySelectorAll('div[style*="position:fixed"]').forEach(m => m.remove());
+}
+
+function addNewCategory() {
+  const newCat = document.getElementById('new-cat-name').value.trim();
+  if (!newCat) {
+    alert('❌ Category name likhen!');
+    return;
+  }
+  
+  if (categories.includes(newCat)) {
+    alert('⚠️ Yeh category already exist karti hai!');
+    return;
+  }
+  
+  // Add to categories list and save
+  categories.push(newCat);
+  saveCategories(categories);
+  
+  document.getElementById('new-cat-name').value = '';
+  renderCategoryManager();
+  populateCategorySelect();
+  showToast(`✅ Category "${newCat}" created! Ab is category mein services add kar sakte ho.`);
+}
+
+function moveService(serviceIndex) {
+  const service = services[serviceIndex];
+  const availableCats = categories.filter(c => c !== service.category);
+  
+  if (availableCats.length === 0) {
+    alert('❌ Koi aur category nahi hai!');
+    return;
+  }
+  
+  // Create a modal for category selection
+  const modal = document.createElement('div');
+  modal.style.cssText = `position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:2000;padding:16px;`;
+  
+  const box = document.createElement('div');
+  box.style.cssText = `background:white;border-radius:20px;padding:24px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,0.3);`;
+  
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);margin:0;">↔️ Move Service</h2>
+      <button onclick="this.closest('div').parentElement.remove()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
+    </div>
+    
+    <div style="margin-bottom:16px;">
+      <p style="font-size:0.9rem;color:var(--gray);margin-bottom:8px;"><b>"${service.name}"</b> ko kaun se category mein move Karen?</p>
+      <select id="move-cat-select" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.88rem;color:var(--dark);background:white;outline:none;">
+        <option value="">-- Select Category --</option>
+        ${availableCats.map(cat => `<option value="${cat.replace(/"/g, '&quot;')}">${cat}</option>`).join('')}
+      </select>
+    </div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <button onclick="this.closest('div').parentElement.remove()" style="background:#f3f4f6;border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;color:var(--gray);">❌ Cancel</button>
+      <button onclick="confirmMoveService(${serviceIndex}, document.getElementById('move-cat-select').value)" style="background:linear-gradient(135deg,var(--green),var(--green-mid));color:white;border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(26,122,74,0.2);">✅ Move</button>
+    </div>
+  `;
+  
+  box.appendChild(box.querySelector('div').cloneNode(true));
+  modal.appendChild(box);
+  document.body.appendChild(modal);
+  
+  document.getElementById('move-cat-select').focus();
+}
+
+function confirmMoveService(serviceIndex, newCat) {
+  if (!newCat) {
+    alert('❌ Category select Karen!');
+    return;
+  }
+  
+  const service = services[serviceIndex];
+  services[serviceIndex].category = newCat;
+  saveServices(services);
+  renderCategoryManager();
+  renderServiceManager();
+  updateTotalServicesCount();
+  showToast(`✅ Service moved to "${newCat}"`);
+  
+  // Close modal
+  document.querySelectorAll('div[style*="position:fixed"]').forEach(m => m.remove());
 }
 
 // ══ RECEIPT FORM ══
 function addServiceRow() {
   const list = document.getElementById('services-list');
   const div = document.createElement('div'); div.className='service-row';
-  const opts = services.map(s=>`<option value="${s.name}" data-rate="${s.rate}" data-cost="${s.cost||0}">${s.name}</option>`).join('');
+  
+  // Create searchable service dropdown
+  const searchId = 'svc-search-' + Date.now();
+  const dropdownId = 'svc-dropdown-' + Date.now();
+  
+  const opts = services.map(s=>`<div class="search-option" data-name="${s.name}" data-rate="${s.rate}" data-cost="${s.cost||0}" onclick="selectServiceOption(this)">
+    <strong>${s.name}</strong> <span style="font-size:0.7rem;color:#6b7280;margin-left:8px;">₹${s.rate}</span>
+  </div>`).join('');
+  
   div.innerHTML = `
-    <select onchange="autoRate(this)"><option value="">-- Select --</option>${opts}</select>
-    <input type="number" placeholder="Qty" value="1" min="1" class="qty-inp">
-    <input type="number" placeholder="₹ Amount" min="0" class="amt-inp">
-    <button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;
+    <div style="position:relative;width:100%;">
+      <input type="text" class="service-search-input" id="${searchId}" placeholder="Search service..." oninput="filterServiceDropdown(this)">
+      <div class="search-dropdown" id="${dropdownId}" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border:1.5px solid #d1fae5;border-top:none;border-radius:0 0 10px 10px;max-height:200px;overflow-y:auto;z-index:1000;">
+        ${opts}
+      </div>
+    </div>
+    <input type="number" placeholder="Qty" value="1" min="1" class="qty-inp" oninput="updateSubtotal()">
+    <input type="number" placeholder="₹ Amount" min="0" class="amt-inp" oninput="updateSubtotal()">
+    <input type="number" placeholder="Profit" min="0" class="profit-inp" value="0" oninput="updateSubtotal()">
+    <button class="del-btn" onclick="this.parentElement.remove(); updateSubtotal()">✕</button>`;
+  
   list.appendChild(div);
+  
+  // Add event listeners
+  const searchInput = div.querySelector('.service-search-input');
+  const dropdown = div.querySelector('.search-dropdown');
+  
+  searchInput.addEventListener('focus', function() {
+    dropdown.style.display = 'block';
+  });
+  
+  document.addEventListener('click', function(e) {
+    if(!div.contains(e.target)) {
+      dropdown.style.display = 'none';
+    }
+  });
+  
+  updateSubtotal();
 }
 
-function autoRate(sel) {
-  const r = sel.options[sel.selectedIndex].getAttribute('data-rate');
-  const c = sel.options[sel.selectedIndex].getAttribute('data-cost');
-  if(r) sel.parentElement.querySelector('.amt-inp').value = r;
-  sel.parentElement.dataset.cost = c||0;
+function filterServiceDropdown(input) {
+  const query = input.value.toLowerCase().trim();
+  const dropdown = input.closest('div').querySelector('.search-dropdown');
+  const options = dropdown.querySelectorAll('.search-option');
+  
+  options.forEach(opt => {
+    const serviceName = opt.dataset.name.toLowerCase();
+    const matches = query === '' || 
+      serviceName.includes(query) ||
+      serviceName.split(' ').some(word => word.startsWith(query));
+    
+    opt.style.display = matches ? 'block' : 'none';
+  });
+  
+  dropdown.style.display = 'block';
+}
+
+function selectServiceOption(optionEl) {
+  const serviceName = optionEl.dataset.name;
+  const rate = optionEl.dataset.rate;
+  const cost = optionEl.dataset.cost || 0;
+  
+  const row = optionEl.closest('.service-row');
+  const searchInput = row.querySelector('.service-search-input');
+  const amtInput = row.querySelector('.amt-inp');
+  const profitInput = row.querySelector('.profit-inp');
+  const dropdown = row.querySelector('.search-dropdown');
+  
+  searchInput.value = serviceName;
+  amtInput.value = rate;
+  profitInput.value = cost;
+  
+  dropdown.style.display = 'none';
+  updateSubtotal();
+}
+
+function updateSubtotal() {
+  const rows = document.querySelectorAll('.service-row');
+  let subtotal = 0;
+  
+  rows.forEach(row => {
+    const qty = parseInt(row.querySelector('.qty-inp').value) || 1;
+    const amt = parseFloat(row.querySelector('.amt-inp').value) || 0;
+    subtotal += qty * amt;
+  });
+  
+  const display = document.getElementById('subtotal-display');
+  const amountSpan = document.getElementById('subtotal-amount');
+  
+  if (subtotal > 0) {
+    display.style.display = 'block';
+    amountSpan.textContent = subtotal.toLocaleString('en-IN');
+  } else {
+    display.style.display = 'none';
+  }
+  
+  // Update discount preview with new subtotal
+  previewDiscount();
 }
 
 function generateReceipt() {
@@ -1871,20 +2563,20 @@ document.addEventListener('click', e => {
 });
 
 // ══ CUSTOMER PROFILE ══
-function openCProfileModal(nameEncoded) {
-  const name = decodeURIComponent(nameEncoded);
+function openCProfileModal(phoneEncoded) {
+  const phone = decodeURIComponent(phoneEncoded);
   const history = loadBillingHistory();
 
-  // Match by name (case-insensitive)
-  const recs = history.filter(r => (r.name||'').toLowerCase() === name.toLowerCase());
-  if(!recs.length) { showToast('❌ No records found!'); return; }
+  // Match by phone number (case-insensitive and trim)
+  const recs = history.filter(r => (r.phone||'').trim() === phone.trim());
+  if(!recs.length) { showToast('❌ Koi record nahi mila!'); return; }
 
   // Stats
   const totalSpend = recs.reduce((s,r) => s + (r.finalTotal||r.total), 0);
   const lastVisit = recs[0].date; // newest first
-  const phone = recs.find(r=>r.phone)?.phone || '—';
+  const custName = recs[0].name || '—';
 
-  document.getElementById('cp-name').textContent = recs[0].name;
+  document.getElementById('cp-name').textContent = custName;
   document.getElementById('cp-phone').textContent = phone !== '—' ? '📞 ' + phone : '📞 —';
   document.getElementById('cp-visit-count').textContent = recs.length;
   document.getElementById('cp-total-spend').textContent = '₹' + totalSpend.toLocaleString('en-IN');
@@ -2106,7 +2798,7 @@ function renderReportTable(history, query) {
       <td><input type="checkbox" class="row-checkbox" data-rno="${rNoSafe}" onchange="onRowCheck(this)"></td>
       <td>${r.rNo}</td>
       <td>${r.date}<br><span style="color:var(--gray);font-size:0.7rem;">${r.time}</span></td>
-      <td><b style="cursor:pointer;color:var(--green);text-decoration:underline dotted;" onclick="openCProfileModal('${encodeURIComponent(r.name||'')}')" title="Customer profile dekhein">${nameHl}</b><br><span style="color:var(--gray);font-size:0.7rem;">${phoneHl}</span></td>
+      <td><b style="cursor:pointer;color:var(--green);text-decoration:underline dotted;" onclick="openCProfileModal('${encodeURIComponent(r.phone||'')}')" title="Customer profile dekhein">${nameHl}</b><br><span style="color:var(--gray);font-size:0.7rem;">${phoneHl}</span></td>
       <td style="max-width:110px;word-break:break-word;font-size:0.75rem;">${svcNames}</td>
       <td style="color:#d97706;font-weight:700;">₹${r.total.toLocaleString('en-IN')}</td>
       <td style="color:#dc2626;font-size:0.78rem;">${discStr}</td>
@@ -2243,21 +2935,27 @@ function previewDiscount() {
   const val = parseFloat(document.getElementById('disc-value').value)||0;
   const type = document.getElementById('disc-type').value;
   const preview = document.getElementById('disc-preview');
-  if(val <= 0) { preview.style.display='none'; return; }
-
-  // calculate current subtotal from service rows
+  
+  // Calculate current subtotal from service rows
   let sub = 0;
   document.querySelectorAll('.service-row').forEach(row => {
     const qty = parseInt(row.querySelector('.qty-inp').value)||1;
     const amt = parseFloat(row.querySelector('.amt-inp').value)||0;
     sub += qty * amt;
   });
-  if(sub <= 0) { preview.style.display='none'; return; }
+  
+  if(val <= 0 || sub <= 0) { 
+    preview.style.display='none'; 
+    return; 
+  }
 
   let discAmt = type==='pct' ? Math.round(sub*val/100) : Math.min(val,sub);
   let final = sub - discAmt;
+  
   preview.style.display='block';
-  preview.innerHTML = `Subtotal ₹${sub.toLocaleString('en-IN')} &nbsp;→&nbsp; <b style="color:#dc2626;">- ₹${discAmt.toLocaleString('en-IN')}</b> &nbsp;→&nbsp; <b style="color:#15803d;">Pay ₹${final.toLocaleString('en-IN')}</b>`;
+  document.getElementById('preview-subtotal').textContent = sub.toLocaleString('en-IN');
+  document.getElementById('preview-discount').textContent = discAmt.toLocaleString('en-IN');
+  document.getElementById('preview-final').textContent = final.toLocaleString('en-IN');
 }
 
 // ══ REPRINT ══
@@ -2430,6 +3128,38 @@ function saveEditedReceipt() {
   closeEditModal();
   renderReports();
   showToast(`✅ Receipt ${_editingRNo} updated successfully!`);
+}
+
+// ══ PROFIT TOGGLE ══
+let _profitHidden = false;
+function toggleProfitDisplay() {
+  _profitHidden = !_profitHidden;
+  const header = document.querySelector('.svc-header');
+  const rows = document.querySelectorAll('.service-row');
+  const btn = event.target;
+  const profitHeader = document.getElementById('profit-col-header');
+  
+  rows.forEach(row => {
+    if(_profitHidden) {
+      row.classList.add('profit-hidden');
+    } else {
+      row.classList.remove('profit-hidden');
+    }
+  });
+  
+  if(header) {
+    if(_profitHidden) {
+      header.classList.add('profit-hidden');
+    } else {
+      header.classList.remove('profit-hidden');
+    }
+  }
+  
+  if(profitHeader) {
+    profitHeader.style.display = _profitHidden ? 'none' : 'block';
+  }
+  
+  btn.textContent = _profitHidden ? 'Show Profit' : 'Hide Profit';
 }
 
 init();
