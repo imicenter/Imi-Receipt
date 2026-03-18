@@ -1836,7 +1836,7 @@ function selectServiceOption(optionEl) {
   
   searchInput.value = serviceName;
   amtInput.value = rate;
-  profitInput.value = cost;
+  profitInput.value = parseFloat(rate) - parseFloat(cost);
   
   dropdown.style.display = 'none';
   updateSubtotal();
