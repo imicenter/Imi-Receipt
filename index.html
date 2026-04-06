@@ -1337,6 +1337,12 @@ function setupFirebaseListeners() {
     if(val) localStorage.setItem('imiOperatorPasswords', JSON.stringify(val));
   });
 
+  // ✅ FIX: Sync admin password from Firebase so all devices are in sync
+  _db.ref('imiConfig/adminPass').on('value', snap => {
+    const val = snap.val();
+    if(val) localStorage.setItem('imiAdminPass', val);
+  });
+
   // Receipt counter
   _db.ref('imiRNo').on('value', snap => {
     const val = snap.val();
@@ -3705,6 +3711,8 @@ function saveAdminPassword() {
   if(!p) { showToast('⚠️ Password cannot be empty!'); return; }
   if(p.length < 4) { showToast('⚠️ Password must be at least 4 characters!'); return; }
   localStorage.setItem('imiAdminPass', p);
+  // ✅ FIX: Also save to Firebase so all devices get the same password
+  if(_db) _db.ref('imiConfig/adminPass').set(p);
   document.getElementById('new-admin-pass').value = '';
   showToast('✅ Admin password saved successfully!');
 }
@@ -3740,12 +3748,18 @@ function doLogin() {
   if(role === 'admin') {
     const entered  = document.getElementById('admin-password-inp').value;
     const saved    = getAdminPass();
-    // First-time: no password set → allow with empty
-    if(!saved) {
-      // First time admin login — no password set yet, allow
-    } else if(entered !== saved) {
-      showErr('Incorrect admin password. Please try again!');
-      return;
+    // ✅ FIX: If password is set, it MUST match — no bypass allowed
+    if(saved) {
+      if(entered !== saved) {
+        showErr('Incorrect admin password. Please try again!');
+        return;
+      }
+    } else {
+      // Truly first time (no password set anywhere) — allow but warn
+      if(entered.length > 0) {
+        // They typed something but no password is set — let them in, password will be set in Settings
+      }
+      // empty + no password saved = first time setup, allow
     }
     _currentRole     = 'admin';
     _currentCenter   = 'Admin';
