@@ -3128,7 +3128,21 @@ function setStatusFilter(status) {
 }
 
 function applySearchFilter() {
-  const base = _filteredHistory || loadBillingHistory();
+  // ✅ FIX: If no explicit filter applied, use permission-filtered history as base
+  let base = _filteredHistory;
+  if(!base) {
+    base = loadBillingHistory();
+    const isOp = _currentRole === 'operator';
+    if(isOp) {
+      if(_currentPerms.allHistory) {
+        // all — no filter
+      } else if(_currentPerms.ownHistory) {
+        base = base.filter(r => (r.operator||'') === _currentOperator);
+      } else {
+        base = [];
+      }
+    }
+  }
   let result = base;
 
   // Status filter
@@ -3249,7 +3263,20 @@ function applyFilter() {
   const to       = document.getElementById('filter-to').value;
   const fCenter  = document.getElementById('filter-center')?.value   || '';
   const fOp      = document.getElementById('filter-operator')?.value || '';
-  const history  = loadBillingHistory();
+
+  // ✅ FIX: Apply operator permission filter first — same as renderReports()
+  const isOp = _currentRole === 'operator';
+  let history = loadBillingHistory();
+  if(isOp) {
+    if(_currentPerms.allHistory) {
+      // show all — no filter
+    } else if(_currentPerms.ownHistory) {
+      history = history.filter(r => (r.operator||'') === _currentOperator);
+    } else {
+      history = [];
+    }
+  }
+
   const filtered = history.filter(r => {
     const parts = r.date.split('/');
     if(parts.length!==3) return true;
