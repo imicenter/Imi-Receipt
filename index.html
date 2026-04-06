@@ -284,6 +284,51 @@
   .cp-timeline-row .cp-t-rno { color:var(--green-mid); font-size:0.7rem; font-weight:700; }
   .cprofile-close-btn { width:100%; padding:13px; background:var(--green-light); border:none; font-family:'Baloo 2',cursive; font-size:0.95rem; font-weight:700; color:var(--green); cursor:pointer; }
 
+  /* LOGIN OVERLAY */
+  .login-overlay { position:fixed; inset:0; background:linear-gradient(135deg,#0a3d20,#1a7a4a,#2d9e65); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .login-overlay.hidden { display:none; }
+  .login-box { background:white; border-radius:24px; padding:30px 24px; width:100%; max-width:380px; box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+  .login-logo { text-align:center; margin-bottom:24px; }
+  .login-logo .logo-icon { font-size:2.8rem; }
+  .login-logo .logo-title { font-family:'Baloo 2',cursive; font-size:1.6rem; font-weight:800; color:var(--green); margin-top:4px; }
+  .login-logo .logo-sub { font-size:0.8rem; color:var(--gray); margin-top:3px; }
+  .login-select { width:100%; padding:12px 14px; border:2px solid var(--border); border-radius:12px; font-family:'Noto Sans',sans-serif; font-size:0.95rem; color:var(--dark); background:#f0fdf4; outline:none; transition:border-color 0.2s; margin-bottom:14px; cursor:pointer; }
+  .login-select:focus { border-color:var(--green-mid); background:white; }
+  .login-btn { width:100%; background:linear-gradient(135deg,var(--green),var(--green-mid)); color:white; border:none; border-radius:14px; padding:14px; font-family:'Baloo 2',cursive; font-size:1.1rem; font-weight:700; cursor:pointer; box-shadow:0 4px 16px rgba(26,122,74,0.3); transition:transform 0.15s; }
+  .login-btn:hover { transform:translateY(-2px); }
+  .op-badge { background:linear-gradient(135deg,var(--green),var(--green-mid)); color:white; border-radius:20px; padding:4px 11px; font-size:0.72rem; font-weight:700; display:inline-flex; align-items:center; gap:5px; cursor:pointer; white-space:nowrap; }
+  .op-badge:hover { opacity:0.85; }
+  .admin-modal-wrap { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:10000; align-items:center; justify-content:center; padding:16px; overflow-y:auto; }
+  .admin-modal-wrap.open { display:flex; }
+  .admin-box { background:white; border-radius:20px; padding:22px; width:100%; max-width:420px; box-shadow:0 8px 40px rgba(0,0,0,0.3); max-height:90vh; overflow-y:auto; margin:auto; }
+  .admin-section { background:#f0fdf4; border-radius:12px; padding:14px; margin-bottom:14px; border:1.5px solid var(--border); }
+  .admin-section h3 { font-family:'Baloo 2',cursive; font-size:0.95rem; font-weight:800; color:var(--green); margin-bottom:10px; }
+  .admin-tag { display:inline-flex; align-items:center; gap:5px; background:white; border:1.5px solid var(--border); border-radius:20px; padding:4px 10px; font-size:0.78rem; font-weight:700; color:var(--dark); margin:3px; }
+  .admin-tag-del { background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.85rem; padding:0 2px; line-height:1; }
+  .admin-input-row { display:grid; grid-template-columns:1fr auto; gap:8px; margin-top:8px; }
+  .admin-add-btn { background:linear-gradient(135deg,var(--green),var(--green-mid)); color:white; border:none; border-radius:10px; padding:9px 16px; font-family:'Baloo 2',cursive; font-size:0.88rem; font-weight:700; cursor:pointer; white-space:nowrap; }
+  .op-report-badge { display:inline-block; background:var(--green-light); color:var(--green); border-radius:6px; padding:2px 7px; font-size:0.7rem; font-weight:700; white-space:nowrap; }
+  .center-report-badge { display:inline-block; background:#ede9fe; color:#7c3aed; border-radius:6px; padding:2px 7px; font-size:0.7rem; font-weight:700; white-space:nowrap; }
+
+  /* PERMISSIONS MODAL */
+  .perm-modal-wrap { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:11000; align-items:center; justify-content:center; padding:16px; overflow-y:auto; }
+  .perm-modal-wrap.open { display:flex; }
+  .perm-box { background:white; border-radius:20px; padding:22px; width:100%; max-width:400px; box-shadow:0 8px 40px rgba(0,0,0,0.35); max-height:90vh; overflow-y:auto; margin:auto; }
+  .perm-box h3 { font-family:'Baloo 2',cursive; font-size:1.05rem; font-weight:800; color:var(--green); margin-bottom:4px; }
+  .perm-subtitle { font-size:0.75rem; color:var(--gray); margin-bottom:14px; }
+  .perm-row { display:flex; align-items:center; justify-content:space-between; padding:9px 12px; border-radius:10px; margin-bottom:6px; background:#f0fdf4; border:1.5px solid var(--border); }
+  .perm-row.locked { background:#f9fafb; border-color:#e5e7eb; opacity:0.7; }
+  .perm-label { font-size:0.82rem; font-weight:600; color:var(--dark); }
+  .perm-desc { font-size:0.68rem; color:var(--gray); margin-top:1px; }
+  .perm-toggle { position:relative; width:42px; height:24px; flex-shrink:0; }
+  .perm-toggle input { opacity:0; width:0; height:0; }
+  .perm-slider { position:absolute; inset:0; background:#d1d5db; border-radius:24px; cursor:pointer; transition:0.2s; }
+  .perm-slider:before { content:''; position:absolute; width:18px; height:18px; left:3px; bottom:3px; background:white; border-radius:50%; transition:0.2s; }
+  .perm-toggle input:checked + .perm-slider { background:var(--green); }
+  .perm-toggle input:checked + .perm-slider:before { transform:translateX(18px); }
+  .perm-toggle input:disabled + .perm-slider { cursor:not-allowed; background:#86efac; }
+  .perm-section-title { font-size:0.72rem; font-weight:800; color:var(--gray); text-transform:uppercase; letter-spacing:0.8px; margin:12px 0 6px; padding-left:2px; }
+
   /* TOAST & LOADER */
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--dark); color: white; padding: 10px 22px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; transition: transform 0.3s; z-index: 999; white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
@@ -295,6 +340,189 @@
 </style>
 </head>
 <body>
+
+<!-- ══ LOGIN OVERLAY ══ -->
+<div id="login-overlay" class="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-icon">🏪</div>
+      <div class="logo-title">IMI CENTER</div>
+      <div class="logo-sub">Billing System — Login karna zaroori hai</div>
+    </div>
+
+    <!-- ROLE SELECT -->
+    <label style="font-size:0.85rem;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">🔐 Login As *</label>
+    <select class="login-select" id="login-role-sel" onchange="onRoleChange()">
+      <option value="">-- Role Select Karen --</option>
+      <option value="admin">👑 Admin</option>
+      <option value="operator">👤 Operator</option>
+    </select>
+
+    <!-- ADMIN PASSWORD SECTION -->
+    <div id="admin-login-section" style="display:none;">
+      <label style="font-size:0.85rem;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">🔑 Admin Password *</label>
+      <input type="password" class="login-select" id="admin-password-inp" placeholder="Admin password daalen..." style="margin-bottom:14px;" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+
+    <!-- OPERATOR SECTION -->
+    <div id="operator-login-section" style="display:none;">
+      <label style="font-size:0.85rem;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">🏪 Center Select Karen *</label>
+      <select class="login-select" id="login-center-sel">
+        <option value="">-- Center Select Karen --</option>
+      </select>
+      <label style="font-size:0.85rem;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">👤 Operator Select Karen *</label>
+      <select class="login-select" id="login-operator-sel">
+        <option value="">-- Operator Select Karen --</option>
+      </select>
+      <label style="font-size:0.85rem;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">🔑 Operator Password *</label>
+      <input type="password" class="login-select" id="operator-password-inp" placeholder="Operator password daalen..." style="margin-bottom:14px;" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+
+    <div id="login-error" style="color:#dc2626;font-size:0.82rem;font-weight:600;margin-bottom:10px;display:none;background:#fee2e2;padding:8px 12px;border-radius:8px;">⚠️ <span id="login-error-msg">Kripya sabhi fields fill karen!</span></div>
+    <button class="login-btn" onclick="doLogin()">🚀 Login</button>
+
+    <!-- First time setup hint -->
+    <div id="first-time-hint" style="display:none;margin-top:14px;background:#fef3c7;border-radius:10px;padding:10px 14px;font-size:0.78rem;color:#92400e;text-align:center;">
+      ⚠️ <b>Pehli baar?</b> Pehle Admin login karen aur Settings mein password set karen!
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN MODAL ══ -->
+<div class="admin-modal-wrap" id="admin-modal">
+  <div class="admin-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+      <h2 style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);margin:0;">⚙️ Admin Panel</h2>
+      <button onclick="closeAdminModal()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
+    </div>
+
+    <!-- CENTERS -->
+    <div class="admin-section">
+      <h3>🏪 Centers</h3>
+      <div id="admin-centers-list"></div>
+      <div class="admin-input-row">
+        <input type="text" id="new-center-inp" placeholder="Center ka naam..." style="padding:9px 13px;border:1.5px solid #d1fae5;border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.85rem;outline:none;background:#f0fdf4;">
+        <button class="admin-add-btn" onclick="addCenter()">➕ Add</button>
+      </div>
+    </div>
+
+    <!-- OPERATORS -->
+    <div class="admin-section">
+      <h3>👤 Operators</h3>
+      <div id="admin-operators-list"></div>
+      <div class="admin-input-row">
+        <input type="text" id="new-operator-inp" placeholder="Operator ka naam..." style="padding:9px 13px;border:1.5px solid #d1fae5;border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.85rem;outline:none;background:#f0fdf4;">
+        <button class="admin-add-btn" onclick="addOperator()">➕ Add</button>
+      </div>
+    </div>
+
+    <div style="background:#fef3c7;border-radius:10px;padding:10px 14px;font-size:0.78rem;color:#92400e;margin-bottom:8px;">
+      💡 Centers/Operators sab devices pe sync honge Firebase ki wajah se!
+    </div>
+
+    <button onclick="closeAdminModal()" style="width:100%;background:var(--green-light);color:var(--green);border:1.5px solid var(--border);border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;">✅ Done</button>
+  </div>
+</div>
+
+<!-- ══ SET OPERATOR PASSWORD MODAL ══ -->
+<div id="set-pass-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:12000;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:white;border-radius:20px;padding:22px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,0.35);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 id="set-pass-modal-title" style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;color:#d97706;margin:0;">🔑 Password Set Karen</h3>
+      <button onclick="closeSetPassModal()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
+    </div>
+
+    <div id="set-pass-current" style="background:#f0fdf4;border-radius:10px;padding:8px 14px;font-size:0.82rem;font-weight:700;margin-bottom:14px;border-left:3px solid var(--green-mid);">
+    </div>
+
+    <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--dark);margin-bottom:4px;">Naya Password</label>
+    <input type="password" id="set-pass-inp" placeholder="Minimum 4 characters" style="width:100%;padding:10px 13px;border:1.5px solid #d1fae5;border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.88rem;outline:none;margin-bottom:10px;background:#f0fdf4;">
+
+    <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--dark);margin-bottom:4px;">Password Confirm Karen</label>
+    <input type="password" id="set-pass-confirm-inp" placeholder="Dobara likhein" style="width:100%;padding:10px 13px;border:1.5px solid #d1fae5;border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.88rem;outline:none;margin-bottom:10px;background:#f0fdf4;">
+
+    <div id="set-pass-error" style="display:none;background:#fee2e2;border-radius:8px;padding:8px 12px;font-size:0.8rem;color:#dc2626;font-weight:600;margin-bottom:10px;"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+      <button onclick="closeSetPassModal()" style="background:#f3f4f6;border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.9rem;font-weight:700;cursor:pointer;color:var(--gray);">❌ Cancel</button>
+      <button onclick="confirmSetOperatorPass()" style="background:linear-gradient(135deg,#d97706,#f59e0b);border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.9rem;font-weight:700;cursor:pointer;color:white;box-shadow:0 3px 12px rgba(217,119,6,0.3);">✅ Save</button>
+    </div>
+    <button onclick="removeOperatorPass()" style="width:100%;background:#fee2e2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:12px;padding:9px;font-family:'Baloo 2',cursive;font-size:0.85rem;font-weight:700;cursor:pointer;">🗑️ Password Hata Do</button>
+  </div>
+</div>
+
+<!-- ══ PERMISSIONS MODAL ══ -->
+<div class="perm-modal-wrap" id="perm-modal">
+  <div class="perm-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <h3 id="perm-modal-title">👤 Operator Permissions</h3>
+      <button onclick="closePermModal()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
+    </div>
+    <div class="perm-subtitle" id="perm-modal-sub">Yahan toggle karo ki yeh operator kya kya kar sakta hai</div>
+
+    <!-- BILLING -->
+    <div class="perm-section-title">🧾 Billing</div>
+
+    <div class="perm-row locked">
+      <div><div class="perm-label">✅ Receipt banana</div><div class="perm-desc">Hamesha ON — hata nahi sakte</div></div>
+      <label class="perm-toggle"><input type="checkbox" checked disabled><span class="perm-slider"></span></label>
+    </div>
+    <div class="perm-row">
+      <div><div class="perm-label">✏️ Bill Edit karna</div><div class="perm-desc">Purane bills mein changes karna</div></div>
+      <label class="perm-toggle"><input type="checkbox" id="perm-edit-bill"><span class="perm-slider"></span></label>
+    </div>
+    <div class="perm-row">
+      <div><div class="perm-label">🗑️ Bill Delete karna</div><div class="perm-desc">Records permanently delete karna</div></div>
+      <label class="perm-toggle"><input type="checkbox" id="perm-delete-bill"><span class="perm-slider"></span></label>
+    </div>
+    <div class="perm-row">
+      <div><div class="perm-label">🖨️ Reprint karna</div><div class="perm-desc">Purane bills reprint/reshare karna</div></div>
+      <label class="perm-toggle"><input type="checkbox" id="perm-reprint"><span class="perm-slider"></span></label>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="perm-section-title">📊 Reports & History</div>
+
+    <div class="perm-row">
+      <div><div class="perm-label">📋 Apni history dekhna</div><div class="perm-desc">Sirf apne khud ke bills</div></div>
+      <label class="perm-toggle"><input type="checkbox" id="perm-own-history"><span class="perm-slider"></span></label>
+    </div>
+    <div class="perm-row">
+      <div><div class="perm-label">📂 Sabki history dekhna</div><div class="perm-desc">Sabhi operators ke bills</div></div>
+      <label class="perm-toggle"><input type="checkbox" id="perm-all-history"><span class="perm-slider"></span></label>
+    </div>
+    <div class="perm-row">
+      <div><div class="perm-label">💰 Apna Sale dekhna</div><div class="perm-desc">Khud ka total sale amount</div></div>
+      <label class="perm-toggle"><input type="checkbox" id="perm-own-sale"><span class="perm-slider"></span></label>
+    </div>
+
+    <!-- FINANCIAL -->
+    <div class="perm-section-title">💹 Financial</div>
+
+    <div class="perm-row">
+      <div><div class="perm-label">📈 Cost / Profit dekhna</div><div class="perm-desc">Cost price aur profit margin</div></div>
+      <label class="perm-toggle"><input type="checkbox" id="perm-profit"><span class="perm-slider"></span></label>
+    </div>
+    <div class="perm-row">
+      <div><div class="perm-label">📥 Excel Export</div><div class="perm-desc">Data download with P&L</div></div>
+      <label class="perm-toggle"><input type="checkbox" id="perm-excel"><span class="perm-slider"></span></label>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="perm-section-title">🏪 Services</div>
+
+    <div class="perm-row">
+      <div><div class="perm-label">➕ Service Add/Edit/Delete</div><div class="perm-desc">Services aur categories manage karna</div></div>
+      <label class="perm-toggle"><input type="checkbox" id="perm-manage-services"><span class="perm-slider"></span></label>
+    </div>
+
+    <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button onclick="closePermModal()" style="background:#f3f4f6;border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.92rem;font-weight:700;cursor:pointer;color:var(--gray);">❌ Cancel</button>
+      <button onclick="savePermissions()" style="background:linear-gradient(135deg,var(--green),var(--green-mid));border:none;border-radius:12px;padding:11px;font-family:'Baloo 2',cursive;font-size:0.92rem;font-weight:700;cursor:pointer;color:white;box-shadow:0 3px 12px rgba(26,122,74,0.25);">💾 Save</button>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <div class="page-title" id="header-title">🏪 IMI CENTER</div>
   <p class="subtitle">Receipt Generator — Professional Billing in One Click!</p>
@@ -302,7 +530,10 @@
   <!-- SYNC STATUS BAR -->
   <div class="sync-bar" id="sync-bar">
     <div class="sync-label"><span class="sync-dot yellow" id="sync-dot"></span><span id="sync-label-txt">🔄 Connecting to Firebase...</span></div>
-    <span id="sync-device-count" style="font-size:0.75rem;color:var(--gray);font-weight:600;"></span>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span id="sync-device-count" style="font-size:0.75rem;color:var(--gray);font-weight:600;"></span>
+      <span id="op-badge-wrap"></span>
+    </div>
   </div>
 
   <div class="tabs">
@@ -403,6 +634,10 @@
             <div class="meta-item"><div class="mlabel">Receipt No.</div><div class="mvalue" id="r-no">—</div></div>
             <div class="meta-item" style="text-align:center"><div class="mlabel">Date</div><div class="mvalue" id="r-date">—</div></div>
             <div class="meta-item" style="text-align:right"><div class="mlabel">Time</div><div class="mvalue" id="r-time">—</div></div>
+          </div>
+          <div id="r-operator-row" style="display:none;background:#f0fdf4;border-radius:8px;padding:6px 14px;margin-bottom:12px;font-size:0.78rem;display:flex;justify-content:space-between;">
+            <span style="color:var(--gray);">👤 Operator: <b id="r-operator-name" style="color:var(--dark);">—</b></span>
+            <span style="color:var(--gray);">🏪 <b id="r-center-name" style="color:var(--dark);">—</b></span>
           </div>
           <div class="customer-info">
             <div class="cname" id="r-name">—</div>
@@ -550,6 +785,23 @@
   <!-- ══ TAB 4: REPORTS ══ -->
   <div class="tab-panel" id="tab-reports">
 
+    <!-- ADMIN DASHBOARD (Only visible to Admin) -->
+    <div class="card" id="admin-dashboard-card" style="display:none;border:2px solid #fde68a;background:#fffbeb;">
+      <h2 style="color:#d97706;">👑 Admin Dashboard</h2>
+
+      <!-- CENTER WISE -->
+      <div style="margin-bottom:14px;">
+        <div style="font-family:'Baloo 2',cursive;font-size:0.9rem;font-weight:800;color:var(--green);margin-bottom:8px;">🏪 Center-wise Billing</div>
+        <div id="center-wise-stats" style="display:grid;gap:6px;"></div>
+      </div>
+
+      <!-- OPERATOR WISE -->
+      <div>
+        <div style="font-family:'Baloo 2',cursive;font-size:0.9rem;font-weight:800;color:var(--green);margin-bottom:8px;">👤 Operator-wise Billing</div>
+        <div id="operator-wise-stats" style="display:grid;gap:6px;"></div>
+      </div>
+    </div>
+
     <!-- STATS CARDS -->
     <div class="card" id="report-summary">
       <h2>📊 Billing Summary</h2>
@@ -605,6 +857,20 @@
       <div class="row2" style="margin-bottom:8px;">
         <div><label style="margin-top:0;font-size:0.78rem;">📅 From</label><input type="date" id="filter-from"></div>
         <div><label style="margin-top:0;font-size:0.78rem;">📅 To</label><input type="date" id="filter-to"></div>
+      </div>
+      <div class="row2" style="margin-bottom:8px;">
+        <div>
+          <label style="margin-top:0;font-size:0.78rem;">🏪 Center</label>
+          <select id="filter-center" style="padding:8px 10px;border:1.5px solid #d1fae5;border-radius:10px;font-size:0.82rem;background:#f0fdf4;width:100%;outline:none;">
+            <option value="">All Centers</option>
+          </select>
+        </div>
+        <div>
+          <label style="margin-top:0;font-size:0.78rem;">👤 Operator</label>
+          <select id="filter-operator" style="padding:8px 10px;border:1.5px solid #d1fae5;border-radius:10px;font-size:0.82rem;background:#f0fdf4;width:100%;outline:none;">
+            <option value="">All Operators</option>
+          </select>
+        </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
         <button class="save-btn" style="margin-top:0;" onclick="applyFilter()">🔍 Filter</button>
@@ -684,6 +950,52 @@ Kya aap sure hain? Yeh undo nahi ho sakta.')) clearAllHistory()" style="backgrou
         🔥 Project: <b id="fb-project-display"></b>
       </div>
       <button onclick="disconnectFirebase()" style="margin-top:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:7px 14px;font-weight:700;font-size:0.8rem;cursor:pointer;">🔌 Disconnect Firebase</button>
+    </div>
+
+    <!-- PASSWORD MANAGEMENT CARD -->
+    <div class="card" style="border:2px solid #fde68a;background:#fffbeb;">
+      <h2 style="color:#d97706;">🔑 Password Management</h2>
+      <div class="settings-info" style="border-color:#fde68a;background:#fef3c7;color:#92400e;">Sirf Admin yahan password set ya change kar sakta hai. Operator password bhi aap set karen.</div>
+
+      <label>👑 Admin Password (Set/Change)</label>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px;">
+        <input type="password" id="new-admin-pass" placeholder="Naya Admin password...">
+        <button class="save-btn" style="margin-top:0;white-space:nowrap;background:linear-gradient(135deg,#d97706,#f59e0b);" onclick="saveAdminPassword()">💾 Save</button>
+      </div>
+
+      <label>👤 Operator Password (Sab operators ke liye ek hi)</label>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;">
+        <input type="password" id="new-operator-pass" placeholder="Naya Operator password...">
+        <button class="save-btn" style="margin-top:0;white-space:nowrap;background:linear-gradient(135deg,#1a7a4a,#2d9e65);" onclick="saveOperatorPassword()">💾 Save</button>
+      </div>
+
+      <div style="margin-top:10px;background:#f0fdf4;border-radius:8px;padding:8px 12px;font-size:0.75rem;color:var(--gray);">
+        💡 <b>Admin</b> = Profit/Loss dikh sakta hai, sab settings access<br>
+        💡 <b>Operator</b> = Sirf billing, profit/loss hidden rehta hai
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>👥 Operators & Centers</h2>
+      <div class="settings-info">Operators aur Centers yahan manage karen — sab devices pe sync ho jayega!</div>
+      
+      <div style="margin-bottom:14px;">
+        <label>🏪 Centers</label>
+        <div id="settings-centers-list" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;min-height:30px;"></div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;">
+          <input type="text" id="settings-new-center" placeholder="Naya center naam...">
+          <button class="save-btn" style="margin-top:0;white-space:nowrap;" onclick="settingsAddCenter()">➕ Add</button>
+        </div>
+      </div>
+      
+      <div>
+        <label>👤 Operators</label>
+        <div id="settings-operators-list" style="display:grid;gap:8px;margin-bottom:8px;min-height:30px;"></div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;">
+          <input type="text" id="settings-new-operator" placeholder="Naya operator naam...">
+          <button class="save-btn" style="margin-top:0;white-space:nowrap;" onclick="settingsAddOperator()">➕ Add</button>
+        </div>
+      </div>
     </div>
 
     <div class="card">
@@ -1019,6 +1331,12 @@ function setupFirebaseListeners() {
     }
   });
 
+  // Listen for operator passwords
+  _db.ref('imiConfig/operatorPasswords').on('value', snap => {
+    const val = snap.val();
+    if(val) localStorage.setItem('imiOperatorPasswords', JSON.stringify(val));
+  });
+
   // Receipt counter
   _db.ref('imiRNo').on('value', snap => {
     const val = snap.val();
@@ -1152,6 +1470,7 @@ function init() {
   populateCategorySelect();
   addServiceRow();
   populateSettingsForm();
+  renderSettingsPanels();
 
   // Auto-connect Firebase if config saved
   const cfg = loadFbConfig();
@@ -1159,11 +1478,46 @@ function init() {
     setSyncStatus('yellow', '🔄 Connecting to Firebase...');
     initFirebaseApp(cfg).then(() => {
       showFbConnectedState(cfg.projectId);
+      // Sync centers & operators from Firebase
+      _db.ref('imiConfig/centers').once('value', snap => {
+        const fbCenters = snap.val();
+        if(fbCenters && Array.isArray(fbCenters)) {
+          localStorage.setItem('imiCenters', JSON.stringify(fbCenters));
+          _imiCenters = fbCenters;
+        }
+        populateLoginSelects();
+        renderSettingsPanels();
+      });
+      _db.ref('imiConfig/operators').once('value', snap => {
+        const fbOps = snap.val();
+        if(fbOps && Array.isArray(fbOps)) {
+          localStorage.setItem('imiOperators', JSON.stringify(fbOps));
+          _imiOperators = fbOps;
+        }
+        populateLoginSelects();
+        renderSettingsPanels();
+      });
     }).catch(err => {
       setSyncStatus('red', '❌ Firebase error — Please check Settings');
     });
   } else {
     setSyncStatus('red', '⚠️ Firebase not configured — Please set up in Settings tab');
+  }
+
+  // ✅ CHECK LOGIN SESSION
+  populateLoginSelects();
+  if(_currentOperator && _currentCenter && _currentRole) {
+    // Already logged in from session
+    document.getElementById('login-overlay').classList.add('hidden');
+    updateOpBadge();
+    applyRoleUI();
+  } else {
+    // Show login screen — clear any partial session
+    sessionStorage.removeItem('imiRole');
+    sessionStorage.removeItem('imiOperator');
+    sessionStorage.removeItem('imiCenter');
+    _currentRole = _currentOperator = _currentCenter = '';
+    document.getElementById('login-overlay').classList.remove('hidden');
   }
 }
 
@@ -1180,14 +1534,21 @@ function switchTab(tab) {
     renderCategoryManager();
     populateCategorySelect();
     renderServiceManager();
+    // Restrict add/edit/delete for operators without permission
+    if(_currentRole === 'operator' && !_currentPerms.manageServices) {
+      document.querySelectorAll('#tab-services .save-btn, #tab-services .add-svc-btn, #tab-services .edit-btn, #tab-services .remove-btn, #tab-services .move-btn, #tab-services .cat-edit-btn, #tab-services .cat-delete-btn').forEach(b => b.style.display='none');
+      const addCard = document.querySelector('#tab-services .card:first-child');
+      if(addCard) addCard.style.display = 'none';
+    }
   }
   if (tab==='settings') {
     populateSettingsForm();
+    renderSettingsPanels();
     const cfg = loadFbConfig();
     if(cfg) { showFbConnectedState(cfg.projectId); }
     else { document.getElementById('fb-setup-card').style.display='block'; document.getElementById('fb-connected-card').style.display='none'; }
   }
-  if (tab==='reports') renderReports();
+  if (tab==='reports') { renderReports(); if(_currentRole==='admin') renderAdminDashboard(); }
 }
 
 // ══ SETTINGS ══
@@ -1732,6 +2093,13 @@ function addServiceRow() {
     <button class="del-btn" onclick="this.parentElement.remove(); updateSubtotal()">✕</button>`;
   
   list.appendChild(div);
+  // If operator is logged in, hide profit column on new rows
+  if(_currentRole === 'operator') {
+    div.classList.add('profit-hidden');
+    // Also keep header hidden
+    const hdr = document.querySelector('.svc-header');
+    if(hdr) hdr.classList.add('profit-hidden');
+  }
   
   const searchInput = div.querySelector('.service-search-input');
   const dropdown = div.querySelector('.search-dropdown');
@@ -1923,6 +2291,16 @@ function generateReceipt() {
   document.getElementById('r-date').textContent = date;
   document.getElementById('r-time').textContent = time;
   document.getElementById('r-name').textContent = name;
+
+  // Show operator/center on receipt
+  const opRow = document.getElementById('r-operator-row');
+  if(_currentOperator && _currentCenter) {
+    document.getElementById('r-operator-name').textContent = _currentOperator;
+    document.getElementById('r-center-name').textContent   = _currentCenter;
+    opRow.style.display = 'flex';
+  } else {
+    opRow.style.display = 'none';
+  }
   const phone = document.getElementById('cust-phone').value.trim();
   document.getElementById('r-phone').textContent = phone ? '📞 '+phone : '';
   const note = document.getElementById('cust-note').value.trim();
@@ -1957,7 +2335,7 @@ function generateReceipt() {
 
   document.getElementById('receipt-area').style.display='block';
   document.getElementById('receipt-area').scrollIntoView({behavior:'smooth'});
-  window._R = {name,phone,note,svcs,total,discAmt,discLabel,finalTotal,totalCost,profit:finalTotal-totalCost,status,rNo,date,time};
+  window._R = {name,phone,note,svcs,total,discAmt,discLabel,finalTotal,totalCost,profit:finalTotal-totalCost,status,rNo,date,time,operator:_currentOperator,center:_currentCenter};
 
   // ── Save to billing history ──
   saveBillingRecord({name,phone,note,svcs,total,discAmt,discLabel,finalTotal,totalCost,profit:finalTotal-totalCost,status,rNo,date,time});
@@ -2530,6 +2908,8 @@ function loadBillingHistory() {
   try { return JSON.parse(localStorage.getItem('imiBilling')) || []; } catch(e) { return []; }
 }
 function saveBillingRecord(rec) {
+  rec.operator = _currentOperator || 'Unknown';
+  rec.center   = _currentCenter   || 'Unknown';
   const history = loadBillingHistory();
   history.unshift(rec); // newest first
   localStorage.setItem('imiBilling', JSON.stringify(history));
@@ -2775,8 +3155,32 @@ function highlightText(text, query) {
 let _filteredHistory = null;
 
 function renderReports() {
-  const history = loadBillingHistory();
+  const isOp = _currentRole === 'operator';
+  let history = loadBillingHistory();
   const today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  // Operator history filter based on permissions
+  if(isOp) {
+    if(_currentPerms.allHistory) {
+      // show all — no filter
+    } else if(_currentPerms.ownHistory) {
+      history = history.filter(r => (r.operator||'') === _currentOperator);
+    } else {
+      history = []; // no history permission at all
+    }
+  }
+
+  // Populate center/operator filter dropdowns — localStorage se (sab registered) + billing history se (jo use ho chuke)
+  const regCenters   = loadCenters();
+  const regOperators = loadOperators();
+  const histCenters   = history.map(r=>r.center).filter(Boolean);
+  const histOperators = history.map(r=>r.operator).filter(Boolean);
+  const allCenters   = [...new Set([...regCenters,   ...histCenters])];
+  const allOperators = [...new Set([...regOperators,  ...histOperators])];
+  const cSel = document.getElementById('filter-center');
+  const oSel = document.getElementById('filter-operator');
+  if(cSel) cSel.innerHTML = '<option value="">All Centers</option>'   + allCenters.map(c=>`<option value="${c}">${c}</option>`).join('');
+  if(oSel) oSel.innerHTML = '<option value="">All Operators</option>' + allOperators.map(o=>`<option value="${o}">${o}</option>`).join('');
 
   const todayRecs = history.filter(r=>r.date===today);
   const todaySale = todayRecs.reduce((s,r)=>s+r.total,0);
@@ -2808,26 +3212,43 @@ function renderReports() {
 
   _filteredHistory = history;
   renderReportTable(history);
+
+  // Role-based visibility
+  const hideProfit = isOp && !_currentPerms.profit;
+  const hideSale   = isOp && !_currentPerms.ownSale;
+  const plBox = document.getElementById('pl-sale')?.closest('div[style*="linear-gradient"]');
+  if(plBox) plBox.style.display = hideProfit ? 'none' : 'block';
+  const todayBox = document.getElementById('today-sale')?.closest('div[style*="f0fdf4"]');
+  if(todayBox) todayBox.style.display = (hideProfit && hideSale) ? 'none' : 'block';
+  const totalRevEl = document.getElementById('stat-total-rev')?.closest('div[style*="fef3c7"]');
+  if(totalRevEl) totalRevEl.style.display = hideSale ? 'none' : 'block';
+  const excelBtn = document.querySelector('button[onclick="exportExcel()"]');
+  if(excelBtn) excelBtn.style.display = (isOp && !_currentPerms.excel) ? 'none' : 'block';
 }
 
 function applyFilter() {
-  const from = document.getElementById('filter-from').value;
-  const to = document.getElementById('filter-to').value;
-  const history = loadBillingHistory();
+  const from     = document.getElementById('filter-from').value;
+  const to       = document.getElementById('filter-to').value;
+  const fCenter  = document.getElementById('filter-center')?.value   || '';
+  const fOp      = document.getElementById('filter-operator')?.value || '';
+  const history  = loadBillingHistory();
   const filtered = history.filter(r => {
     const parts = r.date.split('/');
     if(parts.length!==3) return true;
     const rDate = new Date(parts[2]+'-'+parts[1]+'-'+parts[0]);
     const fDate = from ? new Date(from) : new Date('2000-01-01');
-    const tDate = to ? new Date(to) : new Date('2099-12-31');
-    return rDate >= fDate && rDate <= tDate;
+    const tDate = to   ? new Date(to)   : new Date('2099-12-31');
+    const dateOk   = rDate >= fDate && rDate <= tDate;
+    const centerOk = !fCenter || (r.center||'') === fCenter;
+    const opOk     = !fOp    || (r.operator||'') === fOp;
+    return dateOk && centerOk && opOk;
   });
   _filteredHistory = filtered;
 
-  const filtSale = filtered.reduce((s,r)=>s+(r.finalTotal||r.total),0);
-  const filtCost = filtered.reduce((s,r)=>s+(r.totalCost||0),0);
+  const filtSale   = filtered.reduce((s,r)=>s+(r.finalTotal||r.total),0);
+  const filtCost   = filtered.reduce((s,r)=>s+(r.totalCost||0),0);
   const filtProfit = filtSale - filtCost;
-  const margin = filtSale>0 ? ((filtProfit/filtSale)*100).toFixed(1) : 0;
+  const margin     = filtSale>0 ? ((filtProfit/filtSale)*100).toFixed(1) : 0;
 
   document.getElementById('stat-total-cust').textContent = filtered.length;
   document.getElementById('stat-total-rev').textContent = '₹'+filtSale.toLocaleString('en-IN');
@@ -2837,7 +3258,10 @@ function applyFilter() {
   document.getElementById('pl-margin').textContent = margin+'%';
 
   renderReportTable(filtered);
-  showToast(`🔍 ${filtered.length} record(s) found | Profit ₹${filtProfit.toLocaleString('en-IN')}`);
+  let msg = `🔍 ${filtered.length} record(s) found | Profit ₹${filtProfit.toLocaleString('en-IN')}`;
+  if(fCenter)  msg += ` | 🏪 ${fCenter}`;
+  if(fOp)      msg += ` | 👤 ${fOp}`;
+  showToast(msg);
 }
 
 function clearFilter() {
@@ -2857,6 +3281,7 @@ function clearFilter() {
 function renderReportTable(history, query) {
   const wrap = document.getElementById('report-table-wrap');
   const countLabel = document.getElementById('history-count-label');
+  const isOp = _currentRole === 'operator';
   if(!history.length) {
     const isSearching = _searchQuery || _statusFilter !== 'all';
     wrap.innerHTML = `<div class="no-data">${isSearching ? '🔎 Koi record nahi mila. Search ya filter change karein.' : '📭 No billing records found.<br>Generate a receipt to see data here.'}</div>`;
@@ -2882,12 +3307,12 @@ function renderReportTable(history, query) {
       <td>${r.rNo}</td>
       <td>${r.date}<br><span style="color:var(--gray);font-size:0.7rem;">${r.time}</span></td>
       <td><b style="cursor:pointer;color:var(--green);text-decoration:underline dotted;" onclick="openCProfileModal('${encodeURIComponent(r.phone||'')}')" title="Customer profile dekhein">${nameHl}</b><br><span style="color:var(--gray);font-size:0.7rem;">${phoneHl}</span></td>
+      <td><span class="op-report-badge">${r.operator||'—'}</span><br><span class="center-report-badge" style="margin-top:3px;display:inline-block;">${r.center||'—'}</span></td>
       <td style="max-width:110px;word-break:break-word;font-size:0.75rem;">${svcNames}</td>
       <td style="color:#d97706;font-weight:700;">₹${r.total.toLocaleString('en-IN')}</td>
       <td style="color:#dc2626;font-size:0.78rem;">${discStr}</td>
       <td style="color:var(--green);font-weight:800;">₹${finalAmt.toLocaleString('en-IN')}</td>
-      <td style="color:#ef4444;">₹${cost.toLocaleString('en-IN')}</td>
-      <td style="color:${profitColor};font-weight:800;">₹${profit.toLocaleString('en-IN')}</td>
+      ${!isOp ? `<td style="color:#ef4444;">₹${cost.toLocaleString('en-IN')}</td><td style="color:${profitColor};font-weight:800;">₹${profit.toLocaleString('en-IN')}</td>` : ''}
       <td><span class="${r.status==='paid'?'badge-paid':'badge-pending'}">${r.status==='paid'?'✅':'⏳'}</span></td>
       <td style="white-space:nowrap;">
         <button class="edit-btn" onclick="openEditModal('${recKey}')" style="font-size:0.75rem;margin-bottom:4px;display:block;width:100%;">✏️ Edit</button>
@@ -2898,11 +3323,16 @@ function renderReportTable(history, query) {
   wrap.innerHTML = `<table class="report-table">
     <thead><tr>
       <th class="th-checkbox"><input type="checkbox" class="row-checkbox" id="select-all-chk" onchange="toggleSelectAll(this)" title="Select All"></th>
-      <th>Rcpt#</th><th>Date</th><th>Customer</th><th>Services</th>
-      <th style="color:#fde68a;">MRP</th><th style="color:#fca5a5;">Discount</th><th style="color:#a7f3d0;">Sale</th><th style="color:#fca5a5;">Cost</th><th style="color:#86efac;">Profit</th><th>Pay</th><th>Actions</th>
+      <th>Rcpt#</th><th>Date</th><th>Customer</th><th>👤 Operator / 🏪 Center</th><th>Services</th>
+      <th style="color:#fde68a;">MRP</th><th style="color:#fca5a5;">Discount</th><th style="color:#a7f3d0;">Sale</th>
+      ${!isOp ? `<th style="color:#fca5a5;">Cost</th><th style="color:#86efac;">Profit</th>` : ''}
+      <th>Pay</th><th>Actions</th>
     </tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
+
+  // Apply per-operator permissions to table buttons
+  setTimeout(applyTablePermissions, 0);
 }
 
 // ══ CHECKBOX DELETE SYSTEM ══
@@ -2976,7 +3406,7 @@ function exportExcel() {
   if(!history.length) { showToast('❌ No data available to export!'); return; }
 
   const BOM = '\uFEFF';
-  const headers = ['Receipt No','Date','Time','Customer Name','Mobile No','Services','MRP (₹)','Discount (₹)','Sale Amount (₹)','Cost (₹)','Profit (₹)','Profit Margin','Payment Status'];
+  const headers = ['Receipt No','Date','Time','Customer Name','Mobile No','Operator','Center','Services','MRP (₹)','Discount (₹)','Sale Amount (₹)','Cost (₹)','Profit (₹)','Profit Margin','Payment Status'];
   const rows = history.map(r => {
     const svcNames = r.svcs.map(s=>s.svc+(s.qty>1?` x${s.qty}`:'')+` - ₹${s.amt}`).join(' | ');
     const cost = r.totalCost||0;
@@ -2986,6 +3416,7 @@ function exportExcel() {
     const margin = finalAmt>0 ? ((profit/finalAmt)*100).toFixed(1)+'%' : '0%';
     return [
       r.rNo, r.date, r.time, r.name, r.phone||'',
+      r.operator||'—', r.center||'—',
       '"'+svcNames.replace(/"/g,'""')+'"',
       r.total, discAmt, finalAmt, cost, profit, margin,
       r.status==='paid'?'Paid':'Pending'
@@ -3214,6 +3645,378 @@ function saveEditedReceipt() {
 }
 
 // ══ PROFIT TOGGLE ══
+let _currentOperator = sessionStorage.getItem('imiOperator') || '';
+let _currentCenter   = sessionStorage.getItem('imiCenter')   || '';
+let _currentRole     = sessionStorage.getItem('imiRole')     || ''; // 'admin' | 'operator'
+let _imiCenters   = [];
+let _imiOperators = [];
+
+// Password helpers
+function getAdminPass()    { try { return localStorage.getItem('imiAdminPass') || ''; } catch(e){return '';} }
+function getOperatorPass() { try { return localStorage.getItem('imiOperatorPass') || ''; } catch(e){return '';} }
+
+function saveAdminPassword() {
+  const p = document.getElementById('new-admin-pass').value.trim();
+  if(!p) { showToast('⚠️ Password khali nahi ho sakta!'); return; }
+  if(p.length < 4) { showToast('⚠️ Minimum 4 characters chahiye!'); return; }
+  localStorage.setItem('imiAdminPass', p);
+  document.getElementById('new-admin-pass').value = '';
+  showToast('✅ Admin password save ho gaya!');
+}
+
+function saveOperatorPassword() {
+  const p = document.getElementById('new-operator-pass').value.trim();
+  if(!p) { showToast('⚠️ Password khali nahi ho sakta!'); return; }
+  if(p.length < 4) { showToast('⚠️ Minimum 4 characters chahiye!'); return; }
+  localStorage.setItem('imiOperatorPass', p);
+  document.getElementById('new-operator-pass').value = '';
+  showToast('✅ Operator password save ho gaya!');
+}
+
+function onRoleChange() {
+  const role = document.getElementById('login-role-sel').value;
+  document.getElementById('admin-login-section').style.display    = role === 'admin'    ? 'block' : 'none';
+  document.getElementById('operator-login-section').style.display = role === 'operator' ? 'block' : 'none';
+  // Show first-time hint if no password set
+  const noPass = !getAdminPass() && !getOperatorPass();
+  document.getElementById('first-time-hint').style.display = noPass ? 'block' : 'none';
+}
+
+function doLogin() {
+  const role   = document.getElementById('login-role-sel').value;
+  const errEl  = document.getElementById('login-error');
+  const errMsg = document.getElementById('login-error-msg');
+  errEl.style.display = 'none';
+
+  const showErr = (msg) => { errMsg.textContent = msg; errEl.style.display = 'block'; };
+
+  if(!role) { showErr('Kripya role select karen!'); return; }
+
+  if(role === 'admin') {
+    const entered  = document.getElementById('admin-password-inp').value;
+    const saved    = getAdminPass();
+    // First-time: no password set → allow with empty
+    if(!saved) {
+      // First time admin login — no password set yet, allow
+    } else if(entered !== saved) {
+      showErr('Admin password galat hai!');
+      return;
+    }
+    _currentRole     = 'admin';
+    _currentCenter   = 'Admin';
+    _currentOperator = 'Admin';
+    sessionStorage.setItem('imiRole', 'admin');
+    sessionStorage.setItem('imiCenter', 'Admin');
+    sessionStorage.setItem('imiOperator', 'Admin');
+    document.getElementById('login-overlay').classList.add('hidden');
+    applyRoleUI();
+    updateOpBadge();
+    showToast('✅ Welcome Admin!');
+
+  } else if(role === 'operator') {
+    const center   = document.getElementById('login-center-sel').value;
+    const operator = document.getElementById('login-operator-sel').value;
+    const entered  = document.getElementById('operator-password-inp').value;
+    if(!center || !operator) { showErr('Center aur Operator dono select karen!'); return; }
+
+    // Check individual operator password first, then fallback to global
+    const indivPass  = loadOperatorIndividualPass(operator);
+    const globalPass = getOperatorPass();
+
+    if(indivPass) {
+      // Individual password set hai — wahi check karo
+      if(entered !== indivPass) { showErr(`❌ ${operator} ka password galat hai!`); return; }
+    } else if(globalPass) {
+      // Sirf global password set hai
+      if(entered !== globalPass) { showErr('Operator password galat hai!'); return; }
+    } else {
+      // Koi bhi password nahi set — allow (first time)
+    }
+    _currentRole     = 'operator';
+    _currentCenter   = center;
+    _currentOperator = operator;
+    sessionStorage.setItem('imiRole', 'operator');
+    sessionStorage.setItem('imiCenter', center);
+    sessionStorage.setItem('imiOperator', operator);
+    document.getElementById('login-overlay').classList.add('hidden');
+    applyRoleUI();
+    updateOpBadge();
+    showToast(`✅ Welcome ${operator} — ${center}!`);
+  }
+}
+
+// Admin Dashboard: Center + Operator wise billing
+function renderAdminDashboard() {
+  const history = loadBillingHistory();
+  if(!history.length) {
+    document.getElementById('center-wise-stats').innerHTML   = '<div style="color:var(--gray);font-size:0.82rem;text-align:center;padding:10px;">Koi data nahi</div>';
+    document.getElementById('operator-wise-stats').innerHTML = '<div style="color:var(--gray);font-size:0.82rem;text-align:center;padding:10px;">Koi data nahi</div>';
+    return;
+  }
+
+  // Center-wise
+  const centerMap = {};
+  history.forEach(r => {
+    const c = r.center || 'Unknown';
+    if(!centerMap[c]) centerMap[c] = { bills:0, sale:0, profit:0 };
+    centerMap[c].bills++;
+    centerMap[c].sale   += (r.finalTotal || r.total || 0);
+    centerMap[c].profit += ((r.finalTotal||r.total||0) - (r.totalCost||0));
+  });
+  document.getElementById('center-wise-stats').innerHTML = Object.entries(centerMap)
+    .sort((a,b) => b[1].sale - a[1].sale)
+    .map(([name, d]) => `
+      <div style="background:white;border-radius:10px;padding:10px 12px;border:1.5px solid var(--border);display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;">
+        <div style="font-weight:700;font-size:0.85rem;color:var(--dark);">🏪 ${name}</div>
+        <div style="text-align:center;"><div style="font-size:0.68rem;color:var(--gray);">Bills</div><div style="font-weight:800;color:var(--green);font-family:'Baloo 2',cursive;">${d.bills}</div></div>
+        <div style="text-align:center;"><div style="font-size:0.68rem;color:var(--gray);">Sale</div><div style="font-weight:800;color:#d97706;font-family:'Baloo 2',cursive;">₹${d.sale.toLocaleString('en-IN')}</div></div>
+        <div style="text-align:center;"><div style="font-size:0.68rem;color:var(--gray);">Profit</div><div style="font-weight:800;color:#7c3aed;font-family:'Baloo 2',cursive;">₹${d.profit.toLocaleString('en-IN')}</div></div>
+      </div>`).join('');
+
+  // Operator-wise
+  const opMap = {};
+  history.forEach(r => {
+    const o = r.operator || 'Unknown';
+    const c = r.center   || 'Unknown';
+    const key = `${o}||${c}`;
+    if(!opMap[key]) opMap[key] = { operator:o, center:c, bills:0, sale:0, profit:0 };
+    opMap[key].bills++;
+    opMap[key].sale   += (r.finalTotal || r.total || 0);
+    opMap[key].profit += ((r.finalTotal||r.total||0) - (r.totalCost||0));
+  });
+  document.getElementById('operator-wise-stats').innerHTML = Object.values(opMap)
+    .sort((a,b) => b.sale - a.sale)
+    .map(d => `
+      <div style="background:white;border-radius:10px;padding:10px 12px;border:1.5px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div><span style="font-weight:700;font-size:0.85rem;color:var(--dark);">👤 ${d.operator}</span> <span style="font-size:0.72rem;background:var(--green-light);color:var(--green);border-radius:5px;padding:2px 7px;font-weight:700;margin-left:4px;">${d.center}</span></div>
+          <span style="font-size:0.75rem;color:var(--gray);">${d.bills} bills</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:#fef3c7;border-radius:8px;padding:6px 10px;text-align:center;">
+            <div style="font-size:0.65rem;color:var(--gray);">💰 Total Sale</div>
+            <div style="font-weight:800;color:#d97706;font-family:'Baloo 2',cursive;font-size:0.95rem;">₹${d.sale.toLocaleString('en-IN')}</div>
+          </div>
+          <div style="background:#ede9fe;border-radius:8px;padding:6px 10px;text-align:center;">
+            <div style="font-size:0.65rem;color:var(--gray);">📈 Profit</div>
+            <div style="font-weight:800;color:#7c3aed;font-family:'Baloo 2',cursive;font-size:0.95rem;">₹${d.profit.toLocaleString('en-IN')}</div>
+          </div>
+        </div>
+      </div>`).join('');
+}
+
+function updateOpBadge() {
+  const wrap = document.getElementById('op-badge-wrap');
+  if(_currentOperator && _currentCenter) {
+    const roleIcon = _currentRole === 'admin' ? '👑 Admin' : `👤 ${_currentOperator} | 🏪 ${_currentCenter}`;
+    wrap.innerHTML = `<span class="op-badge" onclick="switchOperator()" title="Click to logout">${roleIcon} ▾</span>`;
+  } else {
+    wrap.innerHTML = '';
+  }
+}
+
+function switchOperator() {
+  if(!confirm('Logout karein aur dobara login karen?')) return;
+  sessionStorage.removeItem('imiOperator');
+  sessionStorage.removeItem('imiCenter');
+  sessionStorage.removeItem('imiRole');
+  _currentOperator = '';
+  _currentCenter   = '';
+  _currentRole     = '';
+  document.getElementById('op-badge-wrap').innerHTML = '';
+  // Reset login form
+  document.getElementById('login-role-sel').value = '';
+  document.getElementById('admin-login-section').style.display = 'none';
+  document.getElementById('operator-login-section').style.display = 'none';
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('admin-password-inp').value = '';
+  // Show settings tab again (in case operator was logged in)
+  const settingsTabBtn = document.querySelector('.tab-btn[onclick*="settings"]');
+  if(settingsTabBtn) settingsTabBtn.style.display = '';
+  populateLoginSelects();
+  document.getElementById('login-overlay').classList.remove('hidden');
+}
+
+// ══ CENTERS & OPERATORS STORAGE ══
+function loadCenters() {
+  try { return JSON.parse(localStorage.getItem('imiCenters')) || []; } catch(e) { return []; }
+}
+function saveCentersLocal(arr) {
+  localStorage.setItem('imiCenters', JSON.stringify(arr));
+  _imiCenters = arr;
+  if(_db) _db.ref('imiConfig/centers').set(arr);
+}
+function loadOperators() {
+  try { return JSON.parse(localStorage.getItem('imiOperators')) || []; } catch(e) { return []; }
+}
+function saveOperatorsLocal(arr) {
+  localStorage.setItem('imiOperators', JSON.stringify(arr));
+  _imiOperators = arr;
+  if(_db) _db.ref('imiConfig/operators').set(arr);
+}
+
+function populateLoginSelects() {
+  const centers   = loadCenters();
+  const operators = loadOperators();
+  const cSel = document.getElementById('login-center-sel');
+  const oSel = document.getElementById('login-operator-sel');
+  cSel.innerHTML = '<option value="">-- Center Select Karen --</option>' +
+    centers.map(c=>`<option value="${c}">${c}</option>`).join('');
+  oSel.innerHTML = '<option value="">-- Operator Select Karen --</option>' +
+    operators.map(o=>`<option value="${o}">${o}</option>`).join('');
+}
+
+// ══ ADMIN MODAL ══
+function openAdminModal() {
+  renderAdminPanel();
+  document.getElementById('admin-modal').classList.add('open');
+}
+function closeAdminModal() {
+  document.getElementById('admin-modal').classList.remove('open');
+  populateLoginSelects();
+  renderSettingsPanels();
+}
+function renderAdminPanel() {
+  const centers   = loadCenters();
+  const operators = loadOperators();
+  const cList = document.getElementById('admin-centers-list');
+  const oList = document.getElementById('admin-operators-list');
+  cList.innerHTML = centers.length
+    ? centers.map(c=>`<span class="admin-tag">${c}<button class="admin-tag-del" onclick="removeCenter('${c.replace(/'/g,"\\'")}')">✕</button></span>`).join('')
+    : '<span style="font-size:0.8rem;color:var(--gray);">Koi center nahi — neeche add karen</span>';
+
+  if(!operators.length) {
+    oList.innerHTML = '<span style="font-size:0.8rem;color:var(--gray);">Koi operator nahi — neeche add karen</span>';
+    return;
+  }
+  oList.innerHTML = operators.map(o => {
+    const perms = loadOperatorPerms(o);
+    const permCount = Object.values(perms).filter(Boolean).length;
+    const safe = o.replace(/'/g,"\\'");
+    const hasPass = !!loadOperatorIndividualPass(o);
+    return `<div style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:8px 10px;margin-bottom:6px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:0.85rem;color:var(--dark);">👤 ${o}</div>
+          <div style="font-size:0.68rem;margin-top:2px;">
+            <span style="color:var(--green);">✅ ${permCount} permissions</span>
+            &nbsp;•&nbsp;
+            <span style="color:${hasPass ? '#15803d' : '#dc2626'};">${hasPass ? '🔑 Password set' : '⚠️ No password'}</span>
+          </div>
+        </div>
+        <button onclick="openPermModal('${safe}')" style="background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;border:none;border-radius:8px;padding:6px 10px;font-size:0.72rem;font-weight:700;cursor:pointer;white-space:nowrap;">🔧 Perms</button>
+        <button onclick="openSetPassModal('${safe}')" style="background:linear-gradient(135deg,#d97706,#f59e0b);color:white;border:none;border-radius:8px;padding:6px 10px;font-size:0.72rem;font-weight:700;cursor:pointer;white-space:nowrap;">🔑 Pass</button>
+        <button onclick="removeOperator('${safe}')" style="background:#fee2e2;color:#ef4444;border:none;border-radius:8px;padding:6px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function addCenter() {
+  const inp = document.getElementById('new-center-inp');
+  const name = inp.value.trim();
+  if(!name) return;
+  const arr = loadCenters();
+  if(arr.includes(name)) { showToast('⚠️ Center already hai!'); return; }
+  arr.push(name);
+  saveCentersLocal(arr);
+  inp.value='';
+  renderAdminPanel();
+  showToast(`✅ Center "${name}" add ho gaya!`);
+}
+function removeCenter(name) {
+  if(!confirm(`"${name}" center delete karen?`)) return;
+  const arr = loadCenters().filter(c=>c!==name);
+  saveCentersLocal(arr);
+  renderAdminPanel();
+  showToast(`🗑️ Center "${name}" delete ho gaya!`);
+}
+function addOperator() {
+  const inp = document.getElementById('new-operator-inp');
+  const name = inp.value.trim();
+  if(!name) return;
+  const arr = loadOperators();
+  if(arr.includes(name)) { showToast('⚠️ Operator already hai!'); return; }
+  arr.push(name);
+  saveOperatorsLocal(arr);
+  inp.value='';
+  renderAdminPanel();
+  showToast(`✅ Operator "${name}" add ho gaya!`);
+}
+function removeOperator(name) {
+  if(!confirm(`"${name}" operator delete karen?`)) return;
+  const arr = loadOperators().filter(o=>o!==name);
+  saveOperatorsLocal(arr);
+  renderAdminPanel();
+  showToast(`🗑️ Operator "${name}" delete ho gaya!`);
+}
+
+// Settings tab panels
+function renderSettingsPanels() {
+  const centers   = loadCenters();
+  const operators = loadOperators();
+  const cList = document.getElementById('settings-centers-list');
+  const oList = document.getElementById('settings-operators-list');
+
+  if(cList) cList.innerHTML = centers.length
+    ? centers.map(c=>`<span class="admin-tag">${c}<button class="admin-tag-del" onclick="settingsRemoveCenter('${c.replace(/'/g,"\\'")}')">✕</button></span>`).join('')
+    : '<span style="font-size:0.78rem;color:var(--gray);">Koi center nahi</span>';
+
+  if(oList) {
+    if(!operators.length) {
+      oList.innerHTML = '<span style="font-size:0.78rem;color:var(--gray);">Koi operator nahi</span>';
+    } else {
+      oList.innerHTML = operators.map(o => {
+        const perms = loadOperatorPerms(o);
+        const permCount = Object.values(perms).filter(Boolean).length;
+        const safe = o.replace(/'/g,"\\'");
+        const hasPass = !!loadOperatorIndividualPass(o);
+        return `<div style="background:#f0fdf4;border:1.5px solid var(--border);border-radius:12px;padding:8px 10px;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <div style="flex:1;">
+              <div style="font-weight:700;font-size:0.85rem;color:var(--dark);">👤 ${o}</div>
+              <div style="font-size:0.68rem;margin-top:2px;">
+                <span style="color:var(--green);">✅ ${permCount} permissions</span>
+                &nbsp;•&nbsp;
+                <span style="color:${hasPass ? '#15803d' : '#dc2626'};">${hasPass ? '🔑 Password set' : '⚠️ No password'}</span>
+              </div>
+            </div>
+            <button onclick="openPermModal('${safe}')" style="background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;border:none;border-radius:8px;padding:6px 10px;font-size:0.72rem;font-weight:700;cursor:pointer;white-space:nowrap;">🔧 Perms</button>
+            <button onclick="openSetPassModal('${safe}')" style="background:linear-gradient(135deg,#d97706,#f59e0b);color:white;border:none;border-radius:8px;padding:6px 10px;font-size:0.72rem;font-weight:700;cursor:pointer;white-space:nowrap;">🔑 Pass</button>
+            <button onclick="settingsRemoveOperator('${safe}')" style="background:#fee2e2;color:#ef4444;border:none;border-radius:8px;padding:6px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;">✕</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+}
+function settingsAddCenter() {
+  const inp = document.getElementById('settings-new-center');
+  const name = inp.value.trim(); if(!name) return;
+  const arr = loadCenters();
+  if(arr.includes(name)) { showToast('⚠️ Already hai!'); return; }
+  arr.push(name); saveCentersLocal(arr); inp.value='';
+  renderSettingsPanels(); showToast(`✅ Center "${name}" add ho gaya!`);
+}
+function settingsRemoveCenter(name) {
+  if(!confirm(`"${name}" delete karen?`)) return;
+  saveCentersLocal(loadCenters().filter(c=>c!==name));
+  renderSettingsPanels(); showToast(`🗑️ Removed!`);
+}
+function settingsAddOperator() {
+  const inp = document.getElementById('settings-new-operator');
+  const name = inp.value.trim(); if(!name) return;
+  const arr = loadOperators();
+  if(arr.includes(name)) { showToast('⚠️ Already hai!'); return; }
+  arr.push(name); saveOperatorsLocal(arr); inp.value='';
+  renderSettingsPanels(); showToast(`✅ Operator "${name}" add ho gaya!`);
+}
+function settingsRemoveOperator(name) {
+  if(!confirm(`"${name}" delete karen?`)) return;
+  saveOperatorsLocal(loadOperators().filter(o=>o!==name));
+  renderSettingsPanels(); showToast(`🗑️ Removed!`);
+}
+
+// ══ PROFIT TOGGLE ══
 let _profitHidden = false;
 function toggleProfitDisplay() {
   _profitHidden = !_profitHidden;
@@ -3243,6 +4046,224 @@ function toggleProfitDisplay() {
   }
   
   btn.textContent = _profitHidden ? 'Show Profit' : 'Hide Profit';
+}
+
+// ══ OPERATOR PERMISSIONS SYSTEM ══
+
+const DEFAULT_PERMS = {
+  editBill:        false,
+  deleteBill:      false,
+  reprint:         true,
+  ownHistory:      true,
+  allHistory:      false,
+  ownSale:         true,
+  profit:          false,
+  excel:           false,
+  manageServices:  false,
+};
+
+function loadOperatorPerms(operatorName) {
+  try {
+    const all = JSON.parse(localStorage.getItem('imiOperatorPerms') || '{}');
+    return { ...DEFAULT_PERMS, ...(all[operatorName] || {}) };
+  } catch(e) { return { ...DEFAULT_PERMS }; }
+}
+
+function saveOperatorPermsLocal(operatorName, perms) {
+  try {
+    const all = JSON.parse(localStorage.getItem('imiOperatorPerms') || '{}');
+    all[operatorName] = perms;
+    localStorage.setItem('imiOperatorPerms', JSON.stringify(all));
+    if(_db) _db.ref('imiConfig/operatorPerms').set(all);
+  } catch(e) {}
+}
+
+let _permEditingOperator = '';
+
+function openPermModal(operatorName) {
+  _permEditingOperator = operatorName;
+  const perms = loadOperatorPerms(operatorName);
+  document.getElementById('perm-modal-title').textContent = `👤 ${operatorName} — Permissions`;
+  document.getElementById('perm-modal-sub').textContent   = `Toggle karo ki ${operatorName} kya kya kar sakta hai`;
+
+  document.getElementById('perm-edit-bill').checked       = !!perms.editBill;
+  document.getElementById('perm-delete-bill').checked     = !!perms.deleteBill;
+  document.getElementById('perm-reprint').checked         = !!perms.reprint;
+  document.getElementById('perm-own-history').checked     = !!perms.ownHistory;
+  document.getElementById('perm-all-history').checked     = !!perms.allHistory;
+  document.getElementById('perm-own-sale').checked        = !!perms.ownSale;
+  document.getElementById('perm-profit').checked          = !!perms.profit;
+  document.getElementById('perm-excel').checked           = !!perms.excel;
+  document.getElementById('perm-manage-services').checked = !!perms.manageServices;
+
+  document.getElementById('perm-modal').classList.add('open');
+}
+
+function closePermModal() {
+  document.getElementById('perm-modal').classList.remove('open');
+  _permEditingOperator = '';
+}
+
+function savePermissions() {
+  if(!_permEditingOperator) return;
+  const perms = {
+    editBill:       document.getElementById('perm-edit-bill').checked,
+    deleteBill:     document.getElementById('perm-delete-bill').checked,
+    reprint:        document.getElementById('perm-reprint').checked,
+    ownHistory:     document.getElementById('perm-own-history').checked,
+    allHistory:     document.getElementById('perm-all-history').checked,
+    ownSale:        document.getElementById('perm-own-sale').checked,
+    profit:         document.getElementById('perm-profit').checked,
+    excel:          document.getElementById('perm-excel').checked,
+    manageServices: document.getElementById('perm-manage-services').checked,
+  };
+  saveOperatorPermsLocal(_permEditingOperator, perms);
+  closePermModal();
+  renderAdminPanel();
+  showToast(`✅ ${_permEditingOperator} ki permissions save ho gayi!`);
+}
+
+// ══ INDIVIDUAL OPERATOR PASSWORD ══
+
+function loadOperatorIndividualPass(operatorName) {
+  try {
+    const all = JSON.parse(localStorage.getItem('imiOperatorPasswords') || '{}');
+    return all[operatorName] || '';
+  } catch(e) { return ''; }
+}
+
+function saveOperatorIndividualPass(operatorName, password) {
+  try {
+    const all = JSON.parse(localStorage.getItem('imiOperatorPasswords') || '{}');
+    if(password === '') {
+      delete all[operatorName];
+    } else {
+      all[operatorName] = password;
+    }
+    localStorage.setItem('imiOperatorPasswords', JSON.stringify(all));
+    if(_db) _db.ref('imiConfig/operatorPasswords').set(all);
+  } catch(e) {}
+}
+
+let _passEditingOperator = '';
+
+function openSetPassModal(operatorName) {
+  _passEditingOperator = operatorName;
+  const existing = loadOperatorIndividualPass(operatorName);
+  document.getElementById('set-pass-modal-title').textContent = `🔑 ${operatorName} — Password Set Karen`;
+  document.getElementById('set-pass-inp').value = '';
+  document.getElementById('set-pass-confirm-inp').value = '';
+  document.getElementById('set-pass-current').textContent = existing ? '✅ Password already set hai' : '⚠️ Abhi koi password set nahi';
+  document.getElementById('set-pass-current').style.color = existing ? '#15803d' : '#dc2626';
+  document.getElementById('set-pass-error').style.display = 'none';
+  document.getElementById('set-pass-modal').style.display = 'flex';
+}
+
+function closeSetPassModal() {
+  document.getElementById('set-pass-modal').style.display = 'none';
+  _passEditingOperator = '';
+}
+
+function confirmSetOperatorPass() {
+  const pass    = document.getElementById('set-pass-inp').value.trim();
+  const confirm = document.getElementById('set-pass-confirm-inp').value.trim();
+  const errEl   = document.getElementById('set-pass-error');
+  errEl.style.display = 'none';
+
+  if(!pass) {
+    errEl.textContent = '❌ Password khali nahi ho sakta!';
+    errEl.style.display = 'block'; return;
+  }
+  if(pass.length < 4) {
+    errEl.textContent = '❌ Minimum 4 characters chahiye!';
+    errEl.style.display = 'block'; return;
+  }
+  if(pass !== confirm) {
+    errEl.textContent = '❌ Dono passwords match nahi kar rahe!';
+    errEl.style.display = 'block'; return;
+  }
+
+  saveOperatorIndividualPass(_passEditingOperator, pass);
+  closeSetPassModal();
+  renderAdminPanel();
+  renderSettingsPanels();
+  showToast(`✅ ${_passEditingOperator} ka password set ho gaya!`);
+}
+
+function removeOperatorPass() {
+  if(!confirm(`⚠️ ${_passEditingOperator} ka password hata dein?\n\nIs ke baad sirf global operator password kaam karega.`)) return;
+  saveOperatorIndividualPass(_passEditingOperator, '');
+  closeSetPassModal();
+  renderAdminPanel();
+  renderSettingsPanels();
+  showToast(`🗑️ ${_passEditingOperator} ka password hata diya gaya!`);
+}
+
+// Current operator's permissions (loaded at login)
+let _currentPerms = { ...DEFAULT_PERMS };
+
+function applyRoleUI() {
+  const isOp = _currentRole === 'operator';
+
+  // Load current operator's permissions
+  if(isOp) {
+    _currentPerms = loadOperatorPerms(_currentOperator);
+  }
+
+  // ── Receipt form: profit column ──
+  const profitHeader = document.getElementById('profit-col-header');
+  const toggleBtn    = document.querySelector('button[onclick="toggleProfitDisplay()"]');
+  const hideProfit   = isOp && !_currentPerms.profit;
+  document.querySelectorAll('.service-row').forEach(row =>
+    hideProfit ? row.classList.add('profit-hidden') : row.classList.remove('profit-hidden'));
+  const svcHeader = document.querySelector('.svc-header');
+  if(svcHeader)     hideProfit ? svcHeader.classList.add('profit-hidden')    : svcHeader.classList.remove('profit-hidden');
+  if(profitHeader)  profitHeader.style.display  = hideProfit ? 'none' : 'block';
+  if(toggleBtn)     toggleBtn.style.display     = hideProfit ? 'none' : 'inline-block';
+
+  // ── Reports P&L summary ──
+  const plBox = document.getElementById('pl-sale')?.closest('div[style*="linear-gradient"]');
+  if(plBox) plBox.style.display = (isOp && !_currentPerms.profit) ? 'none' : 'block';
+  const todayBox = document.getElementById('today-sale')?.closest('div[style*="f0fdf4"]');
+  if(todayBox) todayBox.style.display = (isOp && !_currentPerms.profit) ? 'none' : 'block';
+
+  // ── Admin Dashboard ──
+  const dash = document.getElementById('admin-dashboard-card');
+  if(dash) dash.style.display = isOp ? 'none' : 'block';
+
+  // ── Settings tab ──
+  const settingsTabBtn = document.querySelector('.tab-btn[onclick*="settings"]');
+  if(settingsTabBtn) settingsTabBtn.style.display = isOp ? 'none' : '';
+
+  // ── Excel export ──
+  const excelBtn = document.querySelector('button[onclick="exportExcel()"]');
+  if(excelBtn) excelBtn.style.display = (isOp && !_currentPerms.excel) ? 'none' : 'block';
+
+  // ── Services tab: manage (add/edit/delete) buttons ──
+  // Will be applied when services tab opens
+  window._servicesTabRestricted = isOp && !_currentPerms.manageServices;
+
+  // ── Admin dashboard render ──
+  if(!isOp) renderAdminDashboard();
+}
+
+// Apply permissions to billing history table rows
+function applyTablePermissions() {
+  if(_currentRole !== 'operator') return;
+  // Edit buttons
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.style.display = _currentPerms.editBill ? 'block' : 'none';
+  });
+  // Delete checkboxes & bar
+  const deleteBar = document.getElementById('delete-bar');
+  document.querySelectorAll('.row-checkbox').forEach(chk => {
+    chk.style.display = _currentPerms.deleteBill ? '' : 'none';
+  });
+  if(deleteBar && !_currentPerms.deleteBill) deleteBar.classList.remove('show');
+  // Reprint buttons
+  document.querySelectorAll('button[onclick*="reprintReceipt"]').forEach(btn => {
+    btn.style.display = _currentPerms.reprint ? '' : 'none';
+  });
 }
 
 init();
