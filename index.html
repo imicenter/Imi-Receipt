@@ -1497,6 +1497,19 @@ function init() {
         populateLoginSelects();
         renderSettingsPanels();
       });
+
+      // ✅ FIX: Sync operator permissions from Firebase on every page load
+      _db.ref('imiConfig/operatorPerms').once('value', snap => {
+        const fbPerms = snap.val();
+        if(fbPerms && typeof fbPerms === 'object') {
+          localStorage.setItem('imiOperatorPerms', JSON.stringify(fbPerms));
+        }
+        // Re-apply UI if operator is already logged in (session restore)
+        if(_currentRole === 'operator') {
+          _currentPerms = loadOperatorPerms(_currentOperator);
+          applyRoleUI();
+        }
+      });
     }).catch(err => {
       setSyncStatus('red', '❌ Firebase error — Please check Settings');
     });
