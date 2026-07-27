@@ -347,13 +347,13 @@
     <div class="login-logo">
       <div class="logo-icon">🏪</div>
       <div class="logo-title">IMI CENTER</div>
-      <div class="logo-sub">Billing System — Login karna zaroori hai</div>
+      <div class="logo-sub">Billing System — Login Required</div>
     </div>
 
     <!-- ROLE SELECT -->
     <label style="font-size:0.85rem;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">🔐 Login As *</label>
     <select class="login-select" id="login-role-sel" onchange="onRoleChange()">
-      <option value="">-- Role Select Karen --</option>
+      <option value="">-- Select Role --</option>
       <option value="admin">👑 Admin</option>
       <option value="operator">👤 Operator</option>
     </select>
@@ -366,24 +366,24 @@
 
     <!-- OPERATOR SECTION -->
     <div id="operator-login-section" style="display:none;">
-      <label style="font-size:0.85rem;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">🏪 Center Select Karen *</label>
+      <label style="font-size:0.85rem;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">🏪 Select Center *</label>
       <select class="login-select" id="login-center-sel">
-        <option value="">-- Center Select Karen --</option>
+        <option value="">-- Select Center --</option>
       </select>
-      <label style="font-size:0.85rem;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">👤 Operator Select Karen *</label>
+      <label style="font-size:0.85rem;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">👤 Select Operator *</label>
       <select class="login-select" id="login-operator-sel">
-        <option value="">-- Operator Select Karen --</option>
+        <option value="">-- Select Operator --</option>
       </select>
       <label style="font-size:0.85rem;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">🔑 Operator Password *</label>
       <input type="password" class="login-select" id="operator-password-inp" placeholder="Operator password daalen..." style="margin-bottom:14px;" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
 
-    <div id="login-error" style="color:#dc2626;font-size:0.82rem;font-weight:600;margin-bottom:10px;display:none;background:#fee2e2;padding:8px 12px;border-radius:8px;">⚠️ <span id="login-error-msg">Kripya sabhi fields fill karen!</span></div>
+    <div id="login-error" style="color:#dc2626;font-size:0.82rem;font-weight:600;margin-bottom:10px;display:none;background:#fee2e2;padding:8px 12px;border-radius:8px;">⚠️ <span id="login-error-msg">Please fill in all fields!</span></div>
     <button class="login-btn" onclick="doLogin()">🚀 Login</button>
 
     <!-- First time setup hint -->
     <div id="first-time-hint" style="display:none;margin-top:14px;background:#fef3c7;border-radius:10px;padding:10px 14px;font-size:0.78rem;color:#92400e;text-align:center;">
-      ⚠️ <b>Pehli baar?</b> Pehle Admin login karen aur Settings mein password set karen!
+      ⚠️ <b>First time here?</b> Log in as Admin first and set a password in Settings!
     </div>
   </div>
 </div>
@@ -428,7 +428,7 @@
 <div id="set-pass-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:12000;align-items:center;justify-content:center;padding:16px;">
   <div style="background:white;border-radius:20px;padding:22px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,0.35);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <h3 id="set-pass-modal-title" style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;color:#d97706;margin:0;">🔑 Password Set Karen</h3>
+      <h3 id="set-pass-modal-title" style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;color:#d97706;margin:0;">🔑 Set Password</h3>
       <button onclick="closeSetPassModal()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
     </div>
 
@@ -438,7 +438,7 @@
     <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--dark);margin-bottom:4px;">Naya Password</label>
     <input type="password" id="set-pass-inp" placeholder="Minimum 4 characters" style="width:100%;padding:10px 13px;border:1.5px solid #d1fae5;border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.88rem;outline:none;margin-bottom:10px;background:#f0fdf4;">
 
-    <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--dark);margin-bottom:4px;">Password Confirm Karen</label>
+    <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--dark);margin-bottom:4px;">Confirm Password</label>
     <input type="password" id="set-pass-confirm-inp" placeholder="Dobara likhein" style="width:100%;padding:10px 13px;border:1.5px solid #d1fae5;border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.88rem;outline:none;margin-bottom:10px;background:#f0fdf4;">
 
     <div id="set-pass-error" style="display:none;background:#fee2e2;border-radius:8px;padding:8px 12px;font-size:0.8rem;color:#dc2626;font-weight:600;margin-bottom:10px;"></div>
@@ -458,13 +458,13 @@
       <h3 id="perm-modal-title">👤 Operator Permissions</h3>
       <button onclick="closePermModal()" style="background:#fee2e2;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:#ef4444;">✕</button>
     </div>
-    <div class="perm-subtitle" id="perm-modal-sub">Yahan toggle karo ki yeh operator kya kya kar sakta hai</div>
+    <div class="perm-subtitle" id="perm-modal-sub">Toggle what this operator is allowed to do</div>
 
     <!-- BILLING -->
     <div class="perm-section-title">🧾 Billing</div>
 
     <div class="perm-row locked">
-      <div><div class="perm-label">✅ Receipt banana</div><div class="perm-desc">Hamesha ON — hata nahi sakte</div></div>
+      <div><div class="perm-label">✅ Create receipts</div><div class="perm-desc">Always ON — cannot be disabled</div></div>
       <label class="perm-toggle"><input type="checkbox" checked disabled><span class="perm-slider"></span></label>
     </div>
     <div class="perm-row">
@@ -484,7 +484,7 @@
     <div class="perm-section-title">📊 Reports & History</div>
 
     <div class="perm-row">
-      <div><div class="perm-label">📋 Apni history dekhna</div><div class="perm-desc">Sirf apne khud ke bills</div></div>
+      <div><div class="perm-label">📋 View own history</div><div class="perm-desc">Only their own bills</div></div>
       <label class="perm-toggle"><input type="checkbox" id="perm-own-history"><span class="perm-slider"></span></label>
     </div>
     <div class="perm-row">
@@ -492,7 +492,7 @@
       <label class="perm-toggle"><input type="checkbox" id="perm-all-history"><span class="perm-slider"></span></label>
     </div>
     <div class="perm-row">
-      <div><div class="perm-label">💰 Apna Sale dekhna</div><div class="perm-desc">Khud ka total sale amount</div></div>
+      <div><div class="perm-label">💰 View own sales</div><div class="perm-desc">Their own total sale amount</div></div>
       <label class="perm-toggle"><input type="checkbox" id="perm-own-sale"><span class="perm-slider"></span></label>
     </div>
 
@@ -743,7 +743,7 @@
       </div>
       
       <!-- Search Box -->
-      <input type="text" class="svc-search-box" id="svc-search-input" placeholder="🔍 Service dhundhen... (naam ya price se search Karen)" oninput="filterServices()">
+      <input type="text" class="svc-search-box" id="svc-search-input" placeholder="🔍 Search services... (by name or price)" oninput="filterServices()">
       
       <!-- Bulk Move Controls -->
       <div id="bulk-move-controls" style="display:none;background:#e8f5ee;border-radius:12px;padding:10px;margin-bottom:10px;border:1.5px solid var(--border);">
@@ -761,7 +761,7 @@
       <!-- Scrollable Service List -->
       <div class="svc-container" id="svc-container">
         <div id="svc-manager-list"></div>
-        <div class="no-results" id="svc-no-results" style="display:none;">❌ Koi service nahi mila</div>
+        <div class="no-results" id="svc-no-results" style="display:none;">❌ No services found</div>
       </div>
     </div>
 
@@ -877,9 +877,9 @@
         <button class="save-btn" style="margin-top:0;background:linear-gradient(135deg,#7c3aed,#a855f7);" onclick="clearFilter()">🔄 Show All</button>
       </div>
       <button class="gen-btn" onclick="exportExcel()" style="font-size:0.92rem;padding:11px;">📥 Export to Excel (with P&L)</button>
-      <div style="text-align:right;margin-top:10px;"><button onclick="if(confirm('⚠️ Sabhi billing history delete ho jayegi!
+      <div style="text-align:right;margin-top:10px;"><button onclick="if(confirm('⚠️ All billing history will be deleted!
 
-Kya aap sure hain? Yeh undo nahi ho sakta.')) clearAllHistory()" style="background:none;border:1px solid #fca5a5;color:#ef4444;border-radius:8px;padding:4px 10px;font-size:0.72rem;font-weight:600;cursor:pointer;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">🗑️ clear history</button></div>
+Are you sure? This cannot be undone.')) clearAllHistory()" style="background:none;border:1px solid #fca5a5;color:#ef4444;border-radius:8px;padding:4px 10px;font-size:0.72rem;font-weight:600;cursor:pointer;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">🗑️ clear history</button></div>
     </div>
 
     <!-- TABLE -->
@@ -955,7 +955,7 @@ Kya aap sure hain? Yeh undo nahi ho sakta.')) clearAllHistory()" style="backgrou
     <!-- PASSWORD MANAGEMENT CARD -->
     <div class="card" style="border:2px solid #fde68a;background:#fffbeb;">
       <h2 style="color:#d97706;">🔑 Password Management</h2>
-      <div class="settings-info" style="border-color:#fde68a;background:#fef3c7;color:#92400e;">Sirf Admin yahan password set ya change kar sakta hai. Operator password bhi aap set karen.</div>
+      <div class="settings-info" style="border-color:#fde68a;background:#fef3c7;color:#92400e;">Only Admin can set or change passwords here. You can also set the Operator password.</div>
 
       <label>👑 Admin Password (Set/Change)</label>
       <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px;">
@@ -970,14 +970,14 @@ Kya aap sure hain? Yeh undo nahi ho sakta.')) clearAllHistory()" style="backgrou
       </div>
 
       <div style="margin-top:10px;background:#f0fdf4;border-radius:8px;padding:8px 12px;font-size:0.75rem;color:var(--gray);">
-        💡 <b>Admin</b> = Profit/Loss dikh sakta hai, sab settings access<br>
+        💡 <b>Admin</b> = Can view Profit/Loss, has access to all settings<br>
         💡 <b>Operator</b> = Sirf billing, profit/loss hidden rehta hai
       </div>
     </div>
 
     <div class="card">
       <h2>👥 Operators & Centers</h2>
-      <div class="settings-info">Operators aur Centers yahan manage karen — sab devices pe sync ho jayega!</div>
+      <div class="settings-info">Manage Operators and Centers here — synced across all devices!</div>
       
       <div style="margin-bottom:14px;">
         <label>🏪 Centers</label>
@@ -1476,7 +1476,20 @@ function saveSettingsData(s) {
   localStorage.setItem('imiSettings', JSON.stringify(s));
   if(_db) _db.ref('imiSettings').set(s);
 }
-function getReceiptNo() {
+async function getReceiptNo() {
+  // ✅ FIX: use a Firebase transaction so two centers/devices generating a
+  // receipt at the same moment can never get the same number (which used to
+  // silently overwrite one bill with the other in imiBilling).
+  if(_db) {
+    try {
+      const result = await _db.ref('imiRNo').transaction(current => (current || 1000) + 1);
+      if(result.committed) {
+        const n = result.snapshot.val();
+        localStorage.setItem('imiRNo', n);
+        return 'IMI-'+n;
+      }
+    } catch(e) { /* fall back to local below (e.g. offline) */ }
+  }
   const n = parseInt(localStorage.getItem('imiRNo')||'1000')+1;
   localStorage.setItem('imiRNo', n);
   if(_db) _db.ref('imiRNo').set(n);
@@ -1717,14 +1730,14 @@ function getSelectedServiceIndices() {
 function showBulkMoveModal() {
   const selectedIndices = getSelectedServiceIndices();
   if (selectedIndices.length === 0) {
-    alert('❌ Koi service select nahi hai!');
+    alert('❌ No service selected!');
     return;
   }
   
   const availableCats = categories;
   
   if (availableCats.length === 0) {
-    alert('❌ Koi category nahi hai!');
+    alert('❌ No category exists!');
     return;
   }
   
@@ -1746,7 +1759,7 @@ function showBulkMoveModal() {
     </div>
     
     <div style="margin-bottom:16px;">
-      <label style="font-size:0.82rem;font-weight:600;color:var(--dark);display:block;margin-bottom:8px;">Kaun se category mein move Karen?</label>
+      <label style="font-size:0.82rem;font-weight:600;color:var(--dark);display:block;margin-bottom:8px;">Which category should this move to?</label>
       <select id="bulk-move-cat-select" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.88rem;color:var(--dark);background:white;outline:none;">
         <option value="">-- Select Category --</option>
         ${availableCats.map(cat => `<option value="${cat.replace(/"/g, '&quot;')}">${cat}</option>`).join('')}
@@ -1767,7 +1780,7 @@ function showBulkMoveModal() {
 
 function confirmBulkMove(newCat) {
   if (!newCat) {
-    alert('❌ Category select Karen!');
+    alert('❌ Please select a category!');
     return;
   }
   
@@ -1840,9 +1853,9 @@ function addNewService() {
   const rate = parseFloat(document.getElementById('new-svc-rate').value)||0;
   const cost = parseFloat(document.getElementById('new-svc-cost').value)||0;
   
-  if(!category) { alert('❌ Kripay category select Karen!'); return; }
+  if(!category) { alert('❌ Please select a category!'); return; }
   if(!name) { alert('❌ Kripay service ka naam likhen!'); return; }
-  if(rate <= 0) { alert('❌ Sale price 0 se zyada honi chahiye!'); return; }
+  if(rate <= 0) { alert('❌ Sale price must be greater than 0!'); return; }
   
   // Check duplicate service
   const duplicate = services.find(s => s.name.toLowerCase() === name.toLowerCase());
@@ -1862,7 +1875,7 @@ function addNewService() {
   renderCategoryManager();
   renderServiceManager();
   updateTotalServicesCount();
-  showToast('✅ Service successfully add ho gaya!');
+  showToast('✅ Service added successfully!');
 }
 
 // ══ CATEGORY MANAGEMENT ══
@@ -1952,7 +1965,7 @@ function deleteCategory(cat) {
   const availableCats = categories.filter(c => c !== cat);
   
   if (availableCats.length === 0) {
-    alert('❌ Koi aur category nahi hai! Kam se kam ek category honi chahiye.');
+    alert('❌ No other category exists! At least one category is required.');
     return;
   }
   
@@ -1974,7 +1987,7 @@ function deleteCategory(cat) {
     </div>
     
     <div style="margin-bottom:16px;">
-      <label style="font-size:0.82rem;font-weight:600;color:var(--dark);display:block;margin-bottom:8px;">Services ko kaun se category mein move Karen?</label>
+      <label style="font-size:0.82rem;font-weight:600;color:var(--dark);display:block;margin-bottom:8px;">Which category should these services move to?</label>
       <select id="delete-cat-select" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.88rem;color:var(--dark);background:white;outline:none;">
         <option value="">-- Select Category --</option>
         ${availableCats.map(c => `<option value="${c.replace(/"/g, '&quot;')}">${c}</option>`).join('')}
@@ -1995,7 +2008,7 @@ function deleteCategory(cat) {
 
 function confirmDeleteCategory(cat, newCat) {
   if (!newCat) {
-    alert('❌ Category select Karen jahan services move Karen!');
+    alert('❌ Please select a category to move the services to!');
     return;
   }
   
@@ -2053,7 +2066,7 @@ function moveService(serviceIndex) {
   const availableCats = categories.filter(c => c !== service.category);
   
   if (availableCats.length === 0) {
-    alert('❌ Koi aur category nahi hai!');
+    alert('❌ No other category exists!');
     return;
   }
   
@@ -2071,7 +2084,7 @@ function moveService(serviceIndex) {
     </div>
     
     <div style="margin-bottom:16px;">
-      <p style="font-size:0.9rem;color:var(--gray);margin-bottom:8px;"><b>"${service.name}"</b> ko kaun se category mein move Karen?</p>
+      <p style="font-size:0.9rem;color:var(--gray);margin-bottom:8px;">Which category should <b>"${service.name}"</b> move to?</p>
       <select id="move-cat-select" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Noto Sans',sans-serif;font-size:0.88rem;color:var(--dark);background:white;outline:none;">
         <option value="">-- Select Category --</option>
         ${availableCats.map(cat => `<option value="${cat.replace(/"/g, '&quot;')}">${cat}</option>`).join('')}
@@ -2093,7 +2106,7 @@ function moveService(serviceIndex) {
 
 function confirmMoveService(serviceIndex, newCat) {
   if (!newCat) {
-    alert('❌ Category select Karen!');
+    alert('❌ Please select a category!');
     return;
   }
   
@@ -2274,7 +2287,7 @@ function updateSubtotal() {
 
 let _receiptGenLock = false; // ✅ FIX: prevents double-click / double-tap from creating 2 bills
 
-function generateReceipt() {
+async function generateReceipt() {
   if(_receiptGenLock) return; // already generating one — ignore extra clicks
   const name = document.getElementById('cust-name').value.trim();
   if(!name) { alert('Please enter the customer name!'); return; }
@@ -2323,7 +2336,7 @@ function generateReceipt() {
   const now=new Date();
   const date=now.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
   const time=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-  const rNo=getReceiptNo();
+  const rNo=await getReceiptNo();
 
   // Fill receipt with SETTINGS
   document.getElementById('r-shop-name').textContent    = settings.name;
@@ -3014,7 +3027,7 @@ function onCustNameInput(inp) {
 function renderAcList(customers, q) {
   const list = document.getElementById('ac-list');
   if(!customers.length) {
-    list.innerHTML = '<div class="ac-no-result">🔍 Koi purana customer nahi mila</div>';
+    list.innerHTML = '<div class="ac-no-result">🔍 No previous customer found</div>';
     list.classList.add('open');
     // hide if no query either
     if(!q) { list.classList.remove('open'); return; }
@@ -3085,7 +3098,7 @@ function openCProfileModal(phoneEncoded) {
 
   // Match by phone number (case-insensitive and trim)
   const recs = history.filter(r => (r.phone||'').trim() === phone.trim());
-  if(!recs.length) { showToast('❌ Koi record nahi mila!'); return; }
+  if(!recs.length) { showToast('❌ No records found!'); return; }
 
   // Stats
   const totalSpend = recs.reduce((s,r) => s + (r.finalTotal||r.total), 0);
@@ -3337,7 +3350,7 @@ function renderReportTable(history, query) {
   const isOp = _currentRole === 'operator';
   if(!history.length) {
     const isSearching = _searchQuery || _statusFilter !== 'all';
-    wrap.innerHTML = `<div class="no-data">${isSearching ? '🔎 Koi record nahi mila. Search ya filter change karein.' : '📭 No billing records found.<br>Generate a receipt to see data here.'}</div>`;
+    wrap.innerHTML = `<div class="no-data">${isSearching ? '🔎 No records found. Try changing your search or filter.' : '📭 No billing records found.<br>Generate a receipt to see data here.'}</div>`;
     if(countLabel) countLabel.textContent = '📭 0 records';
     return;
   }
@@ -3431,7 +3444,7 @@ function deleteSelectedBills() {
   const selected = document.querySelectorAll('.row-checkbox:not(#select-all-chk):checked');
   if(!selected.length) return;
   const count = selected.length;
-  if(!confirm(`⚠️ ${count} bill${count>1?'s':''} delete ho jayega!\n\nKya aap sure hain? Yeh undo nahi ho sakta.`)) return;
+  if(!confirm(`⚠️ ${count} bill${count>1?'s':''} will be deleted!\n\nAre you sure? This cannot be undone.`)) return;
 
   const rNosToDelete = Array.from(selected).map(chk => chk.dataset.rno);
 
@@ -3450,7 +3463,7 @@ function deleteSelectedBills() {
 
   document.getElementById('delete-bar').classList.remove('show');
   renderReports();
-  showToast(`✅ ${count} bill${count>1?'s':''} delete ho gaya!`);
+  showToast(`✅ ${count} bill${count>1?'s':''} deleted!`);
 }
 
 // ══ EXCEL EXPORT ══
@@ -3710,22 +3723,22 @@ function getOperatorPass() { try { return localStorage.getItem('imiOperatorPass'
 
 function saveAdminPassword() {
   const p = document.getElementById('new-admin-pass').value.trim();
-  if(!p) { showToast('⚠️ Password khali nahi ho sakta!'); return; }
-  if(p.length < 4) { showToast('⚠️ Minimum 4 characters chahiye!'); return; }
+  if(!p) { showToast('⚠️ Password cannot be empty!'); return; }
+  if(p.length < 4) { showToast('⚠️ Minimum 4 characters required!'); return; }
   localStorage.setItem('imiAdminPass', p);
   if(_db) _db.ref('imiConfig/adminPass').set(p);
   document.getElementById('new-admin-pass').value = '';
-  showToast('✅ Admin password save ho gaya!');
+  showToast('✅ Admin password saved!');
 }
 
 function saveOperatorPassword() {
   const p = document.getElementById('new-operator-pass').value.trim();
-  if(!p) { showToast('⚠️ Password khali nahi ho sakta!'); return; }
-  if(p.length < 4) { showToast('⚠️ Minimum 4 characters chahiye!'); return; }
+  if(!p) { showToast('⚠️ Password cannot be empty!'); return; }
+  if(p.length < 4) { showToast('⚠️ Minimum 4 characters required!'); return; }
   localStorage.setItem('imiOperatorPass', p);
   if(_db) _db.ref('imiConfig/operatorPass').set(p);
   document.getElementById('new-operator-pass').value = '';
-  showToast('✅ Operator password save ho gaya!');
+  showToast('✅ Operator password saved!');
 }
 
 function onRoleChange() {
@@ -3745,7 +3758,7 @@ function doLogin() {
 
   const showErr = (msg) => { errMsg.textContent = msg; errEl.style.display = 'block'; };
 
-  if(!role) { showErr('Kripya role select karen!'); return; }
+  if(!role) { showErr('Please select a role!'); return; }
 
   if(role === 'admin') {
     const entered  = document.getElementById('admin-password-inp').value;
@@ -3772,7 +3785,7 @@ function doLogin() {
     const center   = document.getElementById('login-center-sel').value;
     const operator = document.getElementById('login-operator-sel').value;
     const entered  = document.getElementById('operator-password-inp').value;
-    if(!center || !operator) { showErr('Center aur Operator dono select karen!'); return; }
+    if(!center || !operator) { showErr('Please select both Center and Operator!'); return; }
 
     // Check individual operator password first, then fallback to global
     const indivPass  = loadOperatorIndividualPass(operator);
@@ -3804,8 +3817,8 @@ function doLogin() {
 function renderAdminDashboard() {
   const history = loadBillingHistory();
   if(!history.length) {
-    document.getElementById('center-wise-stats').innerHTML   = '<div style="color:var(--gray);font-size:0.82rem;text-align:center;padding:10px;">Koi data nahi</div>';
-    document.getElementById('operator-wise-stats').innerHTML = '<div style="color:var(--gray);font-size:0.82rem;text-align:center;padding:10px;">Koi data nahi</div>';
+    document.getElementById('center-wise-stats').innerHTML   = '<div style="color:var(--gray);font-size:0.82rem;text-align:center;padding:10px;">No data</div>';
+    document.getElementById('operator-wise-stats').innerHTML = '<div style="color:var(--gray);font-size:0.82rem;text-align:center;padding:10px;">No data</div>';
     return;
   }
 
@@ -3871,7 +3884,7 @@ function updateOpBadge() {
 }
 
 function switchOperator() {
-  if(!confirm('Logout karein aur dobara login karen?')) return;
+  if(!confirm('Log out and log in again?')) return;
   sessionStorage.removeItem('imiOperator');
   sessionStorage.removeItem('imiCenter');
   sessionStorage.removeItem('imiRole');
@@ -3915,9 +3928,9 @@ function populateLoginSelects() {
   const operators = loadOperators();
   const cSel = document.getElementById('login-center-sel');
   const oSel = document.getElementById('login-operator-sel');
-  cSel.innerHTML = '<option value="">-- Center Select Karen --</option>' +
+  cSel.innerHTML = '<option value="">-- Select Center --</option>' +
     centers.map(c=>`<option value="${c}">${c}</option>`).join('');
-  oSel.innerHTML = '<option value="">-- Operator Select Karen --</option>' +
+  oSel.innerHTML = '<option value="">-- Select Operator --</option>' +
     operators.map(o=>`<option value="${o}">${o}</option>`).join('');
 }
 
@@ -3938,10 +3951,10 @@ function renderAdminPanel() {
   const oList = document.getElementById('admin-operators-list');
   cList.innerHTML = centers.length
     ? centers.map(c=>`<span class="admin-tag">${c}<button class="admin-tag-del" onclick="removeCenter('${c.replace(/'/g,"\\'")}')">✕</button></span>`).join('')
-    : '<span style="font-size:0.8rem;color:var(--gray);">Koi center nahi — neeche add karen</span>';
+    : '<span style="font-size:0.8rem;color:var(--gray);">No centers yet — add one below</span>';
 
   if(!operators.length) {
-    oList.innerHTML = '<span style="font-size:0.8rem;color:var(--gray);">Koi operator nahi — neeche add karen</span>';
+    oList.innerHTML = '<span style="font-size:0.8rem;color:var(--gray);">No operators yet — add one below</span>';
     return;
   }
   oList.innerHTML = operators.map(o => {
@@ -3976,14 +3989,14 @@ function addCenter() {
   saveCentersLocal(arr);
   inp.value='';
   renderAdminPanel();
-  showToast(`✅ Center "${name}" add ho gaya!`);
+  showToast(`✅ Center "${name}" added!`);
 }
 function removeCenter(name) {
-  if(!confirm(`"${name}" center delete karen?`)) return;
+  if(!confirm(`Delete center "${name}"?`)) return;
   const arr = loadCenters().filter(c=>c!==name);
   saveCentersLocal(arr);
   renderAdminPanel();
-  showToast(`🗑️ Center "${name}" delete ho gaya!`);
+  showToast(`🗑️ Center "${name}" deleted!`);
 }
 function addOperator() {
   const inp = document.getElementById('new-operator-inp');
@@ -3995,14 +4008,14 @@ function addOperator() {
   saveOperatorsLocal(arr);
   inp.value='';
   renderAdminPanel();
-  showToast(`✅ Operator "${name}" add ho gaya!`);
+  showToast(`✅ Operator "${name}" added!`);
 }
 function removeOperator(name) {
-  if(!confirm(`"${name}" operator delete karen?`)) return;
+  if(!confirm(`Delete operator "${name}"?`)) return;
   const arr = loadOperators().filter(o=>o!==name);
   saveOperatorsLocal(arr);
   renderAdminPanel();
-  showToast(`🗑️ Operator "${name}" delete ho gaya!`);
+  showToast(`🗑️ Operator "${name}" deleted!`);
 }
 
 // Settings tab panels
@@ -4014,11 +4027,11 @@ function renderSettingsPanels() {
 
   if(cList) cList.innerHTML = centers.length
     ? centers.map(c=>`<span class="admin-tag">${c}<button class="admin-tag-del" onclick="settingsRemoveCenter('${c.replace(/'/g,"\\'")}')">✕</button></span>`).join('')
-    : '<span style="font-size:0.78rem;color:var(--gray);">Koi center nahi</span>';
+    : '<span style="font-size:0.78rem;color:var(--gray);">No centers</span>';
 
   if(oList) {
     if(!operators.length) {
-      oList.innerHTML = '<span style="font-size:0.78rem;color:var(--gray);">Koi operator nahi</span>';
+      oList.innerHTML = '<span style="font-size:0.78rem;color:var(--gray);">No operators</span>';
     } else {
       oList.innerHTML = operators.map(o => {
         const perms = loadOperatorPerms(o);
@@ -4050,10 +4063,10 @@ function settingsAddCenter() {
   const arr = loadCenters();
   if(arr.includes(name)) { showToast('⚠️ Already hai!'); return; }
   arr.push(name); saveCentersLocal(arr); inp.value='';
-  renderSettingsPanels(); showToast(`✅ Center "${name}" add ho gaya!`);
+  renderSettingsPanels(); showToast(`✅ Center "${name}" added!`);
 }
 function settingsRemoveCenter(name) {
-  if(!confirm(`"${name}" delete karen?`)) return;
+  if(!confirm(`Delete "${name}"?`)) return;
   saveCentersLocal(loadCenters().filter(c=>c!==name));
   renderSettingsPanels(); showToast(`🗑️ Removed!`);
 }
@@ -4063,10 +4076,10 @@ function settingsAddOperator() {
   const arr = loadOperators();
   if(arr.includes(name)) { showToast('⚠️ Already hai!'); return; }
   arr.push(name); saveOperatorsLocal(arr); inp.value='';
-  renderSettingsPanels(); showToast(`✅ Operator "${name}" add ho gaya!`);
+  renderSettingsPanels(); showToast(`✅ Operator "${name}" added!`);
 }
 function settingsRemoveOperator(name) {
-  if(!confirm(`"${name}" delete karen?`)) return;
+  if(!confirm(`Delete "${name}"?`)) return;
   saveOperatorsLocal(loadOperators().filter(o=>o!==name));
   renderSettingsPanels(); showToast(`🗑️ Removed!`);
 }
@@ -4139,7 +4152,7 @@ function openPermModal(operatorName) {
   _permEditingOperator = operatorName;
   const perms = loadOperatorPerms(operatorName);
   document.getElementById('perm-modal-title').textContent = `👤 ${operatorName} — Permissions`;
-  document.getElementById('perm-modal-sub').textContent   = `Toggle karo ki ${operatorName} kya kya kar sakta hai`;
+  document.getElementById('perm-modal-sub').textContent   = `Toggle what ${operatorName} is allowed to do`;
 
   document.getElementById('perm-edit-bill').checked       = !!perms.editBill;
   document.getElementById('perm-delete-bill').checked     = !!perms.deleteBill;
@@ -4205,10 +4218,10 @@ let _passEditingOperator = '';
 function openSetPassModal(operatorName) {
   _passEditingOperator = operatorName;
   const existing = loadOperatorIndividualPass(operatorName);
-  document.getElementById('set-pass-modal-title').textContent = `🔑 ${operatorName} — Password Set Karen`;
+  document.getElementById('set-pass-modal-title').textContent = `🔑 ${operatorName} — Set Password`;
   document.getElementById('set-pass-inp').value = '';
   document.getElementById('set-pass-confirm-inp').value = '';
-  document.getElementById('set-pass-current').textContent = existing ? '✅ Password already set hai' : '⚠️ Abhi koi password set nahi';
+  document.getElementById('set-pass-current').textContent = existing ? '✅ Password already set' : '⚠️ No password set yet';
   document.getElementById('set-pass-current').style.color = existing ? '#15803d' : '#dc2626';
   document.getElementById('set-pass-error').style.display = 'none';
   document.getElementById('set-pass-modal').style.display = 'flex';
@@ -4226,15 +4239,15 @@ function confirmSetOperatorPass() {
   errEl.style.display = 'none';
 
   if(!pass) {
-    errEl.textContent = '❌ Password khali nahi ho sakta!';
+    errEl.textContent = '❌ Password cannot be empty!';
     errEl.style.display = 'block'; return;
   }
   if(pass.length < 4) {
-    errEl.textContent = '❌ Minimum 4 characters chahiye!';
+    errEl.textContent = '❌ Minimum 4 characters required!';
     errEl.style.display = 'block'; return;
   }
   if(pass !== confirm) {
-    errEl.textContent = '❌ Dono passwords match nahi kar rahe!';
+    errEl.textContent = '❌ Passwords do not match!';
     errEl.style.display = 'block'; return;
   }
 
@@ -4242,16 +4255,16 @@ function confirmSetOperatorPass() {
   closeSetPassModal();
   renderAdminPanel();
   renderSettingsPanels();
-  showToast(`✅ ${_passEditingOperator} ka password set ho gaya!`);
+  showToast(`✅ Password set for ${_passEditingOperator}!`);
 }
 
 function removeOperatorPass() {
-  if(!confirm(`⚠️ ${_passEditingOperator} ka password hata dein?\n\nIs ke baad sirf global operator password kaam karega.`)) return;
+  if(!confirm(`⚠️ Remove password for ${_passEditingOperator}?\n\nOnly the global operator password will work afterward.`)) return;
   saveOperatorIndividualPass(_passEditingOperator, '');
   closeSetPassModal();
   renderAdminPanel();
   renderSettingsPanels();
-  showToast(`🗑️ ${_passEditingOperator} ka password hata diya gaya!`);
+  showToast(`🗑️ Password removed for ${_passEditingOperator}!`);
 }
 
 // Current operator's permissions (loaded at login)
