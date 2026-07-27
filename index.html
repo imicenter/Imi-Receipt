@@ -1311,6 +1311,19 @@ function setupFirebaseListeners() {
     }
   });
 
+  // Listen for category changes (✅ FIX: was write-only before, now syncs to every device)
+  _db.ref('imiCategories').on('value', snap => {
+    const val = snap.val();
+    if(val) {
+      localStorage.setItem('imiCategories', JSON.stringify(val));
+      populateCategorySelect();
+      if(document.getElementById('tab-services')?.classList.contains('active')) {
+        renderCategoryManager();
+        renderServiceManager();
+      }
+    }
+  });
+
   // Listen for settings changes
   _db.ref('imiSettings').on('value', snap => {
     const val = snap.val();
@@ -1335,6 +1348,30 @@ function setupFirebaseListeners() {
   _db.ref('imiConfig/operatorPasswords').on('value', snap => {
     const val = snap.val();
     if(val) localStorage.setItem('imiOperatorPasswords', JSON.stringify(val));
+  });
+
+  // Listen for operator permissions (✅ FIX: was write-only before, now syncs to every device)
+  _db.ref('imiConfig/operatorPerms').on('value', snap => {
+    const val = snap.val();
+    if(val) {
+      localStorage.setItem('imiOperatorPerms', JSON.stringify(val));
+      // If current logged-in operator's perms changed, refresh UI live
+      if(_currentRole === 'operator' && _currentOperator) {
+        _currentPerms = loadOperatorPerms(_currentOperator);
+        applyRoleUI();
+        if(document.getElementById('tab-reports')?.classList.contains('active')) renderReports();
+      }
+    }
+  });
+
+  // Listen for admin / global operator password (✅ FIX: was local-only before)
+  _db.ref('imiConfig/adminPass').on('value', snap => {
+    const val = snap.val();
+    if(val !== null && val !== undefined) localStorage.setItem('imiAdminPass', val);
+  });
+  _db.ref('imiConfig/operatorPass').on('value', snap => {
+    const val = snap.val();
+    if(val !== null && val !== undefined) localStorage.setItem('imiOperatorPass', val);
   });
 
   // Receipt counter
@@ -1478,8 +1515,9 @@ function init() {
     setSyncStatus('yellow', '🔄 Connecting to Firebase...');
     initFirebaseApp(cfg).then(() => {
       showFbConnectedState(cfg.projectId);
-      // Sync centers & operators from Firebase
-      _db.ref('imiConfig/centers').once('value', snap => {
+      // Sync centers & operators from Firebase (✅ FIX: live listener instead of one-time fetch,
+      // so adding/removing a center or operator on one device reflects on all others immediately)
+      _db.ref('imiConfig/centers').on('value', snap => {
         const fbCenters = snap.val();
         if(fbCenters && Array.isArray(fbCenters)) {
           localStorage.setItem('imiCenters', JSON.stringify(fbCenters));
@@ -1488,7 +1526,7 @@ function init() {
         populateLoginSelects();
         renderSettingsPanels();
       });
-      _db.ref('imiConfig/operators').once('value', snap => {
+      _db.ref('imiConfig/operators').on('value', snap => {
         const fbOps = snap.val();
         if(fbOps && Array.isArray(fbOps)) {
           localStorage.setItem('imiOperators', JSON.stringify(fbOps));
@@ -3675,6 +3713,7 @@ function saveAdminPassword() {
   if(!p) { showToast('⚠️ Password khali nahi ho sakta!'); return; }
   if(p.length < 4) { showToast('⚠️ Minimum 4 characters chahiye!'); return; }
   localStorage.setItem('imiAdminPass', p);
+  if(_db) _db.ref('imiConfig/adminPass').set(p);
   document.getElementById('new-admin-pass').value = '';
   showToast('✅ Admin password save ho gaya!');
 }
@@ -3684,6 +3723,7 @@ function saveOperatorPassword() {
   if(!p) { showToast('⚠️ Password khali nahi ho sakta!'); return; }
   if(p.length < 4) { showToast('⚠️ Minimum 4 characters chahiye!'); return; }
   localStorage.setItem('imiOperatorPass', p);
+  if(_db) _db.ref('imiConfig/operatorPass').set(p);
   document.getElementById('new-operator-pass').value = '';
   showToast('✅ Operator password save ho gaya!');
 }
